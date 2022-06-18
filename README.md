@@ -4,13 +4,19 @@
 
 - Reetesh Dooleea
 - Wail Ayad
-- Dylan
+- Dylan Batista-Moniz
 - Yuhan Li
-- Jean Olivier
-- Helena thon
+- Oliver Jean
+- Helena Ton-That
 
 ### Stacks:
 
 - Node.js
 - D3.js
 - Parcel.js
+
+## Instructions
+
+1. Run `npm ci` on your terminal
+2. Run `npm start` afterwards
+3. View project at http://localhost:8080/
