@@ -6,18 +6,40 @@
     <meta name="Description" content="Sports AI project for INF8808 by Team 3" />
     <title>INF8808 | Sports AI | Team 3</title>
 
-    <link rel="stylesheet" href="assets/typography.css" />
-    <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="stylesheet" href="assets/styles/typography.css" />
+    <link rel="stylesheet" href="assets/styles/variables.css" />
+    <link rel="stylesheet" href="assets/styles/styles.css" />
   </head>
 
   <body>
-    <main>
-      <div class="viz-container">
-        <div class="graph" id="map">
-          <svg class="main-svg"></svg>
-        </div>
-      </div>
+    <main class="no-scrollbar">
+      <section id="radar-chart">
+        <p>Radar chart</p>
+      </section>
+      <section id="stacked-chart">
+        <p>stacked chart</p>
+      </section>
+      <section id="bar-chart">
+        <p>bar chart</p>
+      </section>
+      <section id="line-chart">
+        <p>line chart</p>
+      </section>
     </main>
+
+    <nav>
+      <img id="sports-ai-logo" src="/assets/images/sports_ai_logo.png" alt="Sports AI logo" />
+
+      <div class="dots-container">
+        <a href="#radar-chart"></a>
+        <a href="#stacked-chart"></a>
+        <a href="#bar-chart"></a>
+        <a href="#line-chart"></a>
+      </div>
+
+      <h2>Contact</h2>
+    </nav>
+
     <script defer src="https://d3js.org/d3.v5.js"></script>
     <script type="module" src="index.js"></script>
   </body>
