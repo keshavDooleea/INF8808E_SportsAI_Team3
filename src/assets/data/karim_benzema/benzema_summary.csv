@@ -1,0 +1,57 @@
+Date,Day,Comp,Round,Venue,Result,Squad,Opponent,Start,Pos,Min,Gls,Ast,PK,PKatt,Sh,SoT,CrdY,CrdR,Touches,Press,Tkl,Int,Blocks,xG,npxG,xA,SCA,GCA,Cmp,Att,Cmp%,Prog,Carries,Prog,Succ,Att,Match Report
+2021-08-14,Sat,La Liga,Matchweek 1,Away,W 4–1,Real Madrid,Alavés,Y*,FW,88,2,0,0,0,6,3,0,0,55,8,0,0,0,0.7,0.7,0.0,4,1,39,45,86.7,4,36,5,2,2,Match Report
+2021-08-22,Sun,La Liga,Matchweek 2,Away,D 3–3,Real Madrid,Levante,Y*,FW,90,0,2,0,0,1,0,0,0,39,9,1,0,0,0.1,0.1,0.2,3,2,27,32,84.4,3,25,3,0,0,Match Report
+2021-08-28,Sat,La Liga,Matchweek 3,Away,W 1–0,Real Madrid,Betis,Y*,FW,90,0,1,0,0,2,0,0,0,48,6,0,1,2,0.1,0.1,0.3,4,1,31,37,83.8,5,30,5,2,2,Match Report
+2021-09-01,Wed,WCQ,First round,Home,D 1–1,fr France,ba Bosnia and Herzegovina,Y,FW,75,0,0,0,0,2,1,0,0,,,,0,,,,,,,,,,,,,,,Match Report
+2021-09-04,Sat,WCQ,First round,Away,D 1–1,fr France,ua Ukraine,N,,27,0,0,0,0,0,0,0,0,,,,0,,,,,,,,,,,,,,,Match Report
+2021-09-07,Tue,WCQ,First round,Home,W 2–0,fr France,fi Finland,Y,FW,90,0,1,0,0,5,2,0,0,,,,1,,,,,,,,,,,,,,,Match Report
+2021-09-12,Sun,La Liga,Matchweek 4,Home,W 5–2,Real Madrid,Celta Vigo,Y*,FW,90,3,1,1,1,4,2,0,0,55,15,1,0,1,1.1,0.3,1.3,6,2,39,44,88.6,5,36,5,1,1,Match Report
+2021-09-15,Wed,Champions Lg,Group stage,Away,W 1–0,es Real Madrid,it Inter,Y*,FW,90,0,0,0,0,2,0,0,0,51,13,0,0,1,0.1,0.1,0.3,2,0,33,43,76.7,4,41,6,1,1,Match Report
+2021-09-19,Sun,La Liga,Matchweek 5,Away,W 2–1,Real Madrid,Valencia,Y*,FW,90,1,1,0,0,5,3,0,0,41,8,0,0,1,0.5,0.5,0.1,4,1,29,34,85.3,5,35,9,2,2,Match Report
+2021-09-22,Wed,La Liga,Matchweek 6,Home,W 6–1,Real Madrid,Mallorca,Y*,FW,79,2,2,0,0,4,3,0,0,55,5,1,1,0,0.6,0.6,1.3,6,2,34,44,77.3,5,49,5,0,2,Match Report
+2021-09-25,Sat,La Liga,Matchweek 7,Home,D 0–0,Real Madrid,Villarreal,Y*,FW,90,0,0,0,0,3,1,0,0,27,20,1,1,0,0.1,0.1,0.0,1,0,16,20,80.0,1,21,6,0,0,Match Report
+2021-09-28,Tue,Champions Lg,Group stage,Home,L 1–2,es Real Madrid,md Sheriff Tiraspol,Y*,FW,90,1,0,1,1,5,2,0,0,77,5,0,0,1,1.1,0.4,0.4,10,0,56,69,81.2,10,62,14,2,2,Match Report
+2021-10-03,Sun,La Liga,Matchweek 8,Away,L 1–2,Real Madrid,Espanyol,Y*,FW,90,1,0,0,0,8,4,0,0,69,7,0,0,2,0.8,0.8,0.2,10,2,50,55,90.9,6,40,4,3,4,Match Report
+2021-10-07,Thu,UEFA Nations League,Semi-finals,Neutral,W 3–2,fr France,be Belgium,Y,FW,89,1,0,0,0,0,0,0,0,,,,0,,,,,,,,,,,,,,,Match Report
+2021-10-10,Sun,UEFA Nations League,Final,Neutral,W 2–1,fr France,es Spain,Y,FW,90,1,0,0,0,0,0,0,0,,,,0,,,,,,,,,,,,,,,Match Report
+2021-10-19,Tue,Champions Lg,Group stage,Away,W 5–0,es Real Madrid,ua Shakhtar,Y*,FW,90,1,0,0,0,7,4,0,0,68,25,2,3,0,1.0,1.0,0.4,8,2,37,49,75.5,8,53,6,5,6,Match Report
+2021-10-24,Sun,La Liga,Matchweek 10,Away,W 2–1,Real Madrid,Barcelona,Y*,FW,90,0,0,0,0,1,1,0,0,48,3,1,0,0,0.1,0.1,0.0,3,0,35,41,85.4,3,39,2,1,1,Match Report
+2021-10-27,Wed,La Liga,Matchweek 11,Home,D 0–0,Real Madrid,Osasuna,Y*,FW,90,0,0,0,0,5,0,0,0,56,9,1,0,0,0.3,0.3,0.0,5,0,37,48,77.1,3,40,8,2,3,Match Report
+2021-11-03,Wed,Champions Lg,Group stage,Home,W 2–1,es Real Madrid,ua Shakhtar,Y*,FW,78,2,0,0,0,5,2,0,0,48,19,0,0,1,1.5,1.5,0.2,3,0,33,37,89.2,5,35,7,3,4,Match Report
+2021-11-06,Sat,La Liga,Matchweek 13,Home,W 2–1,Real Madrid,Rayo Vallecano,Y*,FW,82,1,0,0,0,6,1,0,0,51,8,0,0,0,1.1,1.1,0.1,1,0,32,42,76.2,3,32,5,1,1,Match Report
+2021-11-13,Sat,WCQ,First round,Home,W 8–0,fr France,kz Kazakhstan,Y,FW,70,2,0,0,0,3,2,1,0,,,,0,,,,,,,,,,,,,,,Match Report
+2021-11-16,Tue,WCQ,First round,Away,W 2–0,fr France,fi Finland,N,,34,1,0,0,0,2,2,0,0,,,,1,,,,,,,,,,,,,,,Match Report
+2021-11-21,Sun,La Liga,Matchweek 14,Away,W 4–1,Real Madrid,Granada,Y*,FW,79,0,0,0,0,4,1,0,0,39,5,0,0,0,0.4,0.4,0.9,8,1,25,30,83.3,5,31,9,1,3,Match Report
+2021-11-24,Wed,Champions Lg,Group stage,Away,W 3–0,es Real Madrid,md Sheriff Tiraspol,Y*,FW,90,1,0,0,0,4,1,0,0,82,3,0,1,0,0.3,0.3,0.5,5,0,62,73,84.9,6,67,17,0,1,Match Report
+2021-11-28,Sun,La Liga,Matchweek 15,Home,W 2–1,Real Madrid,Sevilla,Y*,FW,90,1,0,0,0,2,1,0,0,48,20,1,0,0,0.8,0.8,0.0,1,0,36,42,85.7,4,31,5,1,1,Match Report
+2021-12-01,Wed,La Liga,Matchweek 9,Home,W 1–0,Real Madrid,Athletic Club,Y*,FW,90,1,0,0,0,4,3,0,0,52,9,1,1,0,1.2,1.2,0.1,5,0,38,42,90.5,4,38,12,1,1,Match Report
+2021-12-04,Sat,La Liga,Matchweek 16,Away,W 2–0,Real Madrid,Real Sociedad,Y*,FW,16,0,0,0,0,0,0,0,0,6,1,0,0,0,0.0,0.0,0.0,1,0,6,6,100.0,0,4,0,0,0,Match Report
+2021-12-12,Sun,La Liga,Matchweek 17,Home,W 2–0,Real Madrid,Atlético Madrid,Y*,FW,45,1,0,0,0,1,1,0,0,29,7,1,0,0,0.1,0.1,0.0,1,0,21,26,80.8,0,15,1,0,0,Match Report
+2021-12-19,Sun,La Liga,Matchweek 18,Home,D 0–0,Real Madrid,Cádiz,Y*,FW,90,0,0,0,0,5,2,0,0,72,4,0,0,0,0.7,0.7,0.3,9,0,56,62,90.3,14,48,8,1,1,Match Report
+2021-12-22,Wed,La Liga,Matchweek 21,Away,W 2–1,Real Madrid,Athletic Club,Y*,FW,89,2,0,0,0,2,2,0,0,57,12,0,0,0,0.4,0.4,0.1,1,0,47,52,90.4,7,38,7,1,1,Match Report
+2022-01-02,Sun,La Liga,Matchweek 19,Away,L 0–1,Real Madrid,Getafe,Y*,FW,90,0,0,0,0,3,0,0,0,58,5,0,0,0,0.1,0.1,0.0,2,0,34,48,70.8,3,55,9,1,1,Match Report
+2022-01-08,Sat,La Liga,Matchweek 20,Home,W 4–1,Real Madrid,Valencia,Y*,FW,88,2,0,1,1,3,1,0,0,48,6,0,1,0,1.1,0.3,0.6,5,0,31,36,86.1,8,32,2,1,1,Match Report
+2022-01-12,Wed,Supercopa de España,Semi-finals,Away,W 3–2,Real Madrid,Barcelona,Y*,FW,120,1,1,0,0,4,2,0,0,,,,0,,,,,,,,,,,,,,,Match Report
+2022-01-16,Sun,Supercopa de España,Final,Away,W 2–0,Real Madrid,Athletic Club,Y*,FW,90,1,0,1,1,4,1,0,0,,,,0,,,,,,,,,,,,,,,Match Report
+2022-01-23,Sun,La Liga,Matchweek 22,Home,D 2–2,Real Madrid,Elche,Y*,FW,57,0,0,0,1,4,2,0,0,24,1,0,0,0,1.3,0.6,0.3,2,0,16,18,88.9,2,18,2,0,0,Match Report
+2022-02-15,Tue,Champions Lg,Round of 16,Away,L 0–1,es Real Madrid,fr Paris S-G,Y*,FW,86,0,0,0,0,0,0,0,0,35,17,0,0,0,0.0,0.0,0.0,0,0,26,32,81.3,3,25,3,1,1,Match Report
+2022-02-19,Sat,La Liga,Matchweek 25,Home,W 3–0,Real Madrid,Alavés,Y*,FW,90,1,2,1,1,6,0,0,0,60,9,0,2,1,1.8,1.0,0.4,4,2,39,44,88.6,5,42,7,0,2,Match Report
+2022-02-26,Sat,La Liga,Matchweek 26,Away,W 1–0,Real Madrid,Rayo Vallecano,Y*,FW,90,1,0,0,0,5,3,0,0,52,10,0,0,1,1.3,1.3,0.2,3,1,42,43,97.7,5,42,6,2,2,Match Report
+2022-03-05,Sat,La Liga,Matchweek 27,Home,W 4–1,Real Madrid,Real Sociedad,Y*,FW,83,1,1,1,1,3,2,0,0,47,9,0,0,0,1.0,0.2,0.2,4,1,36,41,87.8,4,41,8,0,0,Match Report
+2022-03-09,Wed,Champions Lg,Round of 16,Home,W 3–1,es Real Madrid,fr Paris S-G,Y*,FW,90,3,0,0,0,7,5,0,0,52,22,1,0,0,1.1,1.1,0.0,0,0,33,42,78.6,3,36,8,0,1,Match Report
+2022-03-14,Mon,La Liga,Matchweek 28,Away,W 3–0,Real Madrid,Mallorca,Y*,FW,90,2,1,1,1,2,2,0,0,53,9,1,0,2,1.2,0.4,0.6,4,2,34,41,82.9,7,32,8,2,3,Match Report
+2022-04-02,Sat,La Liga,Matchweek 30,Away,W 2–1,Real Madrid,Celta Vigo,Y*,FW,90,2,0,2,3,2,1,0,0,45,15,0,0,0,2.6,0.3,0.1,2,0,30,35,85.7,4,29,3,0,2,Match Report
+2022-04-06,Wed,Champions Lg,Quarter-finals,Away,W 3–1,es Real Madrid,eng Chelsea,Y*,FW,85,3,0,0,0,4,3,0,0,51,24,0,0,2,1.3,1.3,0.0,3,1,38,44,86.4,3,36,5,0,0,Match Report
+2022-04-09,Sat,La Liga,Matchweek 31,Home,W 2–0,Real Madrid,Getafe,Y,FW,73,0,0,0,0,4,0,0,0,56,10,0,0,0,0.2,0.2,0.1,3,0,38,49,77.6,5,51,8,0,0,Match Report
+2022-04-12,Tue,Champions Lg,Quarter-finals,Home,L 2–3,es Real Madrid,eng Chelsea,Y*,FW,120,1,0,0,0,4,1,1,0,62,25,1,0,2,0.3,0.3,0.1,5,0,40,47,85.1,3,45,2,0,2,Match Report
+2022-04-17,Sun,La Liga,Matchweek 32,Away,W 3–2,Real Madrid,Sevilla,Y*,FW,89,1,0,0,0,7,3,0,0,47,10,0,0,0,0.6,0.6,0.0,1,0,32,38,84.2,3,37,9,2,3,Match Report
+2022-04-20,Wed,La Liga,Matchweek 33,Away,W 3–1,Real Madrid,Osasuna,Y*,FW,90,0,0,0,2,3,0,0,0,57,6,0,0,0,1.7,0.1,0.6,8,0,41,49,83.7,4,55,5,3,3,Match Report
+2022-04-26,Tue,Champions Lg,Semi-finals,Away,L 3–4,es Real Madrid,eng Manchester City,Y*,FW,90,2,0,1,1,2,1,0,0,37,14,0,0,1,0.9,0.1,0.2,5,0,24,28,85.7,4,31,2,3,6,Match Report
+2022-04-30,Sat,La Liga,Matchweek 34,Home,W 4–0,Real Madrid,Espanyol,N,FW,31,1,0,0,0,1,1,0,0,26,1,0,0,0,0.3,0.3,0.2,2,0,21,24,87.5,3,25,1,2,2,Match Report
+2022-05-04,Wed,Champions Lg,Semi-finals,Home,W 3–1,es Real Madrid,eng Manchester City,Y*,FW,103,1,1,1,1,3,1,0,0,35,8,0,0,3,1.0,0.3,0.5,3,2,19,20,95.0,5,21,6,0,0,Match Report
+2022-05-12,Thu,La Liga,Matchweek 36,Home,W 6–0,Real Madrid,Levante,Y*,FW,74,1,1,0,0,5,3,0,0,53,3,0,0,0,0.7,0.7,1.4,6,3,35,44,79.5,5,47,9,2,4,Match Report
+2022-05-20,Fri,La Liga,Matchweek 38,Home,D 0–0,Real Madrid,Betis,Y*,FW,90,0,0,0,0,7,1,0,0,48,11,1,0,0,0.4,0.4,0.0,5,0,31,37,83.8,2,26,6,1,1,Match Report
+2022-05-28,Sat,Champions Lg,Final,Neutral,W 1–0,es Real Madrid,eng Liverpool,Y*,FW,90,0,0,0,0,0,0,0,0,56,12,0,1,1,0.0,0.0,0.1,1,0,34,46,73.9,2,43,7,0,2,Match Report
+2022-06-03,Fri,UEFA Nations League,League A,Home,L 1–2,fr France,dk Denmark,Y,FW,90,1,0,0,0,0,0,0,0,,,,,,,,,,,,,,,,,,,Match Report
+2022-06-10,Fri,UEFA Nations League,League A,Away,D 1–1,fr France,at Austria,Y,FW,90,0,0,0,0,0,0,0,0,,,,,,,,,,,,,,,,,,,Match Report
+2022-06-13,Mon,UEFA Nations League,League A,Home,L 0–1,fr France,hr Croatia,Y,FW,90,0,0,0,0,0,0,0,0,,,,,,,,,,,,,,,,,,,Match Report
