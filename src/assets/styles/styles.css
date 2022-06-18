@@ -5,6 +5,17 @@
   font-family: Sackbones;
 }
 
+/* utilities css classes */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* web page layout */
 html,
 body,
 main {
@@ -17,15 +28,6 @@ body {
   background-color: var(--bkgColor);
   display: flex;
   overflow: hidden;
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
 main,
@@ -76,4 +78,13 @@ main section {
   width: 100%;
   height: 100%;
   scroll-snap-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* svg charts styles */
+.full-size-svg {
+  width: 100%;
+  height: 100%;
 }
