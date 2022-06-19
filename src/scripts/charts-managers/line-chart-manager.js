@@ -62,41 +62,66 @@ export class LineChartManager extends AbstractChartManager {
     this.svg = d3.select("#line-chart-svg");
     this.svgWidth = parseInt(this.svg.style("width"));
     this.svgHeight = parseInt(this.svg.style("height"));
-    this.svgMargin = 20;
+
+    this.margin = {
+      top: 50,
+      right: 30,
+      bottom: 30,
+      left: 60,
+    };
 
     this.setAxisY();
     this.setAxisX();
+    this.setGraphLabels();
 
     this.show();
   }
 
+  get height() {
+    return this.svgHeight - this.margin.top - this.margin.bottom;
+  }
+
+  get width() {
+    return this.svgWidth - this.margin.left - this.margin.right;
+  }
+
   getScaleX() {
-    return d3.scaleBand().domain([8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6]).range([0, this.svgWidth]);
+    return d3.scaleBand().domain([8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6]).range([0, this.width]);
   }
 
   getScaleY() {
-    return d3
-      .scaleBand()
-      .domain(rangeInterval(0, 10, 1))
-      .range([this.svgHeight - this.svgMargin, 0]);
+    return d3.scaleBand().domain(rangeInterval(0, 10, 1)).range([this.height, 0]);
   }
 
   setAxisX() {
-    this.svg
-      .append("g")
-      .attr("class", "margin-bottom-20")
-      .attr("transform", `translate(${this.svgMargin}, ${this.svgHeight - this.svgMargin})`)
-      .call(d3.axisBottom(this.getScaleX()));
+    this.svg.append("g").attr("class", "margin-bottom-20").attr("transform", `translate(${this.margin.left}, ${this.height})`).call(d3.axisBottom(this.getScaleX()));
   }
 
   setAxisY() {
-    this.svg.append("g").attr("transform", `translate(${this.svgMargin}, 0)`).call(d3.axisLeft(this.getScaleY()));
+    this.svg.append("g").attr("transform", `translate(${this.margin.left}, 0)`).call(d3.axisLeft(this.getScaleY()));
+  }
+
+  setGraphLabels() {
+    // label of y axis
+    this.svg
+      .append("g")
+      .append("text")
+      .text("Amount of goals scored")
+      .attr("transform", `translate(${this.margin.left / 2}, ${this.svgHeight / 2}), rotate(-90)`);
+
+    // label of x axis
+    this.svg
+      .append("g")
+      .append("text")
+      .text("Month of the season")
+      .attr("class", "axis-text")
+      .attr("transform", `translate(${this.svgWidth / 2}, ${this.svgHeight - this.margin.bottom})`);
   }
 
   show() {
     const scaleX = this.getScaleX();
     const scaleY = this.getScaleY();
-    const offsetX = this.svgMargin;
+    const offsetX = this.margin.left;
     const mane = this.maneData;
 
     this.svg

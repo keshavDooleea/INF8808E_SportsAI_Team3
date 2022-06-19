@@ -5,6 +5,12 @@
 }
 
 .basic-svg-size {
-  width: 60%;
-  height: 60%;
+  width: 70%;
+  height: 70%;
+}
+
+.axis-text {
+  transform-origin: center;
+  transform-box: fill-box;
+  text-anchor: middle;
 }
