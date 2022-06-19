@@ -139,13 +139,11 @@ export class LineChartManager extends AbstractChartManager {
 
   drawButton() {
     const button = this.chartHelper.createButton(this.svg, this.svgWidth - this.chartHelper.buttonWidth, 0, `Show ${this.buttonText}`);
+    button.attr("id", "line-chart-button");
 
     button.on("click", () => {
       this.toggleState();
-
-      button.select("text").text(`Show ${this.buttonText}`);
-      this.svg.select("#line-chart-view-title").text(this.currentState.view);
-      this.svg.select("#line-chart-y-label").text(this.currentState.labelY);
+      this.refreshViews();
     });
   }
 
@@ -163,6 +161,12 @@ export class LineChartManager extends AbstractChartManager {
         labelY: "Amount of goals scored",
       };
     }
+  }
+
+  refreshViews() {
+    this.svg.select("#line-chart-button text").text(`Show ${this.buttonText}`);
+    this.svg.select("#line-chart-view-title").text(this.currentState.view);
+    this.svg.select("#line-chart-y-label").text(this.currentState.labelY);
   }
 
   drawLines() {
