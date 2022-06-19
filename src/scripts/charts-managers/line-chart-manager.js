@@ -86,6 +86,10 @@ export class LineChartManager extends AbstractChartManager {
     return this.svgWidth - this.margin.left - this.margin.right;
   }
 
+  get isGoalView() {
+    return this.currentState?.view === "Goals";
+  }
+
   getScaleX() {
     const domainLabels = this.maneData.map((element) => element.monthYear);
     return d3.scaleBand().domain(domainLabels).range([0, this.width]);
@@ -94,7 +98,7 @@ export class LineChartManager extends AbstractChartManager {
   getScaleY() {
     return d3
       .scaleBand()
-      .domain(rangeInterval(0, 14, 1))
+      .domain(this.currentState.domainY)
       .range([this.height - this.margin.top, 0]);
   }
 
@@ -103,7 +107,7 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   setAxisY() {
-    this.svg.append("g").attr("transform", `translate(${this.margin.left}, ${this.margin.top})`).call(d3.axisLeft(this.getScaleY()));
+    this.svg.append("g").attr("id", "line-chart-y-domain").attr("transform", `translate(${this.margin.left}, ${this.margin.top})`).call(d3.axisLeft(this.getScaleY()));
   }
 
   setGraphLabels() {
@@ -148,17 +152,17 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   toggleState() {
-    const isGoal = this.currentState?.view === "Goals";
-
-    if (isGoal) {
+    if (this.isGoalView) {
       this.currentState = {
         view: "Assists",
         labelY: "Number of assists made",
+        domainY: rangeInterval(0, 7, 1),
       };
     } else {
       this.currentState = {
         view: "Goals",
         labelY: "Amount of goals scored",
+        domainY: rangeInterval(0, 14, 1),
       };
     }
   }
@@ -167,6 +171,11 @@ export class LineChartManager extends AbstractChartManager {
     this.svg.select("#line-chart-button text").text(`Show ${this.buttonText}`);
     this.svg.select("#line-chart-view-title").text(this.currentState.view);
     this.svg.select("#line-chart-y-label").text(this.currentState.labelY);
+    this.svg.select("#line-chart-y-domain").call(d3.axisLeft(this.getScaleY()));
+
+    // clear all svg path before redrawing
+    this.svg.selectAll(".line-chart-path").remove();
+    this.drawLines();
   }
 
   drawLines() {
@@ -182,18 +191,20 @@ export class LineChartManager extends AbstractChartManager {
 
     this.svg
       .append("path")
+      .attr("class", "line-chart-path")
       .attr("fill", "none")
       .attr("stroke", playerColor)
       .attr("stroke-width", 2)
       .attr("stroke-linejoin", "round")
-      .attr("d", function () {
+      .attr("d", () => {
         return d3
           .line()
-          .x(function (d) {
-            return scaleX(d.monthYear) + offsetX;
+          .x((data) => {
+            return scaleX(data.monthYear) + offsetX;
           })
-          .y(function (d) {
-            const value = Number(d.goals) ? Number(d.goals) : 0;
+          .y((data) => {
+            const statProperty = this.isGoalView ? data.goals : data.assists;
+            const value = Number(statProperty) ? Number(statProperty) : 0;
             return scaleY(value);
           })(playerData);
       });
