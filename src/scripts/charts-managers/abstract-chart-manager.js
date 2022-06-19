@@ -1,4 +1,5 @@
 const { playerHelperSingleton } = require("../players-helper");
+const { chartHelper } = require("../chart-helper");
 
 /**
  * Declaring an abstract manager Class for charts manager.
@@ -7,6 +8,7 @@ const { playerHelperSingleton } = require("../players-helper");
  */
 export class AbstractChartManager {
   playerHelperSingleton = playerHelperSingleton;
+  chartHelper = chartHelper;
 
   constructor() {
     if (this.constructor == AbstractChartManager) {

@@ -64,10 +64,12 @@ export class LineChartManager extends AbstractChartManager {
 
     this.margin = {
       top: 50,
-      right: 30,
+      right: 150,
       bottom: 30,
       left: 60,
     };
+
+    this.drawButton();
 
     this.setAxisY();
     this.setAxisX();
@@ -129,6 +131,10 @@ export class LineChartManager extends AbstractChartManager {
     title.append("text").text("Goals").attr("transform", "translate(65, 0)").attr("font-size", 18);
 
     title.attr("transform", `translate(${this.margin.left},  ${this.margin.top / 2})`);
+  }
+
+  drawButton() {
+    this.chartHelper.createButton(this.svg, this.svgWidth - this.chartHelper.buttonWidth, 0, "Show Assists");
   }
 
   show() {

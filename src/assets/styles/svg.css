@@ -14,3 +14,16 @@
   transform-box: fill-box;
   text-anchor: middle;
 }
+
+.button-text {
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+
+.button-rect {
+  fill: #f4f6f4;
+  cursor: pointer;
+  stroke: #362023;
+  rx: 3;
+}
