@@ -17,3 +17,7 @@ export function rangeInterval(start, stop, interval) {
 
   return res;
 }
+
+export const TEXT_COLORS = {
+  secondaryColor: "#5f697d",
+};

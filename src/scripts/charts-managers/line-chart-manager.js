@@ -1,5 +1,5 @@
 import { getMonthInNumeric, getMonthYear } from "../utils/date";
-import { rangeInterval } from "../utils/utils";
+import { rangeInterval, TEXT_COLORS } from "../utils/utils";
 import { AbstractChartManager } from "./abstract-chart-manager";
 
 /**
@@ -31,7 +31,6 @@ export class LineChartManager extends AbstractChartManager {
         // new month found -> set a new month as key to the monthlyObj and set statistics as values
         monthlyObj[monthNumeric] = {
           monthYear,
-          monthNumeric,
           goals: Number(element.Gls),
           shots: Number(element.Sh),
           assists: Number(element.Ast),
@@ -73,6 +72,7 @@ export class LineChartManager extends AbstractChartManager {
     this.setAxisY();
     this.setAxisX();
     this.setGraphLabels();
+    this.setTitle();
 
     this.show();
   }
@@ -86,11 +86,15 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   getScaleX() {
-    return d3.scaleBand().domain([8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6]).range([0, this.width]);
+    const domainLabels = this.maneData.map((element) => element.monthYear);
+    return d3.scaleBand().domain(domainLabels).range([0, this.width]);
   }
 
   getScaleY() {
-    return d3.scaleBand().domain(rangeInterval(0, 10, 1)).range([this.height, 0]);
+    return d3
+      .scaleBand()
+      .domain(rangeInterval(0, 10, 1))
+      .range([this.height - this.margin.top, 0]);
   }
 
   setAxisX() {
@@ -98,7 +102,7 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   setAxisY() {
-    this.svg.append("g").attr("transform", `translate(${this.margin.left}, 0)`).call(d3.axisLeft(this.getScaleY()));
+    this.svg.append("g").attr("transform", `translate(${this.margin.left}, ${this.margin.top})`).call(d3.axisLeft(this.getScaleY()));
   }
 
   setGraphLabels() {
@@ -118,6 +122,15 @@ export class LineChartManager extends AbstractChartManager {
       .attr("transform", `translate(${this.svgWidth / 2}, ${this.svgHeight - this.margin.bottom})`);
   }
 
+  setTitle() {
+    const title = this.svg.append("g").attr("id", "line-chart-title");
+
+    title.append("text").attr("fill", TEXT_COLORS.secondaryColor).text("Displaying: ");
+    title.append("text").text("Goals").attr("transform", "translate(65, 0)").attr("font-size", 18);
+
+    title.attr("transform", `translate(${this.margin.left},  ${this.margin.top / 2})`);
+  }
+
   show() {
     const scaleX = this.getScaleX();
     const scaleY = this.getScaleY();
@@ -134,7 +147,7 @@ export class LineChartManager extends AbstractChartManager {
         return d3
           .line()
           .x(function (d) {
-            return scaleX(d.monthNumeric) + offsetX;
+            return scaleX(d.monthYear) + offsetX;
           })
           .y(function (d) {
             const value = Number(d.goals) ? Number(d.goals) : 0;
