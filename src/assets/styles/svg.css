@@ -5,8 +5,8 @@
 }
 
 .basic-svg-size {
-  width: 70%;
-  height: 70%;
+  width: 80%;
+  height: 90%;
 }
 
 .axis-text {
@@ -19,6 +19,7 @@
   text-anchor: middle;
   dominant-baseline: middle;
   pointer-events: none;
+  user-select: none;
 }
 
 .button-rect {

@@ -69,14 +69,13 @@ export class LineChartManager extends AbstractChartManager {
       left: 60,
     };
 
-    this.drawButton();
-
+    this.toggleState();
+    this.setTitle();
     this.setAxisY();
     this.setAxisX();
     this.setGraphLabels();
-    this.setTitle();
-
-    this.show();
+    this.drawLines();
+    this.drawButton();
   }
 
   get height() {
@@ -95,7 +94,7 @@ export class LineChartManager extends AbstractChartManager {
   getScaleY() {
     return d3
       .scaleBand()
-      .domain(rangeInterval(0, 10, 1))
+      .domain(rangeInterval(0, 14, 1))
       .range([this.height - this.margin.top, 0]);
   }
 
@@ -112,7 +111,8 @@ export class LineChartManager extends AbstractChartManager {
     this.svg
       .append("g")
       .append("text")
-      .text("Amount of goals scored")
+      .text(this.currentState.labelY)
+      .attr("id", "line-chart-y-label")
       .attr("transform", `translate(${this.margin.left / 2}, ${this.svgHeight / 2}), rotate(-90)`);
 
     // label of x axis
@@ -128,25 +128,58 @@ export class LineChartManager extends AbstractChartManager {
     const title = this.svg.append("g").attr("id", "line-chart-title");
 
     title.append("text").attr("fill", TEXT_COLORS.secondaryColor).text("Displaying: ");
-    title.append("text").text("Goals").attr("transform", "translate(65, 0)").attr("font-size", 18);
+    title.append("text").attr("id", "line-chart-view-title").text("Goals").attr("transform", "translate(65, 0)").attr("font-size", 18);
 
     title.attr("transform", `translate(${this.margin.left},  ${this.margin.top / 2})`);
   }
 
-  drawButton() {
-    this.chartHelper.createButton(this.svg, this.svgWidth - this.chartHelper.buttonWidth, 0, "Show Assists");
+  get buttonText() {
+    return this.currentState.view === "Goals" ? "Assists" : "Goals";
   }
 
-  show() {
+  drawButton() {
+    const button = this.chartHelper.createButton(this.svg, this.svgWidth - this.chartHelper.buttonWidth, 0, `Show ${this.buttonText}`);
+
+    button.on("click", () => {
+      this.toggleState();
+
+      button.select("text").text(`Show ${this.buttonText}`);
+      this.svg.select("#line-chart-view-title").text(this.currentState.view);
+      this.svg.select("#line-chart-y-label").text(this.currentState.labelY);
+    });
+  }
+
+  toggleState() {
+    const isGoal = this.currentState?.view === "Goals";
+
+    if (isGoal) {
+      this.currentState = {
+        view: "Assists",
+        labelY: "Number of assists made",
+      };
+    } else {
+      this.currentState = {
+        view: "Goals",
+        labelY: "Amount of goals scored",
+      };
+    }
+  }
+
+  drawLines() {
+    this.drawLine(this.maneData, this.playerHelperSingleton.maneColor);
+    this.drawLine(this.benzemaData, this.playerHelperSingleton.benzemaColor);
+    this.drawLine(this.mbappeData, this.playerHelperSingleton.mbappeColor);
+  }
+
+  drawLine(playerData, playerColor) {
     const scaleX = this.getScaleX();
     const scaleY = this.getScaleY();
     const offsetX = this.margin.left;
-    const mane = this.maneData;
 
     this.svg
       .append("path")
       .attr("fill", "none")
-      .attr("stroke", "red")
+      .attr("stroke", playerColor)
       .attr("stroke-width", 2)
       .attr("stroke-linejoin", "round")
       .attr("d", function () {
@@ -158,7 +191,7 @@ export class LineChartManager extends AbstractChartManager {
           .y(function (d) {
             const value = Number(d.goals) ? Number(d.goals) : 0;
             return scaleY(value);
-          })(mane);
+          })(playerData);
       });
   }
 }
