@@ -1,5 +1,10 @@
 import { AbstractChartManager } from "./abstract-chart-manager";
 
+/**
+ * Manager for bar chart visualization
+ *
+ * @class BarChartManager
+ */
 export class BarChartManager extends AbstractChartManager {
   preprocess() {
     console.log("Bar chart preprocess");
