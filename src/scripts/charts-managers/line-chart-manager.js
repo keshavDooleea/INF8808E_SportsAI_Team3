@@ -132,7 +132,7 @@ export class LineChartManager extends AbstractChartManager {
     const title = this.svg.append("g").attr("id", "line-chart-title");
 
     title.append("text").attr("fill", TEXT_COLORS.secondaryColor).text("Displaying: ");
-    title.append("text").attr("id", "line-chart-view-title").text("Goals").attr("transform", "translate(65, 0)").attr("font-size", 18);
+    title.append("text").attr("id", "line-chart-view-title").text(this.currentState.view).attr("transform", "translate(65, 0)").attr("font-size", 18);
 
     title.attr("transform", `translate(${this.margin.left},  ${this.margin.top / 2})`);
   }
