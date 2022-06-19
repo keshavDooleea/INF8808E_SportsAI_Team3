@@ -1,7 +1,7 @@
 const { playerHelperSingleton } = require("../players-helper");
 
 /**
- * Declaring an abstract manager Class for charts.
+ * Declaring an abstract manager Class for charts manager.
  *
  * @class AbstractChartManager
  */
@@ -17,9 +17,19 @@ export class AbstractChartManager {
     this.initializeCharts();
   }
 
+  /**
+   * Allow respective child classes to preprocess the CSV data into a desired Object format
+   *
+   */
   preprocess() {
     throw new Error("Method 'preprocess()' must be implemented.");
   }
 
-  initializeCharts() {}
+  /**
+   * Allow respective child classes to set up SVG elements to mount visualizations
+   *
+   */
+  initializeCharts() {
+    throw new Error("Method 'initializeCharts()' must be implemented.");
+  }
 }
