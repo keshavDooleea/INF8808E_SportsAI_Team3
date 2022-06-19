@@ -18,6 +18,13 @@ class PlayersHelperClass {
   get mbappeColor() {
     return "#FFA056";
   }
+
+  get playersAttributes() {
+    return {
+      names: ["Sadio Mané", "Karim Benzema", "Kylian Mbappé"],
+      colors: [this.maneColor, this.benzemaColor, this.mbappeColor],
+    };
+  }
 }
 
 module.exports = {

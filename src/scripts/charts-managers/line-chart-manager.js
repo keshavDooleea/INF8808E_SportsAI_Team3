@@ -167,10 +167,15 @@ export class LineChartManager extends AbstractChartManager {
     title.attr("transform", `translate(${this.margin.left},  ${this.margin.top / 2})`);
   }
 
-  drawLegend() {}
+  drawLegend() {
+    const legend = this.createLegend(this.svg, this.svgWidth - this.chartHelper.buttonWidth, this.margin.top, this.chartHelper.legendLineShape);
+    legend.attr("id", "line-chart-legend");
+  }
 
   drawButton() {
-    const button = this.chartHelper.createButton(this.svg, this.svgWidth - this.chartHelper.buttonWidth, 0, `Show ${this.buttonText}`);
+    const legendHeight = this.svg.select("#line-chart-legend").node().getBoundingClientRect().height;
+    const heightOffset = legendHeight + this.margin.top + 10;
+    const button = this.chartHelper.createButton(this.svg, this.svgWidth - this.chartHelper.buttonWidth, heightOffset, `Show ${this.buttonText}`);
     button.attr("id", "line-chart-button");
 
     button.on("click", () => {

@@ -1,6 +1,8 @@
+import d3Legend from "d3-svg-legend";
+
 class ChartHelperClass {
   get buttonWidth() {
-    return 100;
+    return 120;
   }
 
   get buttonHeight() {
@@ -41,6 +43,53 @@ class ChartHelperClass {
       .attr("font-size", 14);
 
     return button;
+  }
+
+  get legendSquareShape() {
+    return "square";
+  }
+
+  get legendLineShape() {
+    return "line";
+  }
+
+  /**
+   *
+   * @param {*} svg
+   * @param {*} translateX
+   * @param {*} translateY
+   * @param {*} shape the shape of the legend's scale ('square', 'line')
+   * @param {*} playersAttributes
+   * @returns
+   */
+  createLegend(svg, translateX, translateY, shape, playersAttributes) {
+    const colorScale = d3.scaleOrdinal(playersAttributes.colors).domain(playersAttributes.names);
+
+    // customize a d3 circle shape
+    const legendShape = this.getLegendShapeFactory(shape);
+    const designLegend = d3Legend.legendColor().title("Legend").scale(colorScale).shape("path", legendShape());
+
+    // draw legend on screen
+    const legend = svg.append("g").attr("transform", `translate(${translateX}, ${translateY})`).call(designLegend);
+
+    return legend;
+  }
+
+  /**
+   * Create a custom shape for legend's scale
+   *
+   * @param {*} shape
+   * @returns
+   */
+  getLegendShapeFactory(shape) {
+    const circleSize = 150;
+
+    switch (shape) {
+      case this.legendCircleShape:
+        return d3.symbol().type(d3.symbolCircle).size(circleSize);
+      case this.legendLineShape:
+        return d3.symbol().type(d3.symbolSquare).size(circleSize);
+    }
   }
 }
 
