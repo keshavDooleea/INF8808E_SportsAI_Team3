@@ -15,6 +15,9 @@ export class LineChartManager extends AbstractChartManager {
 
     this.maxGoals = this.getMaxNbStat(true);
     this.maxAssists = this.getMaxNbStat(false);
+
+    this.yAxisDuration = 1500;
+    this.linesDuration = 2500;
   }
 
   /**
@@ -193,7 +196,8 @@ export class LineChartManager extends AbstractChartManager {
     this.svg.select("#line-chart-button text").text(`Show ${this.buttonText}`);
     this.svg.select("#line-chart-view-title").text(this.currentState.view);
     this.svg.select("#line-chart-y-label").text(this.currentState.labelY);
-    this.svg.select("#line-chart-y-domain").call(d3.axisLeft(this.getScaleY()));
+
+    this.svg.transition().duration(this.yAxisDuration).select("#line-chart-y-domain").call(d3.axisLeft(this.getScaleY()));
 
     // clear all svg path before redrawing
     this.svg.selectAll(".line-chart-path").remove();
@@ -230,6 +234,23 @@ export class LineChartManager extends AbstractChartManager {
             const value = Number(statProperty) ? Number(statProperty) : 0;
             return this.getScaleY()(value);
           })(playerData);
+      })
+      .call((path) => this.transition(path));
+  }
+
+  transition(path) {
+    if (!path) return;
+
+    path
+      .transition()
+      .duration(this.linesDuration)
+      .attrTween("stroke-dasharray", function () {
+        const pathLength = path.node().getTotalLength();
+        const pathInterpolation = d3.interpolateString("0," + pathLength, pathLength + "," + pathLength);
+
+        return function (timeFraction) {
+          return pathInterpolation(timeFraction);
+        };
       });
   }
 }
