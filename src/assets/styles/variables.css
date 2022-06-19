@@ -1,5 +1,6 @@
 :root {
   --bkgColor: #fff;
+  --textColor: #5f697d;
 
   --mane: #4682b4;
   --benzema: #6f4e7c;
@@ -7,4 +8,5 @@
 
   --navbarWidth: 50px;
   --dotSize: 5px;
+  --margin: 20px;
 }
