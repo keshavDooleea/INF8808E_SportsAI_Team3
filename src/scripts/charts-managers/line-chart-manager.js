@@ -117,7 +117,7 @@ export class LineChartManager extends AbstractChartManager {
       .append("text")
       .text(this.currentState.labelY)
       .attr("id", "line-chart-y-label")
-      .attr("transform", `translate(${this.margin.left / 2}, ${this.svgHeight / 2}), rotate(-90)`);
+      .attr("transform", `translate(${this.margin.left / 2}, ${(this.margin.top + this.svgHeight) / 2}), rotate(-90)`);
 
     // label of x axis
     this.svg
@@ -125,7 +125,7 @@ export class LineChartManager extends AbstractChartManager {
       .append("text")
       .text("Month of the season")
       .attr("class", "axis-text")
-      .attr("transform", `translate(${this.svgWidth / 2}, ${this.svgHeight - this.margin.bottom})`);
+      .attr("transform", `translate(${(this.svgWidth - this.margin.right) / 2}, ${this.svgHeight - this.margin.bottom})`);
   }
 
   setTitle() {
