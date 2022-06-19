@@ -93,6 +93,13 @@ main section .section-header {
   width: 100%;
 }
 
+main section .section-header .section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
 main section .section-header p {
   color: var(--textColor);
 }
