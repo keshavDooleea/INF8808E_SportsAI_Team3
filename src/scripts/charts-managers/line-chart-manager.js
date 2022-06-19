@@ -12,6 +12,9 @@ export class LineChartManager extends AbstractChartManager {
     this.maneData = this.preprocessPlayer(this.playerHelperSingleton.maneSummaryData);
     this.benzemaData = this.preprocessPlayer(this.playerHelperSingleton.benzemaSummaryData);
     this.mbappeData = this.preprocessPlayer(this.playerHelperSingleton.mbappeSummaryData);
+
+    this.maxGoals = this.getMaxNbStat(true);
+    this.maxAssists = this.getMaxNbStat(false);
   }
 
   /**
@@ -57,6 +60,22 @@ export class LineChartManager extends AbstractChartManager {
     return montlyArray;
   }
 
+  getMaxNbStat(isMaxGoals) {
+    const players = [this.maneData, this.benzemaData, this.mbappeData];
+
+    // get max stat for every player
+    const allPlayersMax = players.map((player) =>
+      d3.max(player, (playerData) => {
+        return isMaxGoals ? Number(playerData.goals) : Number(playerData.assists);
+      })
+    );
+
+    // get the max out of all three players
+    const maxStat = d3.max(allPlayersMax);
+
+    return maxStat;
+  }
+
   initializeCharts() {
     this.svg = d3.select("#line-chart-svg");
     this.svgWidth = parseInt(this.svg.style("width"));
@@ -90,9 +109,12 @@ export class LineChartManager extends AbstractChartManager {
     return this.currentState?.view === "Goals";
   }
 
+  get seasonMonths() {
+    return this.maneData.map((element) => element.monthYear);
+  }
+
   getScaleX() {
-    const domainLabels = this.maneData.map((element) => element.monthYear);
-    return d3.scaleBand().domain(domainLabels).range([0, this.width]);
+    return d3.scaleBand().domain(this.seasonMonths).range([0, this.width]);
   }
 
   getScaleY() {
@@ -156,13 +178,13 @@ export class LineChartManager extends AbstractChartManager {
       this.currentState = {
         view: "Assists",
         labelY: "Number of assists made",
-        domainY: rangeInterval(0, 7, 1),
+        domainY: rangeInterval(0, this.maxAssists, 1),
       };
     } else {
       this.currentState = {
         view: "Goals",
         labelY: "Amount of goals scored",
-        domainY: rangeInterval(0, 14, 1),
+        domainY: rangeInterval(0, this.maxGoals, 1),
       };
     }
   }
@@ -185,13 +207,13 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   drawLine(playerData, playerColor) {
-    const scaleX = this.getScaleX();
-    const scaleY = this.getScaleY();
-    const offsetX = this.margin.left;
+    const xOffsetIntervals = this.width / this.seasonMonths.length / 2;
+    const yOffsetIntervals = this.height / this.currentState.domainY.length / 2;
 
     this.svg
       .append("path")
       .attr("class", "line-chart-path")
+      .attr("transform", `translate(${this.margin.left + xOffsetIntervals}, ${this.margin.top + yOffsetIntervals})`)
       .attr("fill", "none")
       .attr("stroke", playerColor)
       .attr("stroke-width", 2)
@@ -199,13 +221,14 @@ export class LineChartManager extends AbstractChartManager {
       .attr("d", () => {
         return d3
           .line()
+          .curve(d3.curveBasis)
           .x((data) => {
-            return scaleX(data.monthYear) + offsetX;
+            return this.getScaleX()(data.monthYear);
           })
           .y((data) => {
             const statProperty = this.isGoalView ? data.goals : data.assists;
             const value = Number(statProperty) ? Number(statProperty) : 0;
-            return scaleY(value);
+            return this.getScaleY()(value);
           })(playerData);
       });
   }
