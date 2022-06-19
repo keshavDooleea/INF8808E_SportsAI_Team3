@@ -97,6 +97,7 @@ export class LineChartManager extends AbstractChartManager {
     this.setAxisX();
     this.setGraphLabels();
     this.drawLines();
+    this.drawLegend();
     this.drawButton();
   }
 
@@ -110,6 +111,10 @@ export class LineChartManager extends AbstractChartManager {
 
   get isGoalView() {
     return this.currentState?.view === "Goals";
+  }
+
+  get buttonText() {
+    return this.isGoalView ? "Assists" : "Goals";
   }
 
   get seasonMonths() {
@@ -162,9 +167,7 @@ export class LineChartManager extends AbstractChartManager {
     title.attr("transform", `translate(${this.margin.left},  ${this.margin.top / 2})`);
   }
 
-  get buttonText() {
-    return this.currentState.view === "Goals" ? "Assists" : "Goals";
-  }
+  drawLegend() {}
 
   drawButton() {
     const button = this.chartHelper.createButton(this.svg, this.svgWidth - this.chartHelper.buttonWidth, 0, `Show ${this.buttonText}`);
@@ -225,7 +228,7 @@ export class LineChartManager extends AbstractChartManager {
       .attr("d", () => {
         return d3
           .line()
-          .curve(d3.curveBasis)
+          .curve(d3.curveBasis) // curveCatmullRomOpen
           .x((data) => {
             return this.getScaleX()(data.monthYear);
           })
