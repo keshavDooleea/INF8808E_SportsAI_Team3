@@ -1,5 +1,7 @@
 # INF8808E Data visualization project for Sports AI
 
+Visit project at [https://keshavdooleea.github.io/INF8808E_SportsAI_Team3/](https://keshavdooleea.github.io/INF8808E_SportsAI_Team3/)
+
 ### Team 3:
 
 - Reetesh Dooleea
@@ -15,7 +17,7 @@
 - D3.js
 - Parcel.js
 
-## Instructions
+## Instructions for development
 
 1. Run `npm ci` on your terminal
 2. Run `npm start` afterwards
