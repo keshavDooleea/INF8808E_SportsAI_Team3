@@ -16,8 +16,10 @@ export class LineChartManager extends AbstractChartManager {
     this.maxGoals = this.getMaxNbStat(true);
     this.maxAssists = this.getMaxNbStat(false);
 
+    this.lineSize = 2;
     this.yAxisLabelsDuration = 1500;
     this.playerLinesDuration = 2500;
+    this.horizontalDashOffsetDuration = 250;
   }
 
   /**
@@ -121,6 +123,14 @@ export class LineChartManager extends AbstractChartManager {
     return this.maneData.map((element) => element.monthYear);
   }
 
+  get yOffsetIntervals() {
+    return this.height / this.currentState.domainY.length / 2;
+  }
+
+  get xOffsetIntervals() {
+    return this.width / this.seasonMonths.length / 2;
+  }
+
   getScaleX() {
     return d3.scaleBand().domain(this.seasonMonths).range([0, this.width]);
   }
@@ -209,6 +219,7 @@ export class LineChartManager extends AbstractChartManager {
 
     // clear all svg path before redrawing
     this.svg.selectAll(".line-chart-path").remove();
+    this.svg.selectAll(".line-chart-horizontal-lines").remove();
     this.drawLines();
   }
 
@@ -222,7 +233,26 @@ export class LineChartManager extends AbstractChartManager {
   /**
    * Draw horizontal lines aligned with y labels/ticks
    */
-  drawHorizontalLines() {}
+  drawHorizontalLines() {
+    const dashArray = 4;
+
+    for (let i = 0; i < this.currentState.domainY.length; i++) {
+      const positionY = this.getScaleY()(i) + this.yOffsetIntervals - this.lineSize;
+
+      this.svg
+        .append("line")
+        .attr("class", "line-chart-horizontal-lines")
+        .style("stroke", TEXT_COLORS.lightGray)
+        .style("stroke-width", this.lineSize)
+        .attr("stroke-dasharray", dashArray)
+        .attr("x1", 0)
+        .attr("y1", positionY)
+        .attr("x2", this.width)
+        .attr("y2", positionY)
+        .attr("transform", `translate(${this.margin.left}, ${this.margin.top})`)
+        .call((path) => this.animateDashOffset(path, this.horizontalDashOffsetDuration * (i + 1)));
+    }
+  }
 
   /**
    * Draw the main line of the visualizaation
@@ -231,16 +261,13 @@ export class LineChartManager extends AbstractChartManager {
    * @param {*} playerColor the color of the line
    */
   drawPlayerLine(playerData, playerColor) {
-    const xOffsetIntervals = this.width / this.seasonMonths.length / 2;
-    const yOffsetIntervals = this.height / this.currentState.domainY.length / 2;
-
     this.svg
       .append("path")
       .attr("class", "line-chart-path")
-      .attr("transform", `translate(${this.margin.left + xOffsetIntervals}, ${this.margin.top + yOffsetIntervals})`)
+      .attr("transform", `translate(${this.margin.left + this.xOffsetIntervals}, ${this.margin.top + this.yOffsetIntervals - this.lineSize})`)
       .attr("fill", "none")
       .attr("stroke", playerColor)
-      .attr("stroke-width", 2)
+      .attr("stroke-width", this.lineSize)
       .attr("stroke-linejoin", "round")
       .attr("d", () => {
         return d3
@@ -255,10 +282,10 @@ export class LineChartManager extends AbstractChartManager {
             return this.getScaleY()(value);
           })(playerData);
       })
-      .call((path) => this.transition(path, this.playerLinesDuration));
+      .call((path) => this.lineAnimation(path, this.playerLinesDuration));
   }
 
-  transition(path, duration) {
+  lineAnimation(path, duration) {
     if (!path) return;
 
     path
@@ -271,6 +298,16 @@ export class LineChartManager extends AbstractChartManager {
         return function (timeFraction) {
           return pathInterpolation(timeFraction);
         };
+      });
+  }
+
+  animateDashOffset(path, duration) {
+    path
+      .transition()
+      .duration(duration)
+      .styleTween("stroke-dashoffset", function () {
+        const pathLength = path.node().getTotalLength();
+        return d3.interpolate(0, pathLength);
       });
   }
 }

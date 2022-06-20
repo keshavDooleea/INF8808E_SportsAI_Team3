@@ -20,4 +20,5 @@ export function rangeInterval(start, stop, interval) {
 
 export const TEXT_COLORS = {
   secondaryColor: "#5f697d",
+  lightGray: "#ddd",
 };
