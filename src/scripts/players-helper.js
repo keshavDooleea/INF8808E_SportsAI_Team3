@@ -1,10 +1,10 @@
-import { csvToJSON } from "./utils/csv-parser";
+import { csvToObject } from "./utils/csv-parser";
 
 class PlayersHelperClass {
   async getSummaryData() {
-    this.maneSummaryData = await csvToJSON("sadio_mane/summary.csv");
-    this.benzemaSummaryData = await csvToJSON("karim_benzema/summary.csv");
-    this.mbappeSummaryData = await csvToJSON("kylian_mbappe/summary.csv");
+    this.maneSummaryData = await csvToObject("sadio_mane/summary.csv");
+    this.benzemaSummaryData = await csvToObject("karim_benzema/summary.csv");
+    this.mbappeSummaryData = await csvToObject("kylian_mbappe/summary.csv");
   }
 
   get maneColor() {

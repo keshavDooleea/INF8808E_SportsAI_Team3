@@ -5,7 +5,7 @@
  * @returns {Object[]} The array of objects parsed from the csv file
  *
  */
-export async function csvToJSON(csvPath) {
+export async function csvToObject(csvPath) {
   return new Promise(async function (resolve, reject) {
     try {
       const data = await d3.csv(csvPath);
