@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 /**
  * Utilitary funtion that parses a CSV file to a json object
  *
