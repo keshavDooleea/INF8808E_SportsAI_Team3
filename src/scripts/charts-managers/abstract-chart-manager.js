@@ -35,7 +35,7 @@ export class AbstractChartManager {
     throw new Error("Method 'initializeCharts()' must be implemented.");
   }
 
-  createLegend(svg, translateX, translateY, shape) {
-    return this.chartHelper.createLegend(svg, translateX, translateY, shape, this.playerHelperSingleton.playersAttributes);
+  createLegend(svg, translateX, translateY, symbol) {
+    return this.chartHelper.createLegend(svg, translateX, translateY, symbol, this.playerHelperSingleton.playersAttributes);
   }
 }

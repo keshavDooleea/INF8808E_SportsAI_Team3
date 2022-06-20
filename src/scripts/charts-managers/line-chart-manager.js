@@ -168,7 +168,7 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   drawLegend() {
-    const legend = this.createLegend(this.svg, this.svgWidth - this.chartHelper.buttonWidth, this.margin.top, this.chartHelper.legendLineShape);
+    const legend = this.createLegend(this.svg, this.svgWidth - this.chartHelper.buttonWidth, this.margin.top, this.chartHelper.legendLineSymbol);
     legend.attr("id", "line-chart-legend");
   }
 

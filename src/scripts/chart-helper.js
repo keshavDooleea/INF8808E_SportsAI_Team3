@@ -45,11 +45,11 @@ class ChartHelperClass {
     return button;
   }
 
-  get legendSquareShape() {
+  get legendSquareSymbol() {
     return "square";
   }
 
-  get legendLineShape() {
+  get legendLineSymbol() {
     return "line";
   }
 
@@ -58,36 +58,36 @@ class ChartHelperClass {
    * @param {*} svg
    * @param {*} translateX
    * @param {*} translateY
-   * @param {*} shape the shape of the legend's scale ('square', 'line')
+   * @param {*} symbol the symbol of the legend's scale ('square', 'line')
    * @param {*} playersAttributes
    * @returns
    */
-  createLegend(svg, translateX, translateY, shape, playersAttributes) {
+  createLegend(svg, translateX, translateY, symbol, playersAttributes) {
     const colorScale = d3.scaleOrdinal(playersAttributes.colors).domain(playersAttributes.names);
 
-    // customize a d3 circle shape
-    const legendShape = this.getLegendShapeFactory(shape);
-    const designLegend = d3Legend.legendColor().title("Legend").scale(colorScale).shape("path", legendShape());
+    // customize a d3 symbol
+    const legendSymbol = this.getLegendSymbolFactory(symbol);
+    const designLegend = d3Legend.legendColor().title("Legend").scale(colorScale).shape("path", legendSymbol());
 
     // draw legend on screen
-    const legend = svg.append("g").attr("transform", `translate(${translateX}, ${translateY})`).call(designLegend);
+    const legend = svg.append("g").attr("class", "legend").attr("transform", `translate(${translateX}, ${translateY})`).call(designLegend);
 
     return legend;
   }
 
   /**
-   * Create a custom shape for legend's scale
+   * Create a custom shape/symbol for legend's scale
    *
-   * @param {*} shape
+   * @param {*} symbol
    * @returns
    */
-  getLegendShapeFactory(shape) {
+  getLegendSymbolFactory(symbol) {
     const circleSize = 150;
 
-    switch (shape) {
-      case this.legendCircleShape:
-        return d3.symbol().type(d3.symbolCircle).size(circleSize);
-      case this.legendLineShape:
+    switch (symbol) {
+      case this.legendSquareSymbol:
+        return d3.symbol().type(d3.symbolSquare).size(circleSize);
+      case this.legendLineSymbol:
         return d3.symbol().type(d3.symbolSquare).size(circleSize);
     }
   }

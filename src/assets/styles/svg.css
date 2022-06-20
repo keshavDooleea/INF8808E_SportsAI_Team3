@@ -28,3 +28,7 @@
   stroke: #362023;
   rx: 3;
 }
+
+.legend .legendTitle {
+  fill: var(--textColor);
+}
