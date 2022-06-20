@@ -1,10 +1,10 @@
 "use strict";
 
-import * as BarChartManager from "./scripts/charts-managers/bar-chart-manager";
-import * as LineChartManager from "./scripts/charts-managers/line-chart-manager";
-import * as RadarChartManager from "./scripts/charts-managers/radar-chart-manager";
-import * as StackedBarChartManager from "./scripts/charts-managers/stacked-bar-chart-manager";
-import * as PlayerHelper from "./scripts/players-helper";
+import { BarChartManager } from "./scripts/charts-managers/bar-chart-manager";
+import { LineChartManager } from "./scripts/charts-managers/line-chart-manager";
+import { RadarChartManager } from "./scripts/charts-managers/radar-chart-manager";
+import { StackedBarChartManager } from "./scripts/charts-managers/stacked-bar-chart-manager";
+import { playerHelperSingleton } from "./scripts/players-helper";
 
 /**
  * @file This file is the entry-point for the the code of the project.
@@ -15,10 +15,10 @@ import * as PlayerHelper from "./scripts/players-helper";
 main();
 
 async function main() {
-  await PlayerHelper.playerHelperSingleton.getSummaryData();
+  await playerHelperSingleton.getSummaryData();
 
-  const radarChartManager = new RadarChartManager.RadarChartManager();
-  const stackedBarChartManager = new StackedBarChartManager.StackedBarChartManager();
-  const barChartManager = new BarChartManager.BarChartManager();
-  const lineChartManager = new LineChartManager.LineChartManager();
+  const radarChartManager = new RadarChartManager();
+  const stackedBarChartManager = new StackedBarChartManager();
+  const barChartManager = new BarChartManager();
+  const lineChartManager = new LineChartManager();
 }
