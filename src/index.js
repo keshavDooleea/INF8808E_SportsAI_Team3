@@ -1,5 +1,3 @@
-"use strict";
-
 const { playerHelperSingleton } = require("./scripts/players-helper");
 const { RadarChartManager } = require("./scripts/charts-managers/radar-chart-manager");
 const { StackedBarChartManager } = require("./scripts/charts-managers/stacked-bar-chart-manager");
