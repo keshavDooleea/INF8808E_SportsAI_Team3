@@ -154,13 +154,21 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   setGraphLabels() {
-    // label of y axis
-    this.svg
-      .append("g")
-      .append("text")
-      .text(this.currentState.labelY)
-      .attr("id", "line-chart-y-label")
-      .attr("transform", `translate(${this.margin.left / 2}, ${(this.margin.top + this.svgHeight) / 2}), rotate(-90)`);
+    // break each word in order to display each one in a line for horizontal text
+    const labelsY = this.currentState.labelY.split(" ");
+    const textHeight = 40;
+
+    // display each word in a new line
+    labelsY.forEach((label, index) => {
+      const positionY = (this.margin.top + this.svgHeight + textHeight * index) / 2;
+
+      this.svg
+        .append("g")
+        .append("text")
+        .text(label)
+        .attr("id", "line-chart-y-label")
+        .attr("transform", `translate(0, ${positionY - (textHeight * labelsY.length) / 2})`);
+    });
 
     // label of x axis
     this.svg
@@ -168,7 +176,7 @@ export class LineChartManager extends AbstractChartManager {
       .append("text")
       .text("Month of the season")
       .attr("class", "axis-text")
-      .attr("transform", `translate(${(this.svgWidth - this.margin.right) / 2}, ${this.svgHeight - this.margin.bottom})`);
+      .attr("transform", `translate(${this.margin.left * 2}, ${this.svgHeight - this.margin.bottom})`);
   }
 
   setTitle() {
