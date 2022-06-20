@@ -51,6 +51,7 @@ nav {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  padding: var(--margin) 0;
 }
 
 #sports-ai-logo {
@@ -76,6 +77,11 @@ nav {
 
 .dots-container .dot.active {
   background-color: #020202;
+}
+
+#chart-nb {
+  opacity: 0.5;
+  font-size: 2.4rem;
 }
 
 main section {
