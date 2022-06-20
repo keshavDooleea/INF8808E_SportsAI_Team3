@@ -1,10 +1,10 @@
 "use strict";
 
-import { BarChartManager } from "./scripts/charts-managers/bar-chart-manager";
-import { LineChartManager } from "./scripts/charts-managers/line-chart-manager";
-import { RadarChartManager } from "./scripts/charts-managers/radar-chart-manager";
-import { StackedBarChartManager } from "./scripts/charts-managers/stacked-bar-chart-manager";
 const { playerHelperSingleton } = require("./scripts/players-helper");
+const { RadarChartManager } = require("./scripts/charts-managers/radar-chart-manager");
+const { StackedBarChartManager } = require("./scripts/charts-managers/stacked-bar-chart-manager");
+const { BarChartManager } = require("./scripts/charts-managers/bar-chart-manager");
+const { LineChartManager } = require("./scripts/charts-managers/line-chart-manager");
 
 /**
  * @file This file is the entry-point for the the code of the project.
