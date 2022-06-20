@@ -154,6 +154,11 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   setGraphLabels() {
+    this.setLabelY();
+    this.setLabelX();
+  }
+
+  setLabelY() {
     // break each word in order to display each one in a line for horizontal text
     const labelsY = this.currentState.labelY.split(" ");
     const textHeight = 40;
@@ -166,10 +171,12 @@ export class LineChartManager extends AbstractChartManager {
         .append("g")
         .append("text")
         .text(label)
-        .attr("id", "line-chart-y-label")
+        .attr("class", "line-chart-label-y")
         .attr("transform", `translate(0, ${positionY - (textHeight * labelsY.length) / 2})`);
     });
+  }
 
+  setLabelX() {
     // label of x axis
     this.svg
       .append("g")
@@ -236,7 +243,6 @@ export class LineChartManager extends AbstractChartManager {
   refreshViews() {
     this.svg.select("#line-chart-button text").text(`Show ${this.buttonText}`);
     this.svg.select("#line-chart-view-title").text(this.currentState.view);
-    this.svg.select("#line-chart-y-label").text(this.currentState.labelY);
 
     this.svg.transition().duration(this.yAxisLabelsDuration).select("#line-chart-y-domain").call(d3.axisLeft(this.getScaleY()));
 
@@ -244,6 +250,9 @@ export class LineChartManager extends AbstractChartManager {
     this.svg.selectAll(".line-chart-path").remove();
     this.svg.selectAll(".line-chart-horizontal-lines").remove();
     this.svg.selectAll(".line-chart-dots").remove();
+    this.svg.selectAll(".line-chart-label-y").remove();
+
+    this.setLabelY();
     this.drawLines();
   }
 
