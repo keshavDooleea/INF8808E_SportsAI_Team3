@@ -16,8 +16,8 @@ export class LineChartManager extends AbstractChartManager {
     this.maxGoals = this.getMaxNbStat(true);
     this.maxAssists = this.getMaxNbStat(false);
 
-    this.yAxisDuration = 1500;
-    this.linesDuration = 2500;
+    this.yAxisLabelsDuration = 1500;
+    this.playerLinesDuration = 2500;
   }
 
   /**
@@ -205,7 +205,7 @@ export class LineChartManager extends AbstractChartManager {
     this.svg.select("#line-chart-view-title").text(this.currentState.view);
     this.svg.select("#line-chart-y-label").text(this.currentState.labelY);
 
-    this.svg.transition().duration(this.yAxisDuration).select("#line-chart-y-domain").call(d3.axisLeft(this.getScaleY()));
+    this.svg.transition().duration(this.yAxisLabelsDuration).select("#line-chart-y-domain").call(d3.axisLeft(this.getScaleY()));
 
     // clear all svg path before redrawing
     this.svg.selectAll(".line-chart-path").remove();
@@ -213,12 +213,24 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   drawLines() {
-    this.drawLine(this.maneData, this.playerHelperSingleton.maneColor);
-    this.drawLine(this.benzemaData, this.playerHelperSingleton.benzemaColor);
-    this.drawLine(this.mbappeData, this.playerHelperSingleton.mbappeColor);
+    this.drawHorizontalLines();
+    this.drawPlayerLine(this.maneData, this.playerHelperSingleton.maneColor);
+    this.drawPlayerLine(this.benzemaData, this.playerHelperSingleton.benzemaColor);
+    this.drawPlayerLine(this.mbappeData, this.playerHelperSingleton.mbappeColor);
   }
 
-  drawLine(playerData, playerColor) {
+  /**
+   * Draw horizontal lines aligned with y labels/ticks
+   */
+  drawHorizontalLines() {}
+
+  /**
+   * Draw the main line of the visualizaation
+   *
+   * @param {*} playerData the data of the player to display and draw
+   * @param {*} playerColor the color of the line
+   */
+  drawPlayerLine(playerData, playerColor) {
     const xOffsetIntervals = this.width / this.seasonMonths.length / 2;
     const yOffsetIntervals = this.height / this.currentState.domainY.length / 2;
 
@@ -243,15 +255,15 @@ export class LineChartManager extends AbstractChartManager {
             return this.getScaleY()(value);
           })(playerData);
       })
-      .call((path) => this.transition(path));
+      .call((path) => this.transition(path, this.playerLinesDuration));
   }
 
-  transition(path) {
+  transition(path, duration) {
     if (!path) return;
 
     path
       .transition()
-      .duration(this.linesDuration)
+      .duration(duration)
       .attrTween("stroke-dasharray", function () {
         const pathLength = path.node().getTotalLength();
         const pathInterpolation = d3.interpolateString("0," + pathLength, pathLength + "," + pathLength);
