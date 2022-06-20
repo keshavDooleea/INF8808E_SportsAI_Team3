@@ -32,3 +32,7 @@
 .legend .legendTitle {
   fill: var(--textColor);
 }
+
+.common-transition-3 {
+  transition: 0.3s;
+}

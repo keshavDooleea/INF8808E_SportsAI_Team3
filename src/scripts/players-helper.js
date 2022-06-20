@@ -19,6 +19,18 @@ class PlayersHelperClass {
     return "#FFA056";
   }
 
+  get maneShortName() {
+    return "sadioMane";
+  }
+
+  get benzemaShortName() {
+    return "karimBenzema";
+  }
+
+  get mbappeShortName() {
+    return "kylianMbappe";
+  }
+
   get playersAttributes() {
     return [
       {

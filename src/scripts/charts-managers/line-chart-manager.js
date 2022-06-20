@@ -9,9 +9,9 @@ import { AbstractChartManager } from "./abstract-chart-manager";
  */
 export class LineChartManager extends AbstractChartManager {
   preprocess() {
-    this.maneData = this.preprocessPlayer(this.playerHelperSingleton.maneSummaryData);
-    this.benzemaData = this.preprocessPlayer(this.playerHelperSingleton.benzemaSummaryData);
-    this.mbappeData = this.preprocessPlayer(this.playerHelperSingleton.mbappeSummaryData);
+    this.maneData = this.preprocessPlayer(this.playerHelperSingleton.maneSummaryData, this.playerHelperSingleton.maneShortName);
+    this.benzemaData = this.preprocessPlayer(this.playerHelperSingleton.benzemaSummaryData, this.playerHelperSingleton.benzemaShortName);
+    this.mbappeData = this.preprocessPlayer(this.playerHelperSingleton.mbappeSummaryData, this.playerHelperSingleton.mbappeShortName);
 
     this.maxGoals = this.getMaxNbStat(true);
     this.maxAssists = this.getMaxNbStat(false);
@@ -28,10 +28,10 @@ export class LineChartManager extends AbstractChartManager {
    * @param {object[]} playerData the player's data parsed from CSV file
    * @returns {object[]} The preprocessed data
    */
-  preprocessPlayer(playerData) {
+  preprocessPlayer(playerData, playerName) {
     const monthlyObj = {};
 
-    playerData.forEach((element) => {
+    playerData.forEach((element, index) => {
       const monthNumeric = getMonthInNumeric(element.Date);
       const monthYear = getMonthYear(element.Date);
 
@@ -39,6 +39,8 @@ export class LineChartManager extends AbstractChartManager {
         // new month found -> set a new month as key to the monthlyObj and set statistics as values
         monthlyObj[monthNumeric] = {
           monthYear,
+          playerName,
+          id: `${playerName}-${index}`,
           goals: Number(element.Gls),
           shots: Number(element.Sh),
           assists: Number(element.Ast),
@@ -220,6 +222,7 @@ export class LineChartManager extends AbstractChartManager {
     // clear all svg path before redrawing
     this.svg.selectAll(".line-chart-path").remove();
     this.svg.selectAll(".line-chart-horizontal-lines").remove();
+    this.svg.selectAll(".line-chart-dots").remove();
     this.drawLines();
   }
 
@@ -228,6 +231,11 @@ export class LineChartManager extends AbstractChartManager {
     this.drawPlayerLine(this.maneData, this.playerHelperSingleton.maneColor);
     this.drawPlayerLine(this.benzemaData, this.playerHelperSingleton.benzemaColor);
     this.drawPlayerLine(this.mbappeData, this.playerHelperSingleton.mbappeColor);
+
+    // show dots only after animations have completed
+    setTimeout(() => {
+      this.svg.selectAll(".line-chart-dots").attr("opacity", 1);
+    }, this.playerLinesDuration);
   }
 
   /**
@@ -254,6 +262,12 @@ export class LineChartManager extends AbstractChartManager {
     }
   }
 
+  getLineYValue(data) {
+    const statProperty = this.isGoalView ? data.goals : data.assists;
+    const value = Number(statProperty) ? Number(statProperty) : 0;
+    return this.getScaleY()(value);
+  }
+
   /**
    * Draw the main line of the visualizaation
    *
@@ -261,10 +275,15 @@ export class LineChartManager extends AbstractChartManager {
    * @param {*} playerColor the color of the line
    */
   drawPlayerLine(playerData, playerColor) {
+    const baseRadius = 3;
+    const hoveredRadius = 5;
+    const svgTransform = `translate(${this.margin.left + this.xOffsetIntervals}, ${this.margin.top + this.yOffsetIntervals - this.lineSize})`;
+
+    // draw lines representing the statistics
     this.svg
       .append("path")
       .attr("class", "line-chart-path")
-      .attr("transform", `translate(${this.margin.left + this.xOffsetIntervals}, ${this.margin.top + this.yOffsetIntervals - this.lineSize})`)
+      .attr("transform", svgTransform)
       .attr("fill", "none")
       .attr("stroke", playerColor)
       .attr("stroke-width", this.lineSize)
@@ -272,17 +291,33 @@ export class LineChartManager extends AbstractChartManager {
       .attr("d", () => {
         return d3
           .line()
-          .curve(d3.curveBasis) // curveCatmullRomOpen
-          .x((data) => {
-            return this.getScaleX()(data.monthYear);
-          })
-          .y((data) => {
-            const statProperty = this.isGoalView ? data.goals : data.assists;
-            const value = Number(statProperty) ? Number(statProperty) : 0;
-            return this.getScaleY()(value);
-          })(playerData);
+          .x((data) => this.getScaleX()(data.monthYear))
+          .y((data) => this.getLineYValue(data))(playerData);
       })
       .call((path) => this.lineAnimation(path, this.playerLinesDuration));
+
+    // draw dots at the end of each line sections
+    this.svg
+      .selectAll("line-chart-path dots")
+      .data(playerData)
+      .enter()
+      .append("circle")
+      .attr("class", "line-chart-dots common-transition-3")
+      .attr("id", (data) => data.id)
+      .attr("cursor", "pointer")
+      .attr("fill", playerColor)
+      .attr("stroke", "#fff")
+      .attr("r", baseRadius)
+      .attr("opacity", 0)
+      .attr("transform", svgTransform)
+      .attr("cx", (data) => this.getScaleX()(data.monthYear))
+      .attr("cy", (data) => this.getLineYValue(data))
+      .on("mouseover", (data) => {
+        this.svg.select(`.line-chart-dots#${data.id}`).attr("r", hoveredRadius);
+      })
+      .on("mouseleave", (data) => {
+        this.svg.select(`.line-chart-dots#${data.id}`).attr("r", baseRadius);
+      });
   }
 
   lineAnimation(path, duration) {
