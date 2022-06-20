@@ -103,6 +103,7 @@ export class LineChartManager extends AbstractChartManager {
     this.drawLines();
     this.drawLegend();
     this.drawButton();
+    this.drawTip();
   }
 
   get height() {
@@ -182,6 +183,18 @@ export class LineChartManager extends AbstractChartManager {
   drawLegend() {
     const legend = this.createPlayersLegend(this.svg, this.svgWidth - this.chartHelper.buttonWidth, this.margin.top, this.chartHelper.legendLineSymbol);
     legend.attr("id", "line-chart-legend");
+  }
+
+  toolTipContent(playerData) {
+    if (this.isGoalView) {
+      return `<p>Goals: ${playerData.goals}</p>`;
+    } else {
+      return `<p>Assists: ${playerData.assists}</p>`;
+    }
+  }
+
+  drawTip() {
+    this.tip = this.chartHelper.createTip(this.svg, (playerData) => this.toolTipContent(playerData));
   }
 
   drawButton() {
@@ -312,11 +325,13 @@ export class LineChartManager extends AbstractChartManager {
       .attr("transform", svgTransform)
       .attr("cx", (data) => this.getScaleX()(data.monthYear))
       .attr("cy", (data) => this.getLineYValue(data))
-      .on("mouseover", (data) => {
+      .on("mouseover", (data, index, element) => {
         this.svg.select(`.line-chart-dots#${data.id}`).attr("r", hoveredRadius);
+        this.tip.show(data, element[index]);
       })
       .on("mouseleave", (data) => {
         this.svg.select(`.line-chart-dots#${data.id}`).attr("r", baseRadius);
+        this.tip.hide();
       });
   }
 

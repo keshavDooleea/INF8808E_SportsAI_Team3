@@ -1,4 +1,5 @@
 import d3Legend from "d3-svg-legend";
+import d3Tip from "d3-tip";
 
 class ChartHelperClass {
   get buttonWidth() {
@@ -92,6 +93,24 @@ class ChartHelperClass {
       case this.legendLineSymbol:
         return d3.symbol().type(d3.symbolSquare).size(symbolSize);
     }
+  }
+
+  /**
+   * Common logic to create a tip panel
+   * Note: The position is automatically handled by D3
+   *
+   * @param {*} svg the svg element of the visualization
+   * @param {*} contentCallbackFunction the function which is called on hovered to display data passed
+   * @returns
+   */
+  createTip(svg, contentCallbackFunction) {
+    const tip = d3Tip()
+      .attr("class", "tip-panel")
+      .html((data) => contentCallbackFunction(data));
+
+    svg.call(tip);
+
+    return tip;
   }
 }
 
