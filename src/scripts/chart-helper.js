@@ -59,11 +59,13 @@ class ChartHelperClass {
    * @param {*} translateX
    * @param {*} translateY
    * @param {*} symbol the symbol of the legend's scale ('square', 'line')
+   * @param {*} domainNames names of each legend item
+   * @param {*} domainColors colors of each legend symbol
    * @param {*} playersAttributes
    * @returns
    */
-  createLegend(svg, translateX, translateY, symbol, playersAttributes) {
-    const colorScale = d3.scaleOrdinal(playersAttributes.colors).domain(playersAttributes.names);
+  createLegend(svg, translateX, translateY, symbol, domainNames, domainColors) {
+    const colorScale = d3.scaleOrdinal(domainColors).domain(domainNames);
 
     // customize a d3 symbol
     const legendSymbol = this.getLegendSymbolFactory(symbol);
@@ -82,13 +84,13 @@ class ChartHelperClass {
    * @returns
    */
   getLegendSymbolFactory(symbol) {
-    const circleSize = 150;
+    const symbolSize = 150;
 
     switch (symbol) {
       case this.legendSquareSymbol:
-        return d3.symbol().type(d3.symbolSquare).size(circleSize);
+        return d3.symbol().type(d3.symbolSquare).size(symbolSize);
       case this.legendLineSymbol:
-        return d3.symbol().type(d3.symbolSquare).size(circleSize);
+        return d3.symbol().type(d3.symbolSquare).size(symbolSize);
     }
   }
 }

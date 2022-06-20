@@ -20,10 +20,36 @@ class PlayersHelperClass {
   }
 
   get playersAttributes() {
-    return {
-      names: ["Sadio Mané", "Karim Benzema", "Kylian Mbappé"],
-      colors: [this.maneColor, this.benzemaColor, this.mbappeColor],
-    };
+    return [
+      {
+        name: "Sadio Mané",
+        color: this.maneColor,
+      },
+      {
+        name: "Karim Benzema",
+        color: this.benzemaColor,
+      },
+      {
+        name: "Kylian Mbappé",
+        color: this.mbappeColor,
+      },
+    ];
+  }
+
+  /**
+   *
+   * @returns {object[]} Array of all 3 players names
+   */
+  get playersName() {
+    return this.playersAttributes.map((player) => player.name);
+  }
+
+  /**
+   *
+   * @returns {object[]} Array of all 3 players colors
+   */
+  get playersColor() {
+    return this.playersAttributes.map((player) => player.color);
   }
 }
 

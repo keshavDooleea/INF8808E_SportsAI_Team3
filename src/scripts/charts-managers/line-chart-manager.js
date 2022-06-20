@@ -64,10 +64,10 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   getMaxNbStat(isMaxGoals) {
-    const players = [this.maneData, this.benzemaData, this.mbappeData];
+    const playersData = [this.maneData, this.benzemaData, this.mbappeData];
 
     // get max stat for every player
-    const allPlayersMax = players.map((player) =>
+    const allPlayersMax = playersData.map((player) =>
       d3.max(player, (playerData) => {
         return isMaxGoals ? Number(playerData.goals) : Number(playerData.assists);
       })
@@ -168,7 +168,7 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   drawLegend() {
-    const legend = this.createLegend(this.svg, this.svgWidth - this.chartHelper.buttonWidth, this.margin.top, this.chartHelper.legendLineSymbol);
+    const legend = this.createPlayersLegend(this.svg, this.svgWidth - this.chartHelper.buttonWidth, this.margin.top, this.chartHelper.legendLineSymbol);
     legend.attr("id", "line-chart-legend");
   }
 
