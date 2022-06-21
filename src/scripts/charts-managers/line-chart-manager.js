@@ -93,6 +93,7 @@ export class LineChartManager extends AbstractChartManager {
       right: 150,
       bottom: 30,
       left: 60,
+      leftPadding: 15,
     };
 
     this.toggleState();
@@ -111,7 +112,11 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   get width() {
-    return this.svgWidth - this.margin.left - this.margin.right;
+    return this.svgWidth - this.margin.left - this.margin.right - this.margin.leftPadding;
+  }
+
+  get leftAxisPosition() {
+    return this.margin.left + this.margin.leftPadding;
   }
 
   get isGoalView() {
@@ -146,11 +151,11 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   setAxisX() {
-    this.svg.append("g").attr("class", "margin-bottom-20").attr("transform", `translate(${this.margin.left}, ${this.height})`).call(d3.axisBottom(this.getScaleX()));
+    this.svg.append("g").attr("class", "margin-bottom-20").attr("transform", `translate(${this.leftAxisPosition}, ${this.height})`).call(d3.axisBottom(this.getScaleX()));
   }
 
   setAxisY() {
-    this.svg.append("g").attr("id", "line-chart-y-domain").attr("transform", `translate(${this.margin.left}, ${this.margin.top})`).call(d3.axisLeft(this.getScaleY()));
+    this.svg.append("g").attr("id", "line-chart-y-domain").attr("transform", `translate(${this.leftAxisPosition}, ${this.margin.top})`).call(d3.axisLeft(this.getScaleY()));
   }
 
   setGraphLabels() {
@@ -182,8 +187,7 @@ export class LineChartManager extends AbstractChartManager {
       .append("g")
       .append("text")
       .text("Month of the season")
-      .attr("class", "axis-text")
-      .attr("transform", `translate(${this.margin.left * 2}, ${this.svgHeight - this.margin.bottom})`);
+      .attr("transform", `translate(${this.leftAxisPosition}, ${this.svgHeight - this.margin.bottom})`);
   }
 
   setTitle() {
@@ -192,7 +196,7 @@ export class LineChartManager extends AbstractChartManager {
     title.append("text").attr("fill", TEXT_COLORS.secondaryColor).text("Displaying: ");
     title.append("text").attr("id", "line-chart-view-title").text(this.currentState.view).attr("transform", "translate(65, 0)").attr("font-size", 18);
 
-    title.attr("transform", `translate(${this.margin.left},  ${this.margin.top / 2})`);
+    title.attr("transform", `translate(${this.leftAxisPosition},  ${this.margin.top / 2})`);
   }
 
   drawLegend() {
@@ -287,7 +291,7 @@ export class LineChartManager extends AbstractChartManager {
         .attr("y1", positionY)
         .attr("x2", this.width)
         .attr("y2", positionY)
-        .attr("transform", `translate(${this.margin.left}, ${this.margin.top})`)
+        .attr("transform", `translate(${this.leftAxisPosition}, ${this.margin.top})`)
         .call((path) => this.animateDashOffset(path, this.horizontalDashOffsetDuration * (i + 1)));
     }
   }
@@ -307,7 +311,7 @@ export class LineChartManager extends AbstractChartManager {
   drawPlayerLine(playerData, playerColor) {
     const baseRadius = 3;
     const hoveredRadius = 5;
-    const svgTransform = `translate(${this.margin.left + this.xOffsetIntervals}, ${this.margin.top + this.yOffsetIntervals - this.lineSize})`;
+    const svgTransform = `translate(${this.leftAxisPosition + this.xOffsetIntervals}, ${this.margin.top + this.yOffsetIntervals - this.lineSize})`;
 
     // draw lines representing the statistics
     this.svg
