@@ -130,7 +130,7 @@ var scrollOffset = 1;
 main();
 
 function main() {
-  activateDot(3); // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
+  activateDot(0); // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
 
   var sectionsBoundingBoxes = sectionIds.map(function (sectionId, index) {
     return {
@@ -203,7 +203,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61572" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62114" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
