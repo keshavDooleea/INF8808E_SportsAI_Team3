@@ -20,7 +20,6 @@ export class LineChartManager extends AbstractChartManager {
     this.maxAssists = this.getMaxNbStat(false);
 
     this.lineSize = 2;
-    this.isGoalScoredChecked = false;
     this.yAxisLabelsDuration = 1500;
     this.playerLinesDuration = 2500;
     this.horizontalDashOffsetDuration = 250;
@@ -235,7 +234,6 @@ export class LineChartManager extends AbstractChartManager {
    * show goals scored on checked
    */
   onCheckboxChecked() {
-    this.isGoalScoredChecked = true;
     this.lineChartState.setGoalConvertionRate();
     this.refreshViews();
   }
@@ -244,7 +242,6 @@ export class LineChartManager extends AbstractChartManager {
    * show goals conversion rate on unchecked
    */
   onCheckboxUnchecked() {
-    this.isGoalScoredChecked = false;
     this.lineChartState.setGoalsScored();
     this.refreshViews();
   }
@@ -259,7 +256,7 @@ export class LineChartManager extends AbstractChartManager {
       "Toggle Goals chart",
       "Goals Scored",
       "Goals Ratio",
-      this.isGoalScoredChecked,
+      this.lineChartState.isGoalScoredChecked,
       () => this.onCheckboxChecked(),
       () => this.onCheckboxUnchecked()
     );
@@ -279,7 +276,7 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   toggleState() {
-    this.lineChartState.updateState(this.isGoalScoredChecked);
+    this.lineChartState.updateState();
     this.lineChartState.isGoalView ? this.drawCheckbox() : this.svg.select("#line-chart-checkbox").remove();
   }
 

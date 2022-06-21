@@ -15,6 +15,7 @@ export class LineChartState {
     this.maxAssists = maxAssists;
 
     this.currentState = this.states.goalsScored;
+    this.isGoalScoredChecked = false;
   }
 
   /**
@@ -79,6 +80,7 @@ export class LineChartState {
    */
   setGoalConvertionRate() {
     this.currentState = this.states.goalsConversionRate;
+    this.isGoalScoredChecked = true;
   }
 
   /**
@@ -86,6 +88,7 @@ export class LineChartState {
    */
   setGoalsScored() {
     this.currentState = this.states.goalsScored;
+    this.isGoalScoredChecked = false;
   }
 
   /**
@@ -97,16 +100,14 @@ export class LineChartState {
 
   /**
    * Updates state based on current view
-   *
-   * @param {boolean} isGoalScoredChecked if line chart is displaying the goals scored view or not
    */
-  updateState(isGoalScoredChecked) {
+  updateState() {
     if (this.isGoalView) {
       this.setAssists();
       return;
     }
 
-    isGoalScoredChecked ? this.setGoalConvertionRate() : this.setGoalsScored();
+    this.isGoalScoredChecked ? this.setGoalConvertionRate() : this.setGoalsScored();
   }
 
   /**
