@@ -193,10 +193,25 @@ export class LineChartManager extends AbstractChartManager {
   setTitle() {
     const title = this.svg.append("g").attr("id", "line-chart-title");
 
-    title.append("text").attr("fill", TEXT_COLORS.secondaryColor).text("Displaying: ");
+    title.append("text").attr("id", "line-chart-view-main-title").attr("fill", TEXT_COLORS.secondaryColor).text("Displaying: ");
     title.append("text").attr("id", "line-chart-view-title").text(this.currentState.view).attr("transform", "translate(65, 0)").attr("font-size", 18);
-
+    title.append("text").attr("fill", TEXT_COLORS.secondaryColor).attr("id", "line-chart-title-details").text("line chart for the 2021/2022 season");
     title.attr("transform", `translate(${this.leftAxisPosition},  ${this.margin.top / 2})`);
+
+    this.updateTitleDetailsPosition();
+  }
+
+  /**
+   * Position title details when the view changes
+   */
+  updateTitleDetailsPosition() {
+    const leftOffset = 6;
+
+    this.svg.select("#line-chart-title-details").attr("transform", () => {
+      const titleWidth = this.svg.select("#line-chart-view-main-title").node().getBoundingClientRect().width;
+      const titleViewWidth = this.svg.select("#line-chart-view-title").node().getBoundingClientRect().width;
+      return `translate(${titleWidth + titleViewWidth + leftOffset}, 0)`;
+    });
   }
 
   drawLegend() {
@@ -257,6 +272,7 @@ export class LineChartManager extends AbstractChartManager {
     this.svg.selectAll(".line-chart-label-y").remove();
 
     this.setLabelY();
+    this.updateTitleDetailsPosition();
     this.drawLines();
   }
 
