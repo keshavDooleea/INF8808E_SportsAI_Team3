@@ -136,6 +136,19 @@ export class LineChartState {
   }
 
   /**
+   * Calculates the goal scored ratio based on total goals scored and total shots taken
+   *
+   * @param {object} playesData data of the current player to calculate goal ratio
+   * @returns {string} the calculated goals ratio
+   */
+  calculateGoalRatio(playerData) {
+    const shotsTaken = playerData.shots === 0 ? playerData.goals : playerData.shots;
+    const goalRatio = (playerData.goals / shotsTaken) * 100;
+
+    return goalRatio.toFixed(2);
+  }
+
+  /**
    * Get the data value to display based on the current state
    *
    * @param {object} playerData the data to be displayed
@@ -154,8 +167,8 @@ export class LineChartState {
         break;
 
       case this.states.goalsConversionRate.view:
-        const shotsTaken = playerData.shots === 0 ? playerData.goals : playerData.shots;
-        statProperty = Math.min(((playerData.goals / shotsTaken) * 100).toFixed(), 100);
+        const goalRatio = this.calculateGoalRatio(playerData);
+        statProperty = Math.min(goalRatio, 100);
         break;
     }
 
@@ -172,12 +185,6 @@ export class LineChartState {
   getToolTipState(playerData) {
     let htmlContent = "";
 
-    if (playerData.shots === 0) {
-      playerData.shots = playerData.goals;
-    }
-
-    const goalRatio = (playerData.goals / playerData.shots) * 100;
-
     switch (this.currentState.view) {
       case this.states.assists.view:
         htmlContent = `<p>Assists: ${playerData.assists}</p>`;
@@ -188,7 +195,7 @@ export class LineChartState {
         htmlContent = `
             <p>Total shots : ${playerData.shots}</p>
             <p>Goals scored: ${playerData.goals}</p>
-            <p>Goals ratio : ${goalRatio.toFixed(2)} %</p>`;
+            <p>Goals ratio : ${this.calculateGoalRatio(playerData)} %</p>`;
         break;
     }
 
