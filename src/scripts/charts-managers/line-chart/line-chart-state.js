@@ -10,9 +10,13 @@ import { rangeInterval } from "../../utils/utils";
  * @class LineChartState
  */
 export class LineChartState {
-  constructor(maxGoals, maxAssists) {
-    this.maxGoals = maxGoals;
-    this.maxAssists = maxAssists;
+  /**
+   *
+   * @param {object} playersData data of all three players
+   */
+  constructor(playersData) {
+    this.maxGoals = this.getMaxNbStat(true, playersData);
+    this.maxAssists = this.getMaxNbStat(false, playersData);
 
     this.currentState = this.states.goalsScored;
     this.isGoalScoredChecked = false;
@@ -43,6 +47,27 @@ export class LineChartState {
         scaleY: d3.scaleLinear(),
       },
     };
+  }
+
+  /**
+   * Gets either the maximum goals scored or the maximum assists out of all three players
+   *
+   * @param {boolean} isMaxGoals whether to compare goals or assists
+   * @param {object} playersData data of all three players
+   * @returns {number} the maximum value for the statistic
+   */
+  getMaxNbStat(isMaxGoals, playersData) {
+    // get max stat for every player
+    const allPlayersMax = playersData.map((player) =>
+      d3.max(player, (playerData) => {
+        return isMaxGoals ? Number(playerData.goals) : Number(playerData.assists);
+      })
+    );
+
+    // get the max out of all three players
+    const maxStat = d3.max(allPlayersMax);
+
+    return maxStat;
   }
 
   /**
@@ -113,7 +138,7 @@ export class LineChartState {
   /**
    * Get the data value to display based on the current state
    *
-   * @param {*} playerData the data to be displayed
+   * @param {object} playerData the data to be displayed
    * @returns {number} the calculated value to display
    */
   getStateValue(playerData) {
@@ -141,7 +166,7 @@ export class LineChartState {
   /**
    * Builds the content of the tip based on the current state
    *
-   * @param {*} playerData the data to be displayed
+   * @param {object} playerData the data to be displayed
    * @returns {string} the html result to display in the tip on mouse hover
    */
   getToolTipState(playerData) {

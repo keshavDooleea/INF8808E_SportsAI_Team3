@@ -16,19 +16,17 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   initializeVariables() {
-    this.maxGoals = this.getMaxNbStat(true);
-    this.maxAssists = this.getMaxNbStat(false);
-
     this.lineSize = 2;
     this.yAxisLabelsDuration = 1500;
     this.playerLinesDuration = 2500;
     this.horizontalDashOffsetDuration = 250;
 
-    this.lineChartState = new LineChartState(this.maxGoals, this.maxAssists);
+    const playersData = [this.maneData, this.benzemaData, this.mbappeData];
+    this.lineChartState = new LineChartState(playersData);
   }
 
   /**
-   * Calculates the number of goals, assists and shots taken during a month
+   * Calculates the number of goals, assists and shots taken during a month for a player
    *
    * @param {object[]} playerData the player's data parsed from CSV file
    * @returns {object[]} The preprocessed data
@@ -71,22 +69,6 @@ export class LineChartManager extends AbstractChartManager {
     }
 
     return montlyArray;
-  }
-
-  getMaxNbStat(isMaxGoals) {
-    const playersData = [this.maneData, this.benzemaData, this.mbappeData];
-
-    // get max stat for every player
-    const allPlayersMax = playersData.map((player) =>
-      d3.max(player, (playerData) => {
-        return isMaxGoals ? Number(playerData.goals) : Number(playerData.assists);
-      })
-    );
-
-    // get the max out of all three players
-    const maxStat = d3.max(allPlayersMax);
-
-    return maxStat;
   }
 
   initializeCharts() {
