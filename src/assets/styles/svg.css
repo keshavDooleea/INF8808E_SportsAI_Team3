@@ -55,5 +55,8 @@
 .tip-subtitle {
   text-align: center;
   color: #ddd;
-  margin-bottom: 8px;
+}
+
+.tip-content {
+  margin-top: 8px;
 }

@@ -236,7 +236,7 @@ export class LineChartManager extends AbstractChartManager {
     return `<div>
       <p class="tip-title">${playerData.playerName}</p>
       <p class="tip-subtitle">${playerData.monthYear}</p>
-      ${htmlContent}
+      <div class="tip-content">${htmlContent}</div>
     </div>`;
   }
 
