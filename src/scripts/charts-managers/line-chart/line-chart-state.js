@@ -193,7 +193,7 @@ export class LineChartState {
       case this.states.goalsScored.view:
       case this.states.goalsConversionRate.view:
         htmlContent = `
-            <p>Total shots : ${playerData.shots}</p>
+            <p>Total shots : ${playerData.shots || playerData.goals}</p>
             <p>Goals scored: ${playerData.goals}</p>
             <p>Goals ratio : ${this.calculateGoalRatio(playerData)} %</p>`;
         break;
