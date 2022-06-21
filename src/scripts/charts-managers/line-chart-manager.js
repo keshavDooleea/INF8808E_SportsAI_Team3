@@ -17,6 +17,7 @@ export class LineChartManager extends AbstractChartManager {
     this.maxAssists = this.getMaxNbStat(false);
 
     this.lineSize = 2;
+    this.isGoalScoredChecked = false;
     this.yAxisLabelsDuration = 1500;
     this.playerLinesDuration = 2500;
     this.horizontalDashOffsetDuration = 250;
@@ -105,6 +106,7 @@ export class LineChartManager extends AbstractChartManager {
     this.drawLines();
     this.drawLegend();
     this.drawButton();
+    this.drawCheckbox();
     this.drawTip();
   }
 
@@ -138,6 +140,14 @@ export class LineChartManager extends AbstractChartManager {
 
   get xOffsetIntervals() {
     return this.width / this.seasonMonths.length / 2;
+  }
+
+  get legendHeight() {
+    return this.svg.select("#line-chart-legend").node().getBoundingClientRect().height;
+  }
+
+  get buttonHeight() {
+    return this.svg.select("#line-chart-button").node().getBoundingClientRect().height;
   }
 
   getScaleX() {
@@ -250,9 +260,39 @@ export class LineChartManager extends AbstractChartManager {
     this.tip = this.chartHelper.createTip(this.svg, (playerData) => this.toolTipContent(playerData));
   }
 
+  /**
+   * show goals scored on checked
+   */
+  onCheckboxChecked() {
+    console.log("checked");
+    this.isGoalScoredChecked = true;
+  }
+
+  /**
+   * show goals conversion rate on unchecked
+   */
+  onCheckboxUnchecked() {
+    console.log("un checked");
+    this.isGoalScoredChecked = false;
+  }
+
+  drawCheckbox() {
+    const heightOffset = this.legendHeight + this.buttonHeight + this.margin.top + 50;
+
+    this.chartHelper.createCheckbox(
+      this.svg,
+      this.svgWidth - this.chartHelper.buttonWidth,
+      heightOffset,
+      "Toggle Goals chart",
+      "Goals Scored",
+      "Goals Ratio",
+      () => this.onCheckboxChecked(),
+      () => this.onCheckboxUnchecked()
+    );
+  }
+
   drawButton() {
-    const legendHeight = this.svg.select("#line-chart-legend").node().getBoundingClientRect().height;
-    const heightOffset = legendHeight + this.margin.top + 10;
+    const heightOffset = this.legendHeight + this.margin.top + 10;
     const button = this.chartHelper.createButton(this.svg, this.svgWidth - this.chartHelper.buttonWidth, heightOffset, `Show ${this.buttonText}`);
     button.attr("id", "line-chart-button");
 

@@ -9,6 +9,11 @@
   height: 90%;
 }
 
+.secondary-color {
+  fill: var(--textColor);
+  color: var(--textColor);
+}
+
 .axis-text {
   transform-origin: center;
   transform-box: fill-box;
@@ -25,8 +30,14 @@
 .button-rect {
   fill: #f4f6f4;
   cursor: pointer;
-  stroke: #362023;
+  stroke: var(--textColor);
   rx: 3;
+}
+
+.checkbox-rect {
+  fill: #f4f6f4;
+  cursor: pointer;
+  stroke: var(--textColor);
 }
 
 .legend .legendTitle {
@@ -34,7 +45,7 @@
 }
 
 .common-transition-3 {
-  transition: 0.3s;
+  transition: 0.3s ease-in;
 }
 
 .tip-panel {
