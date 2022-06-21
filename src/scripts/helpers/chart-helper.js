@@ -103,12 +103,14 @@ class ChartHelperClass {
    * Note: The position is automatically handled by D3
    *
    * @param {*} svg the svg element of the visualization
-   * @param {*} contentCallbackFunction the function which is called on hovered to display data passed
-   * @returns {*} The created tip
+   * @param {number[]} offset array with 2 elements [y, x] for the tip offset
+   * @param {function} contentCallbackFunction the function which is called on hovered to display data passed
+   * @returns {d3Tip} The created tip
    */
-  createTip(svg, contentCallbackFunction) {
+  createTip(svg, offset, contentCallbackFunction) {
     const tip = d3Tip()
       .attr("class", "tip-panel")
+      .offset(offset)
       .html((data) => contentCallbackFunction(data));
 
     svg.call(tip);

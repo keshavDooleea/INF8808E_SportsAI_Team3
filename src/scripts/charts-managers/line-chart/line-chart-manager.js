@@ -209,7 +209,7 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   drawTip() {
-    this.tip = this.chartHelper.createTip(this.svg, (playerData) => this.lineChartState.getToolTipState(playerData));
+    this.tip = this.chartHelper.createTip(this.svg, [-4, 0], (playerData) => this.lineChartState.getToolTipState(playerData));
   }
 
   /**
