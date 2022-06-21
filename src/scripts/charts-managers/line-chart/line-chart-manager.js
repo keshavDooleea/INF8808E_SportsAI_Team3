@@ -1,6 +1,7 @@
-import { getMonthInNumeric, getMonthYear } from "../utils/date";
-import { rangeInterval, TEXT_COLORS } from "../utils/utils";
-import { AbstractChartManager } from "./abstract-chart-manager";
+import { getMonthInNumeric, getMonthYear } from "../../utils/date";
+import { TEXT_COLORS } from "../../utils/utils";
+import { AbstractChartManager } from "../abstract-chart-manager";
+import { LineChartState } from "./line-chart-state";
 
 /**
  * Manager for line chart visualization
@@ -24,25 +25,7 @@ export class LineChartManager extends AbstractChartManager {
     this.playerLinesDuration = 2500;
     this.horizontalDashOffsetDuration = 250;
 
-    this.states = {
-      assists: {
-        view: "Assists",
-        labelY: "Number of assists made",
-        domainY: rangeInterval(0, this.maxAssists, 1),
-      },
-      goalsScored: {
-        view: "Goals Scored",
-        labelY: "Number of goals scored",
-        domainY: rangeInterval(0, this.maxGoals, 1),
-      },
-      goalsConversionRate: {
-        view: "Goals Conversion Rate",
-        labelY: "% of goals converted",
-        domainY: rangeInterval(0, this.maxGoals, 1),
-      },
-    };
-
-    this.currentState = this.states.goalsScored;
+    this.lineChartState = new LineChartState(this.maxGoals, this.maxAssists);
   }
 
   /**
@@ -117,7 +100,7 @@ export class LineChartManager extends AbstractChartManager {
       right: 150,
       bottom: 30,
       left: 60,
-      leftPadding: 15,
+      leftPadding: 20,
     };
 
     this.setTitle();
@@ -143,12 +126,8 @@ export class LineChartManager extends AbstractChartManager {
     return this.margin.left + this.margin.leftPadding;
   }
 
-  get isGoalView() {
-    return this.currentState === this.states.goalsConversionRate || this.currentState === this.states.goalsScored;
-  }
-
   get buttonText() {
-    return this.isGoalView ? "Assists" : "Goals";
+    return this.lineChartState.isGoalView ? "Assists" : "Goals";
   }
 
   get seasonMonths() {
@@ -156,7 +135,7 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   get yOffsetIntervals() {
-    return this.height / this.currentState.domainY.length / 2;
+    return this.height / this.lineChartState.horizontalLinesState.length / 2;
   }
 
   get xOffsetIntervals() {
@@ -176,10 +155,7 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   getScaleY() {
-    return d3
-      .scaleBand()
-      .domain(this.currentState.domainY)
-      .range([this.height - this.margin.top, 0]);
+    return this.lineChartState.currentState.scaleY.domain(this.lineChartState.currentState.domainY).range([this.height - this.margin.top, 0]);
   }
 
   setAxisX() {
@@ -197,7 +173,7 @@ export class LineChartManager extends AbstractChartManager {
 
   setLabelY() {
     // break each word in order to display each one in a line for horizontal text
-    const labelsY = this.currentState.labelY.split(" ");
+    const labelsY = this.lineChartState.currentState.labelY.split(" ");
     const textHeight = 40;
 
     // display each word in a new line
@@ -226,7 +202,7 @@ export class LineChartManager extends AbstractChartManager {
     const title = this.svg.append("g").attr("id", "line-chart-title");
 
     title.append("text").attr("id", "line-chart-view-main-title").attr("fill", TEXT_COLORS.secondaryColor).text("Displaying: ");
-    title.append("text").attr("id", "line-chart-view-title").text(this.currentState.view).attr("transform", "translate(65, 0)").attr("font-size", 18);
+    title.append("text").attr("id", "line-chart-view-title").text(this.lineChartState.currentState.view).attr("transform", "translate(65, 0)").attr("font-size", 18);
     title.append("text").attr("fill", TEXT_COLORS.secondaryColor).attr("id", "line-chart-title-details").text("line chart for the 2021/2022 season");
     title.attr("transform", `translate(${this.leftAxisPosition},  ${this.margin.top / 2})`);
 
@@ -251,34 +227,8 @@ export class LineChartManager extends AbstractChartManager {
     legend.attr("id", "line-chart-legend");
   }
 
-  toolTipContent(playerData) {
-    let htmlContent = "";
-
-    if (this.isGoalView) {
-      // edge case where number of shots is 0 in CSV data
-      if (playerData.shots === 0) {
-        playerData.shots = playerData.goals;
-      }
-
-      const goalRatio = (playerData.goals / playerData.shots) * 100;
-
-      htmlContent = `
-        <p>Total shots : ${playerData.shots}</p>
-        <p>Goals scored: ${playerData.goals}</p>
-        <p>Goals ratio : ${goalRatio.toFixed(2)} %</p>`;
-    } else {
-      htmlContent = `<p>Assists: ${playerData.assists}</p>`;
-    }
-
-    return `<div>
-      <p class="tip-title">${playerData.playerName}</p>
-      <p class="tip-subtitle">${playerData.monthYear}</p>
-      <div class="tip-content">${htmlContent}</div>
-    </div>`;
-  }
-
   drawTip() {
-    this.tip = this.chartHelper.createTip(this.svg, (playerData) => this.toolTipContent(playerData));
+    this.tip = this.chartHelper.createTip(this.svg, (playerData) => this.lineChartState.getToolTipState(playerData));
   }
 
   /**
@@ -286,7 +236,7 @@ export class LineChartManager extends AbstractChartManager {
    */
   onCheckboxChecked() {
     this.isGoalScoredChecked = true;
-    this.currentState = this.states.goalsConversionRate;
+    this.lineChartState.setGoalConvertionRate();
     this.refreshViews();
   }
 
@@ -295,7 +245,7 @@ export class LineChartManager extends AbstractChartManager {
    */
   onCheckboxUnchecked() {
     this.isGoalScoredChecked = false;
-    this.currentState = this.states.goalsScored;
+    this.lineChartState.setGoalsScored();
     this.refreshViews();
   }
 
@@ -329,19 +279,13 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   toggleState() {
-    if (this.isGoalView) {
-      this.currentState = this.states.assists;
-      this.svg.select("#line-chart-checkbox").remove();
-      return;
-    }
-
-    this.currentState = this.isGoalScoredChecked ? this.states.goalsConversionRate : this.states.goalsScored;
-    this.drawCheckbox();
+    this.lineChartState.updateState(this.isGoalScoredChecked);
+    this.lineChartState.isGoalView ? this.drawCheckbox() : this.svg.select("#line-chart-checkbox").remove();
   }
 
   refreshViews() {
     this.svg.select("#line-chart-button text").text(`Show ${this.buttonText}`);
-    this.svg.select("#line-chart-view-title").text(this.currentState.view);
+    this.svg.select("#line-chart-view-title").text(this.lineChartState.currentState.view);
 
     this.svg.transition().duration(this.yAxisLabelsDuration).select("#line-chart-y-domain").call(d3.axisLeft(this.getScaleY()));
 
@@ -373,9 +317,11 @@ export class LineChartManager extends AbstractChartManager {
    */
   drawHorizontalLines() {
     const dashArray = 4;
+    const horizontalState = this.lineChartState.horizontalLinesState;
 
-    for (let i = 0; i < this.currentState.domainY.length; i++) {
-      const positionY = this.getScaleY()(i) + this.yOffsetIntervals - this.lineSize;
+    for (let i = 0; i < horizontalState.length; i++) {
+      let positionY = this.getScaleY()(i * horizontalState.scaleOffset) + this.yOffsetIntervals;
+      positionY -= horizontalState.isGoalConversion ? this.margin.top : this.lineSize; // small adjustions to y offset
 
       this.svg
         .append("line")
@@ -392,12 +338,6 @@ export class LineChartManager extends AbstractChartManager {
     }
   }
 
-  getLineYValue(data) {
-    const statProperty = this.isGoalView ? data.goals : data.assists;
-    const value = Number(statProperty) ? Number(statProperty) : 0;
-    return this.getScaleY()(value);
-  }
-
   /**
    * Draw the main line of the visualizaation
    *
@@ -407,7 +347,15 @@ export class LineChartManager extends AbstractChartManager {
   drawPlayerLine(playerData, playerColor) {
     const baseRadius = 3;
     const hoveredRadius = 5;
-    const svgTransform = `translate(${this.leftAxisPosition + this.xOffsetIntervals}, ${this.margin.top + this.yOffsetIntervals - this.lineSize})`;
+
+    const horizontalState = this.lineChartState.horizontalLinesState;
+    let heightOffset = this.margin.top;
+
+    if (!horizontalState.isGoalConversion) {
+      heightOffset += this.yOffsetIntervals - this.lineSize;
+    }
+
+    const svgTransform = `translate(${this.leftAxisPosition + this.xOffsetIntervals}, ${heightOffset})`;
 
     // draw lines representing the statistics
     this.svg
@@ -422,7 +370,10 @@ export class LineChartManager extends AbstractChartManager {
         return d3
           .line()
           .x((data) => this.getScaleX()(data.monthYear))
-          .y((data) => this.getLineYValue(data))(playerData);
+          .y((data) => {
+            const value = this.lineChartState.getStateValue(data);
+            return this.getScaleY()(value);
+          })(playerData);
       })
       .call((path) => this.lineAnimation(path, this.playerLinesDuration));
 
@@ -441,7 +392,10 @@ export class LineChartManager extends AbstractChartManager {
       .attr("opacity", 0)
       .attr("transform", svgTransform)
       .attr("cx", (data) => this.getScaleX()(data.monthYear))
-      .attr("cy", (data) => this.getLineYValue(data))
+      .attr("cy", (data) => {
+        const value = this.lineChartState.getStateValue(data);
+        return this.getScaleY()(value);
+      })
       .on("mouseover", (data, index, element) => {
         this.svg.select(`.line-chart-dots#${data.id}`).attr("r", hoveredRadius);
         this.tip.show(data, element[index]);
