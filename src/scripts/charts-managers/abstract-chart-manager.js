@@ -1,5 +1,5 @@
-const { playerHelperSingleton } = require("../players-helper");
-const { chartHelper } = require("../chart-helper");
+const { playerHelperSingleton } = require("../helpers/players-helper");
+const { chartHelper } = require("../helpers/chart-helper");
 
 /**
  * Declaring an abstract manager Class for charts manager.

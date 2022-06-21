@@ -1,4 +1,4 @@
-import { csvToObject } from "./utils/csv-parser";
+import { csvToObject } from "../utils/csv-parser";
 
 class PlayersHelperClass {
   async getSummaryData() {
