@@ -224,7 +224,13 @@ export class LineChartManager extends AbstractChartManager {
     let htmlContent = "";
 
     if (this.isGoalView) {
+      // edge case where number of shots is 0 in CSV data
+      if (playerData.shots === 0) {
+        playerData.shots = playerData.goals;
+      }
+
       const goalRatio = (playerData.goals / playerData.shots) * 100;
+
       htmlContent = `
         <p>Total shots : ${playerData.shots}</p>
         <p>Goals scored: ${playerData.goals}</p>
