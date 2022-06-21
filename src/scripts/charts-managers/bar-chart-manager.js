@@ -14,6 +14,8 @@ export class BarChartManager extends AbstractChartManager {
     console.log(this.playerHelperSingleton.maneColor);
   }
 
+  initializeVariables() {}
+
   initializeCharts() {
     this.svg = d3.select("#bar-chart-svg");
   }

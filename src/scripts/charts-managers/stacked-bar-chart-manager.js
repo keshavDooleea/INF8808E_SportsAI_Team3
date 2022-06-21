@@ -10,6 +10,8 @@ export class StackedBarChartManager extends AbstractChartManager {
     console.log("Stacked bar chart preprocess");
   }
 
+  initializeVariables() {}
+
   initializeCharts() {
     this.svg = d3.select("#stacked-bar-chart-svg");
   }

@@ -16,6 +16,7 @@ export class AbstractChartManager {
     }
 
     this.preprocess();
+    this.initializeVariables();
     this.initializeCharts();
   }
 
@@ -25,6 +26,14 @@ export class AbstractChartManager {
    */
   preprocess() {
     throw new Error("Method 'preprocess()' must be implemented.");
+  }
+
+  /**
+   * Allow respective child classes to create global variables
+   *
+   */
+  initializeVariables() {
+    throw new Error("Method 'initializeVariables()' must be implemented.");
   }
 
   /**

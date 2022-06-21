@@ -10,6 +10,8 @@ export class RadarChartManager extends AbstractChartManager {
     console.log("Radar chart preprocess");
   }
 
+  initializeVariables() {}
+
   initializeCharts() {
     this.svg = d3.select("#radar-chart-svg");
   }

@@ -125,20 +125,23 @@ class ChartHelperClass {
    * @param {*} title the title of the checkbox
    * @param {*} leftText the text to the left side of the checkbox
    * @param {*} rightText the text to the right side of the checkbox
+   * @param {*} isChecked the default state of the checkbox
    * @param {*} checkedCallback the callback function which is called when the checkbox is checked
    * @param {*} unCheckedCallback the callback function which is called when the checkbox is unchecked
    * @returns {*} The created checkbox
    */
-  createCheckbox(svg, translateX, translateY, title, leftText, rightText, checkedCallback, unCheckedCallback) {
+  createCheckbox(svg, translateX, translateY, title, leftText, rightText, isChecked, checkedCallback, unCheckedCallback) {
     const checkboxRadius = 15;
     const circleRadius = 10;
     const circleColor = "gray";
     const textPositionY = this.buttonHeight + checkboxRadius + 3;
 
-    svg.append("g").append("text").text(title).attr("transform", `translate(${translateX}, ${translateY})`).attr("class", "secondary-color");
-
     // draw main checkbox
-    const checkbox = svg.append("g").attr("transform", `translate(${translateX - 1}, ${translateY + 7})`);
+    const checkbox = svg.append("g").attr("transform", `translate(${translateX - 1}, ${translateY})`);
+
+    // insert checkbox title
+    checkbox.append("g").append("text").text(title).attr("transform", `translate(0, -7)`).attr("class", "secondary-color");
+
     checkbox
       .append("rect")
       .attr("width", this.buttonWidth)
@@ -154,7 +157,7 @@ class ChartHelperClass {
       });
 
     // draw small circle in checkbox
-    const circle = checkbox.append("circle").attr("cx", checkboxRadius).attr("cy", checkboxRadius).attr("r", circleRadius).attr("fill", circleColor).attr("stroke", "#5f697d").attr("class", "common-transition-3").attr("is-checked", false);
+    const circle = checkbox.append("circle").attr("cx", checkboxRadius).attr("cy", checkboxRadius).attr("r", circleRadius).attr("fill", circleColor).attr("stroke", "#5f697d").attr("class", "common-transition-3").attr("is-checked", isChecked);
 
     // add listener when clicked on checkbox
     checkbox.on("click", () => {

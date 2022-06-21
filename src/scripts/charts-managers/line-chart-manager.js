@@ -12,7 +12,9 @@ export class LineChartManager extends AbstractChartManager {
     this.maneData = this.preprocessPlayer(this.playerHelperSingleton.maneSummaryData, this.playerHelperSingleton.maneName);
     this.benzemaData = this.preprocessPlayer(this.playerHelperSingleton.benzemaSummaryData, this.playerHelperSingleton.benzemaName);
     this.mbappeData = this.preprocessPlayer(this.playerHelperSingleton.mbappeSummaryData, this.playerHelperSingleton.mbappeName);
+  }
 
+  initializeVariables() {
     this.maxGoals = this.getMaxNbStat(true);
     this.maxAssists = this.getMaxNbStat(false);
 
@@ -21,6 +23,26 @@ export class LineChartManager extends AbstractChartManager {
     this.yAxisLabelsDuration = 1500;
     this.playerLinesDuration = 2500;
     this.horizontalDashOffsetDuration = 250;
+
+    this.states = {
+      assists: {
+        view: "Assists",
+        labelY: "Number of assists made",
+        domainY: rangeInterval(0, this.maxAssists, 1),
+      },
+      goalsScored: {
+        view: "Goals Scored",
+        labelY: "Number of goals scored",
+        domainY: rangeInterval(0, this.maxGoals, 1),
+      },
+      goalsConversionRate: {
+        view: "Goals Conversion Rate",
+        labelY: "% of goals converted",
+        domainY: rangeInterval(0, this.maxGoals, 1),
+      },
+    };
+
+    this.currentState = this.states.goalsScored;
   }
 
   /**
@@ -98,7 +120,6 @@ export class LineChartManager extends AbstractChartManager {
       leftPadding: 15,
     };
 
-    this.toggleState();
     this.setTitle();
     this.setAxisY();
     this.setAxisX();
@@ -123,7 +144,7 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   get isGoalView() {
-    return this.currentState?.view === "Goals";
+    return this.currentState === this.states.goalsConversionRate || this.currentState === this.states.goalsScored;
   }
 
   get buttonText() {
@@ -264,31 +285,36 @@ export class LineChartManager extends AbstractChartManager {
    * show goals scored on checked
    */
   onCheckboxChecked() {
-    console.log("checked");
     this.isGoalScoredChecked = true;
+    this.currentState = this.states.goalsConversionRate;
+    this.refreshViews();
   }
 
   /**
    * show goals conversion rate on unchecked
    */
   onCheckboxUnchecked() {
-    console.log("un checked");
     this.isGoalScoredChecked = false;
+    this.currentState = this.states.goalsScored;
+    this.refreshViews();
   }
 
   drawCheckbox() {
-    const heightOffset = this.legendHeight + this.buttonHeight + this.margin.top + 50;
+    const heightOffset = this.legendHeight + this.buttonHeight + this.margin.top + 55;
 
-    this.chartHelper.createCheckbox(
+    const checkbox = this.chartHelper.createCheckbox(
       this.svg,
       this.svgWidth - this.chartHelper.buttonWidth,
       heightOffset,
       "Toggle Goals chart",
       "Goals Scored",
       "Goals Ratio",
+      this.isGoalScoredChecked,
       () => this.onCheckboxChecked(),
       () => this.onCheckboxUnchecked()
     );
+
+    checkbox.attr("id", "line-chart-checkbox");
   }
 
   drawButton() {
@@ -304,18 +330,13 @@ export class LineChartManager extends AbstractChartManager {
 
   toggleState() {
     if (this.isGoalView) {
-      this.currentState = {
-        view: "Assists",
-        labelY: "Number of assists made",
-        domainY: rangeInterval(0, this.maxAssists, 1),
-      };
-    } else {
-      this.currentState = {
-        view: "Goals",
-        labelY: "Amount of goals scored",
-        domainY: rangeInterval(0, this.maxGoals, 1),
-      };
+      this.currentState = this.states.assists;
+      this.svg.select("#line-chart-checkbox").remove();
+      return;
     }
+
+    this.currentState = this.isGoalScoredChecked ? this.states.goalsConversionRate : this.states.goalsScored;
+    this.drawCheckbox();
   }
 
   refreshViews() {
