@@ -1,0 +1,123 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Sackbones;
+}
+
+/* utilities css classes */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.margin-bottom-20 {
+  margin-bottom: var(--margin);
+}
+
+/* web page layout */
+html,
+body,
+main {
+  scroll-behavior: smooth;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bkgColor);
+  display: flex;
+  overflow: hidden;
+}
+
+main,
+nav {
+  height: 100%;
+}
+
+main {
+  flex: 1;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+}
+
+nav {
+  width: var(--navbarWidth);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--margin) 0;
+}
+
+#sports-ai-logo {
+  width: 40%;
+}
+
+.dots-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.dots-container .dot {
+  width: var(--dotSize);
+  height: var(--dotSize);
+  background-color: #b0b0b0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.dots-container .dot.active {
+  background-color: #020202;
+}
+
+#chart-nb {
+  opacity: 0.5;
+  font-size: 2.4rem;
+}
+
+main section {
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+main section .section-header {
+  width: 100%;
+}
+
+main section .section-header .section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+main section .section-header p {
+  color: var(--textColor);
+}
+
+main section .svg-body {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--margin);
+}
+
+
+/*# sourceMappingURL=/layout.a0f86b84.css.map */
