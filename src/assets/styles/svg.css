@@ -45,3 +45,15 @@
   border-radius: 2px;
   pointer-events: none;
 }
+
+.tip-title {
+  text-align: center;
+  color: var(--yellowishColor);
+  font-size: 1.2rem;
+}
+
+.tip-subtitle {
+  text-align: center;
+  color: #ddd;
+  margin-bottom: 8px;
+}

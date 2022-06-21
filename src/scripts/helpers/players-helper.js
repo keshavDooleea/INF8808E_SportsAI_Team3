@@ -19,30 +19,30 @@ class PlayersHelperClass {
     return "#FFA056";
   }
 
-  get maneShortName() {
-    return "sadioMane";
+  get maneName() {
+    return "Sadio Mané";
   }
 
-  get benzemaShortName() {
-    return "karimBenzema";
+  get benzemaName() {
+    return "Karim Benzema";
   }
 
-  get mbappeShortName() {
-    return "kylianMbappe";
+  get mbappeName() {
+    return "Kylian Mbappé";
   }
 
   get playersAttributes() {
     return [
       {
-        name: "Sadio Mané",
+        name: this.maneName,
         color: this.maneColor,
       },
       {
-        name: "Karim Benzema",
+        name: this.benzemaName,
         color: this.benzemaColor,
       },
       {
-        name: "Kylian Mbappé",
+        name: this.mbappeName,
         color: this.mbappeColor,
       },
     ];

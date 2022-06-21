@@ -9,9 +9,9 @@ import { AbstractChartManager } from "./abstract-chart-manager";
  */
 export class LineChartManager extends AbstractChartManager {
   preprocess() {
-    this.maneData = this.preprocessPlayer(this.playerHelperSingleton.maneSummaryData, this.playerHelperSingleton.maneShortName);
-    this.benzemaData = this.preprocessPlayer(this.playerHelperSingleton.benzemaSummaryData, this.playerHelperSingleton.benzemaShortName);
-    this.mbappeData = this.preprocessPlayer(this.playerHelperSingleton.mbappeSummaryData, this.playerHelperSingleton.mbappeShortName);
+    this.maneData = this.preprocessPlayer(this.playerHelperSingleton.maneSummaryData, this.playerHelperSingleton.maneName);
+    this.benzemaData = this.preprocessPlayer(this.playerHelperSingleton.benzemaSummaryData, this.playerHelperSingleton.benzemaName);
+    this.mbappeData = this.preprocessPlayer(this.playerHelperSingleton.mbappeSummaryData, this.playerHelperSingleton.mbappeName);
 
     this.maxGoals = this.getMaxNbStat(true);
     this.maxAssists = this.getMaxNbStat(false);
@@ -30,6 +30,7 @@ export class LineChartManager extends AbstractChartManager {
    */
   preprocessPlayer(playerData, playerName) {
     const monthlyObj = {};
+    const playerFirstName = playerName.split(" ")[0];
 
     playerData.forEach((element, index) => {
       const monthNumeric = getMonthInNumeric(element.Date);
@@ -40,7 +41,7 @@ export class LineChartManager extends AbstractChartManager {
         monthlyObj[monthNumeric] = {
           monthYear,
           playerName,
-          id: `${playerName}-${index}`,
+          id: `${playerFirstName}-${index}`,
           goals: Number(element.Gls),
           shots: Number(element.Sh),
           assists: Number(element.Ast),
@@ -220,11 +221,23 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   toolTipContent(playerData) {
+    let htmlContent = "";
+
     if (this.isGoalView) {
-      return `<p>Goals: ${playerData.goals}</p>`;
+      const goalRatio = (playerData.goals / playerData.shots) * 100;
+      htmlContent = `
+        <p>Total shots : ${playerData.shots}</p>
+        <p>Goals scored: ${playerData.goals}</p>
+        <p>Goals ratio : ${goalRatio.toFixed(2)} %</p>`;
     } else {
-      return `<p>Assists: ${playerData.assists}</p>`;
+      htmlContent = `<p>Assists: ${playerData.assists}</p>`;
     }
+
+    return `<div>
+      <p class="tip-title">${playerData.playerName}</p>
+      <p class="tip-subtitle">${playerData.monthYear}</p>
+      ${htmlContent}
+    </div>`;
   }
 
   drawTip() {
