@@ -158,15 +158,14 @@ class ChartHelperClass {
 
     // draw small circle in checkbox
     const circle = checkbox.append("circle").attr("cx", checkboxRadius).attr("cy", checkboxRadius).attr("r", circleRadius).attr("fill", circleColor).attr("stroke", "#5f697d").attr("class", "common-transition-3").attr("is-checked", isChecked);
+    this.updateCheckboxCirclePosition(circle, isChecked, checkboxRadius);
 
     // add listener when clicked on checkbox
     checkbox.on("click", () => {
       const isChecked = circle.attr("is-checked") === "false";
       circle.attr("is-checked", isChecked);
 
-      const circlePosition = isChecked ? this.buttonWidth - checkboxRadius : checkboxRadius;
-      circle.attr("cx", circlePosition);
-
+      this.updateCheckboxCirclePosition(circle, isChecked, checkboxRadius);
       isChecked ? checkedCallback() : unCheckedCallback();
     });
 
@@ -175,6 +174,11 @@ class ChartHelperClass {
     this.breakAndPlaceTexts(checkbox, rightText, this.buttonWidth, textPositionY, "end");
 
     return checkbox;
+  }
+
+  updateCheckboxCirclePosition(circle, isChecked, checkboxRadius) {
+    const circlePosition = isChecked ? this.buttonWidth - checkboxRadius : checkboxRadius;
+    circle.attr("cx", circlePosition);
   }
 
   /**
