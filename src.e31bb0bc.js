@@ -29190,6 +29190,49 @@ var PlayersHelperClass = /*#__PURE__*/function () {
       return getSummaryData;
     }()
   }, {
+    key: "getGroupedData",
+    value: function () {
+      var _getGroupedData = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return (0, _csvParser.csvToObject)("grouped_data/grouped_defensive_stats.csv");
+
+              case 2:
+                this.groupedDefensiveData = _context2.sent;
+                _context2.next = 5;
+                return (0, _csvParser.csvToObject)("grouped_data/grouped_pass_stats.csv");
+
+              case 5:
+                this.groupedPassData = _context2.sent;
+                _context2.next = 8;
+                return (0, _csvParser.csvToObject)("grouped_data/grouped_possession_stats.csv");
+
+              case 8:
+                this.groupedPossesionData = _context2.sent;
+                _context2.next = 11;
+                return (0, _csvParser.csvToObject)("grouped_data/grouped_shooting_stats.csv");
+
+              case 11:
+                this.groupedShootingData = _context2.sent;
+
+              case 12:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function getGroupedData() {
+        return _getGroupedData.apply(this, arguments);
+      }
+
+      return getGroupedData;
+    }()
+  }, {
     key: "maneColor",
     get: function get() {
       return "#4682B4";
@@ -36454,15 +36497,62 @@ var RadarChartManager = /*#__PURE__*/function (_AbstractChartManager) {
   _createClass(RadarChartManager, [{
     key: "preprocess",
     value: function preprocess() {
-      console.log("Radar chart preprocess");
+      this.maneData = this.preprocessPlayer(this.playerHelperSingleton.groupedDefensiveData, this.playerHelperSingleton.groupedPassData, this.playerHelperSingleton.groupedPossesionData, this.playerHelperSingleton.groupedShootingData, this.playerHelperSingleton.maneName);
+      this.benzemaData = this.preprocessPlayer(this.playerHelperSingleton.groupedDefensiveData, this.playerHelperSingleton.groupedPassData, this.playerHelperSingleton.groupedPossesionData, this.playerHelperSingleton.groupedShootingData, this.playerHelperSingleton.benzemaName);
+      this.mbappeData = this.preprocessPlayer(this.playerHelperSingleton.groupedDefensiveData, this.playerHelperSingleton.groupedPassData, this.playerHelperSingleton.groupedPossesionData, this.playerHelperSingleton.groupedShootingData, this.playerHelperSingleton.mbappeName);
     }
   }, {
     key: "initializeVariables",
     value: function initializeVariables() {}
+    /**
+     * Get the Touches, Assists, Attempted Passes, Completed Passes, Pressures, % Completed Dribbles, Tackles, Goals, Shots and Carries of a player
+     *
+     * @param {object[]} defenceData the defence data parsed from CSV file
+     * @param {object[]} passingData the passing data parsed from CSV file
+     * @param {object[]} possessionData the possession data parsed from CSV file
+     * @param {object[]} shootingdata the shooting data parsed from CSV file
+     * @param {string} playerName the player name
+     * @returns {object[]} The preprocessed data
+     */
+
+  }, {
+    key: "preprocessPlayer",
+    value: function preprocessPlayer(defenceData, passingData, possessionData, shootingdata, playerName) {
+      var player = {
+        name: playerName
+      };
+      defenceData.forEach(function (elem) {
+        if (elem.Player === playerName) {
+          player.tackles = elem.Tkl;
+          player.pressure = elem.Press;
+        }
+      });
+      passingData.forEach(function (elem) {
+        if (elem.Player === playerName) {
+          player.attemptedPasses = elem.TotalAtt;
+          player.completedPasses = elem.TotalCmp;
+          player.assists = elem.Ast;
+        }
+      });
+      possessionData.forEach(function (elem) {
+        if (elem.Player === playerName) {
+          player.touches = elem.Touches;
+          player.carries = elem.Carries;
+          player.dribblesPercentage = elem.DribbleSuccPerc;
+        }
+      });
+      shootingdata.forEach(function (elem) {
+        if (elem.Player === playerName) {
+          player.goals = elem.Gls;
+          player.shots = elem.Sh;
+        }
+      });
+      return player;
+    }
   }, {
     key: "initializeCharts",
     value: function initializeCharts() {
-      this.svg = d3.select("#radar-chart-svg");
+      this.svg = d3.select('#radar-chart-svg');
     }
   }]);
 
@@ -36580,12 +36670,16 @@ function _main() {
             return _playersHelper.playerHelperSingleton.getSummaryData();
 
           case 2:
+            _context.next = 4;
+            return _playersHelper.playerHelperSingleton.getGroupedData();
+
+          case 4:
             radarChartManager = new _radarChartManager.RadarChartManager();
             stackedBarChartManager = new _stackedBarChartManager.StackedBarChartManager();
             barChartManager = new _barChartManager.BarChartManager();
             lineChartManager = new _lineChartManager.LineChartManager();
 
-          case 6:
+          case 8:
           case "end":
             return _context.stop();
         }
@@ -36622,7 +36716,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53485" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54586" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
