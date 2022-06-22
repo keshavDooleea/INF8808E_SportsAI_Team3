@@ -16,6 +16,8 @@ main();
 
 async function main() {
   await playerHelperSingleton.getSummaryData();
+  
+  await playerHelperSingleton.getGroupedData();
 
   const radarChartManager = new RadarChartManager();
   const stackedBarChartManager = new StackedBarChartManager();

@@ -7,6 +7,13 @@ class PlayersHelperClass {
     this.mbappeSummaryData = await csvToObject("kylian_mbappe/summary.csv");
   }
 
+  async getGroupedData() {
+    this.groupedDefensiveData = await csvToObject("grouped_data/grouped_defensive_stats.csv");
+    this.groupedPassData = await csvToObject("grouped_data/grouped_pass_stats.csv");
+    this.groupedPossesionData = await csvToObject("grouped_data/grouped_possession_stats.csv");
+    this.groupedShootingData = await csvToObject("grouped_data/grouped_shooting_stats.csv");
+  }
+
   get maneColor() {
     return "#4682B4";
   }
