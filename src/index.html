@@ -13,84 +13,114 @@
   </head>
 
   <body>
-    <main class="no-scrollbar">
-      <!-- svg section for radar chart -->
-      <section id="radar-chart">
-        <div class="section-header">
-          <div class="section-title">
-            <img src="./assets/images/radar-chart-icon.png" alt="Radar Chart icon" />
-            <h3>Radar chart</h3>
+    <main id="body-main" class="no-scrollbar">
+      <section class="body-section">
+        <div class="gray-container home-item">
+          <div id="left-home-container"></div>
+          <div id="right-home-container">
+            <div class="margin-bottom-20">
+              <h1 class="main-font">INF8808E</h1>
+              <h3 id="data-viz-home-text">Data Visualization</h3>
+            </div>
+
+            <div>
+              <p>In collaboration with</p>
+              <img src="./assets/images/sports_ai_logo.png" id="Sports AI Logo" alt="Ballon D'or" />
+            </div>
+          </div>
+          <div id="home-absolute-div">
+            <img src="./assets/images/ballon_dor.jpg" id="ballon-or-img" alt="Ballon D'or" />
+            <h3 class="tip-panel">Ballon d'or for 2021/2022 season</h3>
           </div>
 
-          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus, dolores.</p>
-        </div>
-
-        <div class="svg-body">
-          <svg id="radar-chart-svg"></svg>
+          <div id="scroll-down-container">
+            <img src="./assets/images/scroll-down-icon.png" alt="Scroll Down icon" />
+            <small>Scroll down</small>
+          </div>
         </div>
       </section>
+      <section class="body-section">player comparison</section>
+      <section class="body-section viz-section">
+        <div id="viz-container" class="no-scrollbar">
+          <!-- svg section for radar chart -->
+          <section id="radar-chart">
+            <div class="section-header">
+              <div class="section-title">
+                <img src="./assets/images/radar-chart-icon.png" alt="Radar Chart icon" />
+                <h3>Radar chart</h3>
+              </div>
 
-      <!-- svg section for stacked bar chart -->
-      <section id="stacked-chart">
-        <div class="section-header">
-          <div class="section-title">
-            <img src="./assets/images/stacked-bar-chart-icon.png" alt="Stacked Bar Chart icon" />
-            <h3>Stacked bar chart</h3>
+              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus, dolores.</p>
+            </div>
+
+            <div class="svg-body">
+              <svg id="radar-chart-svg"></svg>
+            </div>
+          </section>
+
+          <!-- svg section for stacked bar chart -->
+          <section id="stacked-chart">
+            <div class="section-header">
+              <div class="section-title">
+                <img src="./assets/images/stacked-bar-chart-icon.png" alt="Stacked Bar Chart icon" />
+                <h3>Stacked bar chart</h3>
+              </div>
+
+              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus, dolores.</p>
+            </div>
+
+            <div class="svg-body">
+              <svg id="stacked-bar-chart-svg"></svg>
+            </div>
+          </section>
+
+          <!-- svg section for bar chart -->
+          <section id="bar-chart">
+            <div class="section-header">
+              <div class="section-title">
+                <img src="./assets/images/bar-chart-icon.png" alt="Bar Chart icon" />
+                <h3>Bar chart</h3>
+              </div>
+              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus, dolores.</p>
+            </div>
+
+            <div class="svg-body">
+              <svg id="bar-chart-svg"></svg>
+            </div>
+          </section>
+
+          <!-- svg section for line chart -->
+          <section id="line-chart">
+            <div class="section-header">
+              <div class="section-title">
+                <img src="./assets/images/line-chart-icon.png" alt="Line Chart icon" />
+                <h3>Line chart</h3>
+              </div>
+
+              <p>This visualization highlights the amount of goals, assists and shots taken for each month during the 2021/2022 season.</p>
+              <p>Views can be switched to display a line chart for goals as well as one for assists.</p>
+            </div>
+
+            <div class="svg-body">
+              <svg id="line-chart-svg" class="basic-svg-size"></svg>
+            </div>
+          </section>
+        </div>
+
+        <nav>
+          <img id="sports-ai-logo" src="./assets/images/sports_ai_logo.png" alt="Sports AI logo" />
+
+          <div class="dots-container">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
           </div>
 
-          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus, dolores.</p>
-        </div>
-
-        <div class="svg-body">
-          <svg id="stacked-bar-chart-svg"></svg>
-        </div>
-      </section>
-
-      <!-- svg section for bar chart -->
-      <section id="bar-chart">
-        <div class="section-header">
-          <div class="section-title">
-            <img src="./assets/images/bar-chart-icon.png" alt="Bar Chart icon" />
-            <h3>Bar chart</h3>
-          </div>
-          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus, dolores.</p>
-        </div>
-
-        <div class="svg-body">
-          <svg id="bar-chart-svg"></svg>
-        </div>
-      </section>
-
-      <!-- svg section for line chart -->
-      <section id="line-chart">
-        <div class="section-header">
-          <div class="section-title">
-            <img src="./assets/images/line-chart-icon.png" alt="Line Chart icon" />
-            <h3>Line chart</h3>
-          </div>
-
-          <p>This visualization highlights the amount of goals, assists and shots taken for each month during the 2021/2022 season.</p>
-          <p>Views can be switched to display a line chart for goals as well as one for assists.</p>
-        </div>
-
-        <div class="svg-body">
-          <svg id="line-chart-svg" class="basic-svg-size"></svg>
-        </div>
+          <h2 id="chart-nb">1</h2>
+        </nav>
       </section>
     </main>
-
-    <nav>
-      <img id="sports-ai-logo" src="./assets/images/sports_ai_logo.png" alt="Sports AI logo" />
-
-      <div class="dots-container">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-      </div>
-
-      <h2 id="chart-nb">1</h2>
-    </nav>
 
     <script defer src="https://d3js.org/d3.v5.js"></script>
     <script src="./index.js"></script>

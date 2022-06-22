@@ -1,5 +1,5 @@
 // retrieve DOM HTML elements
-const mainContainer = document.querySelector("main");
+const mainContainer = document.querySelector("#viz-container");
 const dots = document.querySelectorAll(".dots-container .dot");
 const chartNb = document.querySelector("#chart-nb");
 
@@ -13,8 +13,6 @@ const scrollOffset = 1;
 main();
 
 function main() {
-  activateDot(0);
-
   // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
   const sectionsBoundingBoxes = sectionIds.map((sectionId, index) => {
     return {
@@ -32,7 +30,7 @@ function main() {
 
       if (offsetTop > rect.top - scrollOffset && offsetTop < rect.bottom - scrollOffset) {
         box.dot.classList.add(dotActiveClass);
-        setChartNb(index + 1);
+        setChartNb(index + 2);
       } else {
         box.dot.classList.remove(dotActiveClass);
       }
