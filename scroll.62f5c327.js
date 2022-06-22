@@ -119,34 +119,37 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   return newRequire;
 })({"scroll.js":[function(require,module,exports) {
 // retrieve DOM HTML elements
-var mainContainer = document.querySelector("#viz-container");
-var dots = document.querySelectorAll(".dots-container .dot");
-var chartNb = document.querySelector("#chart-nb"); // ids of 4 sections each holding a svg
-
-var sectionIds = ["#radar-chart", "#stacked-chart", "#bar-chart", "#line-chart"]; // variables
+var mainContainer = document.querySelector("main");
+var dotsContainer = document.querySelector(".dots-container");
+var chartNb = document.querySelector("#chart-nb");
+var sections = Array.from(document.querySelectorAll("main > section")); // variables
 
 var dotActiveClass = "active";
 var scrollOffset = 1;
 main();
 
 function main() {
-  // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
-  var sectionsBoundingBoxes = sectionIds.map(function (sectionId, index) {
+  createDots();
+  var dots = document.querySelectorAll(".dots-container .dot");
+  activateDot(0); // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
+
+  var sectionsBoundingBoxes = sections.map(function (section, index) {
     return {
-      sectionId: sectionId,
+      section: section,
       dot: dots[index],
-      boundingBox: document.querySelector(sectionId).getBoundingClientRect()
+      boundingBox: section.getBoundingClientRect()
     };
   }); // add listener to main container to update window's hash and sidebar dots
 
   mainContainer.addEventListener("scroll", function () {
     sectionsBoundingBoxes.forEach(function (box, index) {
+      if (!box.dot) return;
       var rect = box.boundingBox;
       var offsetTop = mainContainer.scrollTop;
 
       if (offsetTop > rect.top - scrollOffset && offsetTop < rect.bottom - scrollOffset) {
         box.dot.classList.add(dotActiveClass);
-        setChartNb(index + 2);
+        setChartNb(index + 1);
       } else {
         box.dot.classList.remove(dotActiveClass);
       }
@@ -158,12 +161,20 @@ function main() {
     });
   });
 
+  function createDots() {
+    sections.forEach(function () {
+      var dot = document.createElement("div");
+      dot.className = "dot";
+      dotsContainer.appendChild(dot);
+    });
+  }
+
   function activateDot(index) {
     dots.forEach(function (dot, dotIndex) {
       if (index === dotIndex) {
         dots[index].classList.add(dotActiveClass);
         setChartNb(index + 1);
-        document.querySelector(sectionIds[index]).scrollIntoView();
+        sections[index].scrollIntoView();
       } else {
         dot.classList.remove(dotActiveClass);
       }
