@@ -219,3 +219,83 @@ main section .svg-body {
   justify-content: center;
   margin-top: var(--margin);
 }
+
+#comparison-container {
+  flex: 1;
+  width: 100%;
+  margin-top: 60px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+#comparison-container .player-item {
+  border-radius: 4px;
+  background-color: var(--secondaryBkgColor);
+  border: 1px solid #ccc;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-item:hover .player-img img {
+  transform: scale(1.05);
+}
+
+#comparison-container .player-img {
+  height: 40%;
+  overflow: hidden;
+}
+
+#comparison-container .player-img img {
+  transition: 0.3s transform;
+  border-radius: 4px;
+}
+
+#comparison-container .player-content {
+  flex: 1;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#comparison-container .player-team-container {
+  --playerTeamSize: calc(var(--playerTeamLogoSize) + 17px);
+
+  z-index: 2;
+  position: absolute;
+  top: 0px;
+  width: var(--playerTeamSize);
+  height: var(--playerTeamSize);
+  background-color: var(--secondaryBkgColor);
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#comparison-container .player-team-container img {
+  width: var(--playerTeamLogoSize);
+  height: var(--playerTeamLogoSize);
+}
+
+#mane-container .player-team-container {
+  left: 100%;
+  transform: translate(-50%, calc(var(--playerTeamSize) / -2));
+}
+
+#benzema-container .player-team-container {
+  left: 50%;
+  transform: translate(-50%, calc(var(--playerTeamSize) / -2));
+}
+
+#mbappe-container .player-team-container {
+  left: 0%;
+  transform: translate(-50%, calc(var(--playerTeamSize) / -2));
+}
+
+.player-bkg {
+  width: 100%;
+}

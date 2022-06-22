@@ -1,5 +1,6 @@
 :root {
   --bkgColor: #fff;
+  --secondaryBkgColor: #f4f6f4;
   --textColor: #5f697d;
 
   --yellowishColor: #ffcf4d;
@@ -13,4 +14,5 @@
   --margin: 20px;
 
   --homeLeftOffset: 300px;
+  --playerTeamLogoSize: 38px;
 }
