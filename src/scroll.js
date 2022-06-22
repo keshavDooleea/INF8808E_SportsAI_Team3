@@ -1,5 +1,5 @@
 // retrieve DOM HTML elements
-const mainContainer = document.querySelector("#viz-container");
+const mainContainer = document.querySelector("main");
 const dots = document.querySelectorAll(".dots-container .dot");
 const chartNb = document.querySelector("#chart-nb");
 
@@ -30,7 +30,7 @@ function main() {
 
       if (offsetTop > rect.top - scrollOffset && offsetTop < rect.bottom - scrollOffset) {
         box.dot.classList.add(dotActiveClass);
-        setChartNb(index + 2);
+        setChartNb(index + 1);
       } else {
         box.dot.classList.remove(dotActiveClass);
       }
