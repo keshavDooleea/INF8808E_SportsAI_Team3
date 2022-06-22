@@ -301,6 +301,7 @@ main section .svg-body {
 
 .player-infos .club-logo img {
   width: calc(var(--playerTeamLogoSize) / 1.5);
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
 }
 
 .player-round-item {
