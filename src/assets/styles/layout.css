@@ -19,6 +19,10 @@
   margin-bottom: var(--margin);
 }
 
+.text-color {
+  color: var(--textColor);
+}
+
 /* animations */
 @keyframes slide-down {
   0%,
@@ -238,6 +242,10 @@ main section .svg-body {
   flex-direction: column;
 }
 
+.player-name {
+  margin-bottom: 4px;
+}
+
 .player-item:hover .player-img img {
   transform: scale(1.05);
 }
@@ -249,7 +257,8 @@ main section .svg-body {
 
 #comparison-container .player-img img {
   transition: 0.3s transform;
-  border-radius: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
 }
 
 #comparison-container .player-content {
@@ -257,43 +266,41 @@ main section .svg-body {
   width: 100%;
   text-align: center;
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
-#comparison-container .player-team-container {
-  --playerTeamSize: calc(var(--playerTeamLogoSize) + 17px);
+.player-infos {
+  display: flex;
+  justify-content: space-around;
+  margin-top: var(--margin);
+}
 
-  z-index: 2;
-  position: absolute;
-  top: 0px;
-  width: var(--playerTeamSize);
-  height: var(--playerTeamSize);
-  background-color: var(--secondaryBkgColor);
-  border: 1px solid #ccc;
+.player-infos .club-logo {
+  width: var(--playerTeamLogoSize);
+  height: var(--playerTeamLogoSize);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 2px 0 rgba(48, 48, 48, 0.15), 0 0 0 8px #ddd;
+  margin-bottom: calc(var(--playerTeamLogoSize) / 4);
 }
 
-#comparison-container .player-team-container img {
-  width: var(--playerTeamLogoSize);
-  height: var(--playerTeamLogoSize);
+.player-infos .club-logo img {
+  width: calc(var(--playerTeamLogoSize) / 1.5);
 }
 
-#mane-container .player-team-container {
-  left: 100%;
-  transform: translate(-50%, calc(var(--playerTeamSize) / -2));
+.player-round-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-#benzema-container .player-team-container {
-  left: 50%;
-  transform: translate(-50%, calc(var(--playerTeamSize) / -2));
-}
-
-#mbappe-container .player-team-container {
-  left: 0%;
-  transform: translate(-50%, calc(var(--playerTeamSize) / -2));
+.player-bottom-container {
+  width: 100%;
+  flex: 1;
+  margin-top: var(--margin);
 }
 
 .player-bkg {
