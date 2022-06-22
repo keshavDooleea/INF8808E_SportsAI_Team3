@@ -119,7 +119,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   return newRequire;
 })({"scroll.js":[function(require,module,exports) {
 // retrieve DOM HTML elements
-var mainContainer = document.querySelector("main");
+var mainContainer = document.querySelector("#viz-container");
 var dots = document.querySelectorAll(".dots-container .dot");
 var chartNb = document.querySelector("#chart-nb"); // ids of 4 sections each holding a svg
 
@@ -130,8 +130,7 @@ var scrollOffset = 1;
 main();
 
 function main() {
-  activateDot(0); // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
-
+  // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
   var sectionsBoundingBoxes = sectionIds.map(function (sectionId, index) {
     return {
       sectionId: sectionId,
@@ -147,7 +146,7 @@ function main() {
 
       if (offsetTop > rect.top - scrollOffset && offsetTop < rect.bottom - scrollOffset) {
         box.dot.classList.add(dotActiveClass);
-        setChartNb(index + 1);
+        setChartNb(index + 2);
       } else {
         box.dot.classList.remove(dotActiveClass);
       }
@@ -203,7 +202,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64233" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51334" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
