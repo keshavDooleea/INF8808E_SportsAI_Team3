@@ -64,8 +64,7 @@ export class RadarChartManager extends AbstractChartManager {
         player.shots = elem.Sh
       }
     })
-    console.log(player)
-    return 1
+    return player
   }
 
   initializeCharts () {
