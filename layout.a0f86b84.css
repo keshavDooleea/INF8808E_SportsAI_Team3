@@ -240,6 +240,7 @@ main section .svg-body {
   position: relative;
   display: flex;
   flex-direction: column;
+  padding: 10px;
 }
 
 .player-name {
@@ -280,6 +281,9 @@ main section .svg-body {
   margin-top: 10px;
   display: flex;
   flex-direction: column;
+  background-color: var(--bkgColor);
+  border-radius: 4px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 }
 
 .player-infos {
