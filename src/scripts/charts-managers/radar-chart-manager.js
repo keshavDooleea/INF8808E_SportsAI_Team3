@@ -83,7 +83,7 @@ export class RadarChartManager extends AbstractChartManager {
 
     this.config = {
       radius: 5,
-      w: this.getWidth(),
+      w: this.getHeight(),
       h: this.getHeight(),
       factor: 1,
       factorLegend: 0.85,
@@ -91,8 +91,8 @@ export class RadarChartManager extends AbstractChartManager {
       maxValue: 10,
       radians: 2 * Math.PI,
       opacityArea: 0.5,
-      ToRight: 5,
-      TranslateX: 80,
+      ToRight: 500,
+      TranslateX: this.getWidth(),
       TranslateY: 30,
       ExtraWidthX: 100,
       ExtraWidthY: 100
@@ -104,12 +104,13 @@ export class RadarChartManager extends AbstractChartManager {
     this.Format = d3.format('%')
     this.svg
       .append('svg')
-      .attr('width', this.config.w + this.config.ExtraWidthX)
-      .attr('height', this.config.h + this.config.ExtraWidthY)
+      .attr('width', 'auto')
+      .attr('height', 'auto')
       .append('g')
-      // .attr('transform', 'translate(' + this.config.TranslateX + ',' + this.config.TranslateY + ')')
+      .attr('transform', 'translate(' + 0 + ',' + this.config.TranslateY + ')')
 
     this.drawSegments(this.config.factor, this.config.radians, this.totalFields)
+    this.drawAxes(this.config.factor, this.config.radians, this.totalFields)
     // grid
     // axes
     // plotting
@@ -142,8 +143,8 @@ export class RadarChartManager extends AbstractChartManager {
   }
 
   drawSegments (factor, radians, totalFields) {
-    for (var j = 0; j < this.config.levels - 1; j++) {
-      var levelFactor = this.config.factor * this.radius * ((j + 1) / this.config.levels)
+    for (let j = 0; j < this.config.levels; j++) {
+      const levelFactor = this.config.factor * this.radius * ((j + 1) / this.config.levels)
       this.svg.selectAll('g')
         .selectAll('.levels')
         .data(this.fields)
@@ -154,10 +155,53 @@ export class RadarChartManager extends AbstractChartManager {
         .attr('x2', function (d, i) { return levelFactor * (1 - factor * Math.sin((i + 1) * radians / totalFields)) })
         .attr('y2', function (d, i) { return levelFactor * (1 - factor * Math.cos((i + 1) * radians / totalFields)) })
         .attr('class', 'line')
-        .style('stroke', TEXT_COLORS.lightGray)
+        .style('stroke', TEXT_COLORS.radarSegments)
         .style('stroke-opacity', '1')
-        .style('stroke-width', '3px')
-        .attr('transform', 'translate(' + (this.config.w / 2 - levelFactor) + ', ' + (this.config.h / 2 - levelFactor) + ')')
+        .style('stroke-width', '2px')
+        .attr('transform', 'translate(' + (this.config.w - levelFactor) + ', ' + (this.config.h / 2 - levelFactor) + ')')
     }
+  }
+
+  drawAxes (factor, radians, totalFields) {
+    const axis = this.svg.selectAll('g')
+      .selectAll('.axis')
+      .data(this.fields)
+      .enter()
+      .append('g')
+      .attr('class', 'axis')
+
+    const w = this.config.w
+    const h = this.config.h
+    const factorLegend = this.config.factorLegend
+
+    axis.append('line')
+      .attr('x1', w / 2)
+      .attr('y1', h / 2)
+      .attr('x2', function (d, i) { return w / 2 * (1 - factor * Math.sin(i * radians / totalFields)) })
+      .attr('y2', function (d, i) { return h / 2 * (1 - factor * Math.cos(i * radians / totalFields)) })
+      .attr('class', 'line')
+      .style('stroke', TEXT_COLORS.radarAxes)
+      .attr('transform', 'translate(' + (w / 2) + ')')
+      .style('stroke-width', '2px')
+
+    axis.append('text')
+      .attr('class', 'legend')
+      .text(function (d) {
+        if (d === 'attemptedPasses') return 'Attempted Passes'
+        else if (d === 'completedPasses') return 'Completed Passes'
+        else if (d === 'dribblesPercentage') return '% Completed Dribbles'
+        else return d
+      })
+      .style('font-size', '18px')
+      .attr('text-anchor', function (d, i) {
+        console.log(i)
+        if (i > 5 && i !== 10) return 'start'
+        else if (i < 5 && i !== 0) return 'end'
+        else return 'middle'
+      })
+      .attr('dy', '1.5em')
+      .attr('transform', 'translate(' + (w / 2) + ', -20)')
+      .attr('x', function (d, i) { return w / 2 * (1 - factorLegend * Math.sin(i * radians / totalFields)) - 60 * Math.sin(i * radians / totalFields) })
+      .attr('y', function (d, i) { return h / 2 * (1 - Math.cos(i * radians / totalFields)) - 20 * Math.cos(i * radians / totalFields) })
   }
 }
