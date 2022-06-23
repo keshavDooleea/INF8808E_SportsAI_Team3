@@ -65,7 +65,19 @@ export class RadarChartManager extends AbstractChartManager {
         player.shots = Number(elem.Sh)
       }
     })
-    return player
+    const result = {
+      touches: player.touches,
+      carries: player.carries,
+      shots: player.shots,
+      goals: player.goals,
+      tackles: player.tackles,
+      dribblesPercentage: player.dribblesPercentage,
+      pressure: player.pressure,
+      completedPasses: player.completedPasses,
+      attemptedPasses: player.attemptedPasses,
+      assists: player.assists
+    }
+    return result
   }
 
   initializeCharts () {
@@ -87,10 +99,10 @@ export class RadarChartManager extends AbstractChartManager {
       h: this.getHeight(),
       factor: 1,
       factorLegend: 0.85,
-      levels: 5,
-      maxValue: 10,
+      levels: 6,
+      maxValue: 12,
       radians: 2 * Math.PI,
-      opacityArea: 0.5,
+      opacityArea: 0.1,
       ToRight: 500,
       TranslateX: this.getWidth(),
       TranslateY: 30,
@@ -98,7 +110,7 @@ export class RadarChartManager extends AbstractChartManager {
       ExtraWidthY: 100
     }
     this.setAdjustedPlayerValues(this.maneData, this.benzemaData, this.mbappeData)
-    this.fields = Object.keys(this.maneData)
+    this.fields = Object.keys(this.adjustedManeData)
     this.totalFields = this.fields.length
     this.radius = this.config.factor * Math.min(this.config.w / 2, this.config.h / 2)
     this.Format = d3.format('%')
@@ -111,6 +123,7 @@ export class RadarChartManager extends AbstractChartManager {
 
     this.drawSegments(this.config.factor, this.config.radians, this.totalFields)
     this.drawAxes(this.config.factor, this.config.radians, this.totalFields)
+    this.drawAreas(this.adjustedManeData, this.adjustedBenzemaData, this.adjustedMbappeData)
     // grid
     // axes
     // plotting
@@ -136,9 +149,9 @@ export class RadarChartManager extends AbstractChartManager {
     this.adjustedMbappeData = {}
     keys.forEach(key => {
       const max = Math.max(maneData[key], benzemaData[key], mbappeData[key])
-      this.adjustedManeData[key] = (maneData[key] * this.config.maxValue) / max
-      this.adjustedBenzemaData[key] = (benzemaData[key] * this.config.maxValue) / max
-      this.adjustedMbappeData[key] = (mbappeData[key] * this.config.maxValue) / max
+      this.adjustedManeData[key] = (maneData[key] * this.config.maxValue) / max - 2
+      this.adjustedBenzemaData[key] = (benzemaData[key] * this.config.maxValue) / max - 2
+      this.adjustedMbappeData[key] = (mbappeData[key] * this.config.maxValue) / max - 2
     })
   }
 
@@ -185,7 +198,8 @@ export class RadarChartManager extends AbstractChartManager {
       .style('stroke-width', '2px')
 
     axis.append('text')
-      .attr('class', 'legend')
+      .attr('class', 'axeTitle')
+      .attr('id', function (d) { return d + 'Title' })
       .text(function (d) {
         if (d === 'attemptedPasses') return 'Attempted Passes'
         else if (d === 'completedPasses') return 'Completed Passes'
@@ -194,7 +208,6 @@ export class RadarChartManager extends AbstractChartManager {
       })
       .style('font-size', '18px')
       .attr('text-anchor', function (d, i) {
-        console.log(i)
         if (i > 5 && i !== 10) return 'start'
         else if (i < 5 && i !== 0) return 'end'
         else return 'middle'
@@ -203,5 +216,60 @@ export class RadarChartManager extends AbstractChartManager {
       .attr('transform', 'translate(' + (w / 2) + ', -20)')
       .attr('x', function (d, i) { return w / 2 * (1 - factorLegend * Math.sin(i * radians / totalFields)) - 60 * Math.sin(i * radians / totalFields) })
       .attr('y', function (d, i) { return h / 2 * (1 - Math.cos(i * radians / totalFields)) - 20 * Math.cos(i * radians / totalFields) })
+
+    const rectWidth = 10
+    axis.append('rect')
+      .attr('class', 'axeButton')
+      .attr('id', function (d) { return d + 'Button' })
+      .attr('x', function (d, i) { return w / 2 * (1 - factor * Math.sin(i * radians / totalFields)) - rectWidth / 2 })
+      .attr('y', function (d, i) { return h / 2 * (1 - factor * Math.cos(i * radians / totalFields)) - rectWidth / 2 })
+      .attr('width', rectWidth)
+      .attr('height', rectWidth)
+      .attr('stroke', TEXT_COLORS.radarAxes)
+      .attr('stroke-width', '2px')
+      .attr('fill', TEXT_COLORS.radarSegments)
+      .attr('transform', 'translate(' + (w / 2) + ')')
   }
+
+  drawAreas (maneData, benzemaData, mbappeData) {
+    const dataSets = [maneData, benzemaData, mbappeData]
+    const series = 0
+    const w = this.config.w
+    const h = this.config.h
+    const factor = this.config.factor
+    const maxValue = this.config.maxValue
+    const radians = this.config.radians
+    const totalFields = this.totalFields
+    const colors = [this.playerHelperSingleton.maneColor, this.playerHelperSingleton.benzemaColor, this.playerHelperSingleton.mbappeColor]
+    dataSets.forEach((data, datai) => {
+      const dataValues = []
+      Object.entries(data).forEach((elem, i) => {
+        dataValues.push([
+          w / 2 * (1 - (parseFloat(Math.max(elem[1], 0)) / maxValue) * factor * Math.sin(i * radians / totalFields)),
+          h / 2 * (1 - (parseFloat(Math.max(elem[1], 0)) / maxValue) * factor * Math.cos(i * radians / totalFields))
+        ])
+      })
+      this.svg.selectAll('g').selectAll('.nodes')
+        .data(data)
+      console.log(dataValues)
+      dataValues.push(dataValues[0])
+      this.svg.selectAll('g').selectAll('.area')
+        .data([dataValues])
+        .enter()
+        .append('polygon')
+        .attr('class', 'radar-chart-serie' + series)
+        .attr('points', function (d) {
+          var str = ''
+          for (var pti = 0; pti < d.length; pti++) {
+            str = str + d[pti][0] + ',' + d[pti][1] + ' '
+          }
+          return str
+        })
+        .style('fill', colors[datai])
+        .style('fill-opacity', this.config.opacityArea)
+        .attr('transform', 'translate(' + (w / 2) + ')')
+    })
+  }
+
+  drawNodes (maneData, benzemaData, mbappeData) {}
 }
