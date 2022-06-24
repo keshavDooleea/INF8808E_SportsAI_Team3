@@ -102,7 +102,7 @@ export class RadarChartManager extends AbstractChartManager {
       levels: 6,
       maxValue: 50,
       radians: 2 * Math.PI,
-      opacityArea: 0.1,
+      opacityArea: 0.5,
       ToRight: 500,
       TranslateX: this.getWidth(),
       TranslateY: 30,
@@ -122,12 +122,11 @@ export class RadarChartManager extends AbstractChartManager {
       .append('g')
       .attr('transform', 'translate(' + 0 + ',' + this.config.TranslateY + ')')
 
+    this.drawAreas(this.adjustedManeData, this.adjustedBenzemaData, this.adjustedMbappeData)
     this.drawSegments(this.config.factor, this.config.radians, this.totalFields)
     this.drawAxes(this.config.factor, this.config.radians, this.totalFields)
-    this.drawAreas(this.adjustedManeData, this.adjustedBenzemaData, this.adjustedMbappeData)
     this.drawNodes(this.adjustedManeData, this.adjustedBenzemaData, this.adjustedMbappeData)
     this.drawLegend()
-    this.drawToggle()
     // grid
     // axes
     // plotting
@@ -172,7 +171,7 @@ export class RadarChartManager extends AbstractChartManager {
         .attr('x2', function (d, i) { return levelFactor * (1 - factor * Math.sin((i + 1) * radians / totalFields)) })
         .attr('y2', function (d, i) { return levelFactor * (1 - factor * Math.cos((i + 1) * radians / totalFields)) })
         .attr('class', 'line')
-        .style('stroke', TEXT_COLORS.radarSegments)
+        .style('stroke', TEXT_COLORS.radarAxes)
         .style('stroke-opacity', '1')
         .style('stroke-width', '2px')
         .attr('transform', 'translate(' + (this.config.w - levelFactor) + ', ' + (this.config.h / 2 - levelFactor) + ')')
@@ -278,6 +277,8 @@ export class RadarChartManager extends AbstractChartManager {
         })
         .style('fill', colors[datai])
         .style('fill-opacity', this.config.opacityArea)
+        .attr('stroke', colors[datai])
+        .attr('stroke-width', '2px')
         .attr('transform', 'translate(' + (w / 2) + ')')
       // series = 0
     })
@@ -314,7 +315,7 @@ export class RadarChartManager extends AbstractChartManager {
         .attr('cx', function (j) { return j[0] })
         .attr('cy', function (j) { return j[1] })
         .style('fill', colors[datai])
-        .style('stroke', 'white')
+        // .style('stroke', 'white')
         .style('stroke-width', '0.25px')
         .attr('transform', 'translate(' + (w / 2) + ')')
         .on('mouseover', (data, index, element) => {
