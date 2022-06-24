@@ -19,6 +19,10 @@
   margin-bottom: var(--margin);
 }
 
+.text-color {
+  color: var(--textColor);
+}
+
 /* animations */
 @keyframes slide-down {
   0%,
@@ -35,6 +39,12 @@ html,
 body,
 main {
   scroll-behavior: smooth;
+  cursor: url("/assets/images/football.png"), auto;
+}
+
+main .svg-body,
+nav .dots-container {
+  cursor: auto;
 }
 
 body {
@@ -160,11 +170,12 @@ nav {
 }
 
 .dots-container {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  padding: 5px;
+  padding: 20px 5px;
   border-radius: 3px;
 }
 
@@ -218,4 +229,105 @@ main section .svg-body {
   align-items: center;
   justify-content: center;
   margin-top: var(--margin);
+}
+
+#comparison-container {
+  flex: 1;
+  width: 100%;
+  margin-top: 60px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+#comparison-container .player-item {
+  border-radius: 4px;
+  background-color: var(--secondaryBkgColor);
+  border: 1px solid #ccc;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-name {
+  margin-bottom: 4px;
+}
+
+#comparison-container .player-img {
+  height: 40%;
+  overflow: hidden;
+  position: relative;
+}
+
+#comparison-container .player-img img {
+  transition: 0.3s opacity ease-out;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.player-img img:nth-child(2) {
+  opacity: 0;
+}
+
+.player-item:hover .player-img img:nth-child(1) {
+  opacity: 0;
+}
+
+.player-item:hover .player-img img:nth-child(2) {
+  opacity: 1;
+}
+
+.player-item:hover .club-logo {
+  box-shadow: none;
+}
+
+#comparison-container .player-content {
+  flex: 1;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-infos {
+  display: flex;
+  justify-content: space-around;
+  margin-top: var(--margin);
+}
+
+.player-infos .club-logo {
+  width: var(--playerTeamLogoSize);
+  height: var(--playerTeamLogoSize);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 2px 0 rgba(48, 48, 48, 0.15), 0 0 0 8px #ddd;
+  margin-bottom: calc(var(--playerTeamLogoSize) / 4);
+  transition: 0.3s box-shadow;
+}
+
+.player-infos .club-logo img {
+  width: calc(var(--playerTeamLogoSize) / 1.5);
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
+}
+
+.player-round-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.player-bottom-container {
+  width: 100%;
+  flex: 1;
+  margin-top: var(--margin);
+}
+
+.player-bkg {
+  width: 100%;
 }

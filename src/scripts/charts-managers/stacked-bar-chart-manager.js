@@ -1,4 +1,4 @@
-import { AbstractChartManager } from "./abstract-chart-manager";
+import { AbstractChartManager } from './abstract-chart-manager'
 
 /**
  * Manager for stacked chart visualization
@@ -6,13 +6,13 @@ import { AbstractChartManager } from "./abstract-chart-manager";
  * @class StackedBarChartManager
  */
 export class StackedBarChartManager extends AbstractChartManager {
-  preprocess() {
-    console.log("Stacked bar chart preprocess");
+  preprocess () {
+    console.log('Stacked bar chart preprocess')
   }
 
-  initializeVariables() {}
+  initializeVariables () {}
 
-  initializeCharts() {
-    this.svg = d3.select("#stacked-bar-chart-svg");
+  initializeCharts () {
+    this.svg = d3.select('#stacked-bar-chart-svg')
   }
 }
