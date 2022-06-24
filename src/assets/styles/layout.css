@@ -39,6 +39,12 @@ html,
 body,
 main {
   scroll-behavior: smooth;
+  cursor: url("/assets/images/football.png"), auto;
+}
+
+main .svg-body,
+nav .dots-container {
+  cursor: auto;
 }
 
 body {
@@ -164,11 +170,12 @@ nav {
 }
 
 .dots-container {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  padding: 5px;
+  padding: 20px 5px;
   border-radius: 3px;
 }
 
@@ -273,6 +280,10 @@ main section .svg-body {
   opacity: 1;
 }
 
+.player-item:hover .club-logo {
+  box-shadow: none;
+}
+
 #comparison-container .player-content {
   flex: 1;
   width: 100%;
@@ -297,6 +308,7 @@ main section .svg-body {
   justify-content: center;
   box-shadow: 0 2px 2px 0 rgba(48, 48, 48, 0.15), 0 0 0 8px #ddd;
   margin-bottom: calc(var(--playerTeamLogoSize) / 4);
+  transition: 0.3s box-shadow;
 }
 
 .player-infos .club-logo img {
