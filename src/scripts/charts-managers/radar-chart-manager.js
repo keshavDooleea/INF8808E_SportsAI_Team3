@@ -126,6 +126,7 @@ export class RadarChartManager extends AbstractChartManager {
     this.drawAxes(this.config.factor, this.config.radians, this.totalFields)
     this.drawAreas(this.adjustedManeData, this.adjustedBenzemaData, this.adjustedMbappeData)
     this.drawNodes(this.adjustedManeData, this.adjustedBenzemaData, this.adjustedMbappeData)
+    this.drawLegend()
     // grid
     // axes
     // plotting
@@ -394,5 +395,10 @@ export class RadarChartManager extends AbstractChartManager {
       default:
         return data
     }
+  }
+
+  drawLegend () {
+    const legend = this.createPlayersLegend(this.svg, this.svgWidth / 1.2 - this.chartHelper.buttonWidth, this.margin.top, this.chartHelper.legendLineSymbol)
+    legend.attr('id', 'radar-chart-legend')
   }
 }
