@@ -100,7 +100,7 @@ export class RadarChartManager extends AbstractChartManager {
       factor: 1,
       factorLegend: 0.85,
       levels: 6,
-      maxValue: 12,
+      maxValue: 50,
       radians: 2 * Math.PI,
       opacityArea: 0.1,
       ToRight: 500,
@@ -114,6 +114,7 @@ export class RadarChartManager extends AbstractChartManager {
     this.totalFields = this.fields.length
     this.radius = this.config.factor * Math.min(this.config.w / 2, this.config.h / 2)
     this.Format = d3.format('%')
+    this.tooltip = this.createTooltip()
     this.svg
       .append('svg')
       .attr('width', 'auto')
@@ -124,6 +125,7 @@ export class RadarChartManager extends AbstractChartManager {
     this.drawSegments(this.config.factor, this.config.radians, this.totalFields)
     this.drawAxes(this.config.factor, this.config.radians, this.totalFields)
     this.drawAreas(this.adjustedManeData, this.adjustedBenzemaData, this.adjustedMbappeData)
+    this.drawNodes(this.adjustedManeData, this.adjustedBenzemaData, this.adjustedMbappeData)
     // grid
     // axes
     // plotting
@@ -220,7 +222,7 @@ export class RadarChartManager extends AbstractChartManager {
     const rectWidth = 10
     axis.append('rect')
       .attr('class', 'axeButton')
-      .attr('id', function (d) { return d + 'Button' })
+      .attr('id', function (data) { return data + 'Button' })
       .attr('x', function (d, i) { return w / 2 * (1 - factor * Math.sin(i * radians / totalFields)) - rectWidth / 2 })
       .attr('y', function (d, i) { return h / 2 * (1 - factor * Math.cos(i * radians / totalFields)) - rectWidth / 2 })
       .attr('width', rectWidth)
@@ -229,11 +231,19 @@ export class RadarChartManager extends AbstractChartManager {
       .attr('stroke-width', '2px')
       .attr('fill', TEXT_COLORS.radarSegments)
       .attr('transform', 'translate(' + (w / 2) + ')')
+      .on('mouseover', (data, index, element) => {
+        this.svg.select(`.${data}Button`)
+        this.tooltip.show(data, element[index])
+      })
+      .on('mouseout', (data) => {
+        this.svg.select(`.${data}Button`)
+        this.tooltip.hide()
+      })
   }
 
   drawAreas (maneData, benzemaData, mbappeData) {
     const dataSets = [maneData, benzemaData, mbappeData]
-    const series = 0
+    // let series = 0
     const w = this.config.w
     const h = this.config.h
     const factor = this.config.factor
@@ -251,13 +261,12 @@ export class RadarChartManager extends AbstractChartManager {
       })
       this.svg.selectAll('g').selectAll('.nodes')
         .data(data)
-      console.log(dataValues)
       dataValues.push(dataValues[0])
       this.svg.selectAll('g').selectAll('.area')
         .data([dataValues])
         .enter()
         .append('polygon')
-        .attr('class', 'radar-chart-serie' + series)
+        .attr('class', function () { return 'radar-chart-serie_' + datai })
         .attr('points', function (d) {
           var str = ''
           for (var pti = 0; pti < d.length; pti++) {
@@ -268,8 +277,122 @@ export class RadarChartManager extends AbstractChartManager {
         .style('fill', colors[datai])
         .style('fill-opacity', this.config.opacityArea)
         .attr('transform', 'translate(' + (w / 2) + ')')
+      // series = 0
     })
   }
 
-  drawNodes (maneData, benzemaData, mbappeData) {}
+  drawNodes (maneData, benzemaData, mbappeData) {
+    const dataSets = [maneData, benzemaData, mbappeData]
+    let series = 0
+    const w = this.config.w
+    const h = this.config.h
+    const factor = this.config.factor
+    const maxValue = this.config.maxValue
+    const radians = this.config.radians
+    const totalFields = this.totalFields
+    const colors = [this.playerHelperSingleton.maneColor, this.playerHelperSingleton.benzemaColor, this.playerHelperSingleton.mbappeColor]
+    const players = [this.playerHelperSingleton.maneName, this.playerHelperSingleton.benzemaName, this.playerHelperSingleton.mbappeName]
+    dataSets.forEach((data, datai) => {
+      const dataValues = []
+      Object.entries(data).forEach((elem, i) => {
+        dataValues.push([
+          w / 2 * (1 - (parseFloat(Math.max(elem[1], 0)) / maxValue) * factor * Math.sin(i * radians / totalFields)),
+          h / 2 * (1 - (parseFloat(Math.max(elem[1], 0)) / maxValue) * factor * Math.cos(i * radians / totalFields)),
+          elem[0],
+          players[datai]
+        ])
+      })
+      this.svg.selectAll('g').selectAll('.nodes')
+        .data(dataValues)
+        .enter()
+        .append('svg:circle')
+        .attr('class', function () { return 'radar-chart-serie_' + datai })
+        .attr('id', function () { return 'radar-chart-node_' + series++ })
+        .attr('r', 7)
+        .attr('cx', function (j) { return j[0] })
+        .attr('cy', function (j) { return j[1] })
+        .style('fill', colors[datai])
+        .attr('transform', 'translate(' + (w / 2) + ')')
+        .on('mouseover', (data, index, element) => {
+          this.svg.select(`.radar-chart-node_${series}`)
+          this.tooltip.show(data, element[index])
+        })
+        .on('mouseout', () => {
+          this.svg.select(`.radar-chart-node_${series}`)
+          this.tooltip.hide()
+        })
+      series = 0
+    })
+  }
+
+  createTooltip () {
+    return this.chartHelper.createTip(this.svg, [-4, 0], (data) => this.getToolTipState(data))
+  }
+
+  getToolTipState (data) {
+    console.log(data)
+    if (typeof data !== 'string') {
+      var selectedPlayerData
+      switch (data[3]) {
+        case this.playerHelperSingleton.maneName:
+          selectedPlayerData = this.maneData
+          break
+        case this.playerHelperSingleton.benzemaName:
+          selectedPlayerData = this.benzemaData
+          break
+        case this.playerHelperSingleton.mbappeName:
+          selectedPlayerData = this.mbappeData
+          break
+      }
+      const result = selectedPlayerData[data[2]]
+      return `<div>
+        <p class="tip-title">${data[3]}</p>
+        <p class="tip-subtitle">${this.getTipTitle(data[2])}</p>
+        <div class="tip-content" style="text-align: center; font-size: 20px">${result}</div>
+      </div>`
+    } else {
+      return `<div>
+        <p class="tip-title">${this.getTipTitle(data)}</p>
+        <div class="tip-content" style="text-align: center; font-size: 20px">${this.getCategoryDescription(data)}</div>
+      </div>`
+    }
+  }
+
+  getCategoryDescription (category) {
+    switch (category) {
+      case 'touches':
+        return 'Number of times the player touched the ball.'
+      case 'assists':
+        return 'Assists made by the player.'
+      case 'attemptedPasses':
+        return 'All passes made by the player, even the incomplete ones.'
+      case 'completedPasses':
+        return 'Successful passes made by the player.'
+      case 'pressure':
+        return 'Number of times the player applied pressure to opposing players who were receiving, carrying or releasing the ball.'
+      case 'dribblesPercentage':
+        return 'Percentage of Dribbles Completed Successfully.'
+      case 'tackles':
+        return 'Numbers of players tackled by the player.'
+      case 'goals':
+        return 'Goals scored by the player.'
+      case 'shots':
+        return 'Shots made by the player. Does not include penalty kicks.'
+      case 'carries':
+        return 'Number of times the player controlled the ball with their feet.'
+    }
+  }
+
+  getTipTitle (data) {
+    switch (data) {
+      case 'dribblesPercentage':
+        return '% completed dribbles'
+      case 'completedPasses':
+        return 'completed passes'
+      case 'attemptedPasses':
+        return 'attempted passes'
+      default:
+        return data
+    }
+  }
 }
