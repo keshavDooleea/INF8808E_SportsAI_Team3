@@ -127,6 +127,7 @@ export class RadarChartManager extends AbstractChartManager {
     this.drawAreas(this.adjustedManeData, this.adjustedBenzemaData, this.adjustedMbappeData)
     this.drawNodes(this.adjustedManeData, this.adjustedBenzemaData, this.adjustedMbappeData)
     this.drawLegend()
+    this.drawToggle()
     // grid
     // axes
     // plotting
@@ -313,6 +314,8 @@ export class RadarChartManager extends AbstractChartManager {
         .attr('cx', function (j) { return j[0] })
         .attr('cy', function (j) { return j[1] })
         .style('fill', colors[datai])
+        .style('stroke', 'white')
+        .style('stroke-width', '0.25px')
         .attr('transform', 'translate(' + (w / 2) + ')')
         .on('mouseover', (data, index, element) => {
           this.svg.select(`.radar-chart-node_${series}`)
