@@ -108,15 +108,16 @@ export class StackedBarChartManager extends AbstractChartManager {
       .enter()
       .append('rect')
       .attr('x', function (d) {
-        return 1
+        return x(d.key)
       })
       .attr('y', function (d) {
-        return 2
+        return y(d.key)
       })
       .attr('height', function (d) {
-        return y(d[0] - y(d[1]))
+        return y(d[0][0]) - y(d[0][1])
       })
       .attr('width', x.bandwidth())
+      .attr('transform', `translate(150, 0)`)
   }
 
   /**
