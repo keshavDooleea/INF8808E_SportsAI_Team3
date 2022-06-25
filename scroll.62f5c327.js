@@ -119,19 +119,19 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   return newRequire;
 })({"scroll.js":[function(require,module,exports) {
 // retrieve DOM HTML elements
-var mainContainer = document.querySelector("main");
-var dotsContainer = document.querySelector(".dots-container");
-var chartNb = document.querySelector("#chart-nb");
-var sections = Array.from(document.querySelectorAll("main > section")); // variables
+var mainContainer = document.querySelector('main');
+var dotsContainer = document.querySelector('.dots-container');
+var chartNb = document.querySelector('#chart-nb');
+var sections = Array.from(document.querySelectorAll('main > section')); // variables
 
-var dotActiveClass = "active";
+var dotActiveClass = 'active';
 var scrollOffset = 1;
 main();
 
 function main() {
   createDots();
-  var dots = document.querySelectorAll(".dots-container .dot");
-  activateDot(0); // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
+  var dots = document.querySelectorAll('.dots-container .dot');
+  activateDot(2); // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
 
   var sectionsBoundingBoxes = sections.map(function (section, index) {
     return {
@@ -141,7 +141,7 @@ function main() {
     };
   }); // add listener to main container to update window's hash and sidebar dots
 
-  mainContainer.addEventListener("scroll", function () {
+  mainContainer.addEventListener('scroll', function () {
     sectionsBoundingBoxes.forEach(function (box, index) {
       if (!box.dot) return;
       var rect = box.boundingBox;
@@ -156,15 +156,15 @@ function main() {
     });
   });
   dots.forEach(function (dot, index) {
-    dot.addEventListener("click", function () {
+    dot.addEventListener('click', function () {
       activateDot(index);
     });
   });
 
   function createDots() {
     sections.forEach(function () {
-      var dot = document.createElement("div");
-      dot.className = "dot";
+      var dot = document.createElement('div');
+      dot.className = 'dot';
       dotsContainer.appendChild(dot);
     });
   }
@@ -213,7 +213,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50141" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51474" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
