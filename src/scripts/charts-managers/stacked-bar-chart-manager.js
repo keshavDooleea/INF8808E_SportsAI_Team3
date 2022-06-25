@@ -10,11 +10,7 @@ export class StackedBarChartManager extends AbstractChartManager {
     this.shootingData = this.preprocessShootingData(this.playerHelperSingleton.groupedShootingData)
   }
 
-  initializeVariables () {}
-
-  initializeCharts () {
-    this.svg = d3.select('#stacked-bar-chart-svg')
-
+  initializeVariables () {
     this.margin = {
       top: 50,
       right: 150,
@@ -22,6 +18,12 @@ export class StackedBarChartManager extends AbstractChartManager {
       left: 60,
       leftPadding: 20
     }
+  }
+
+  initializeCharts () {
+    this.svg = d3.select('#stacked-bar-chart-svg')
+
+    // this.drawLegend()
 
     this.width = 700 - this.margin.left - this.margin.right
     this.height = 400 - this.margin.top - this.margin.bottom
@@ -59,11 +61,12 @@ export class StackedBarChartManager extends AbstractChartManager {
       .attr('transform', 'translate(' + 100 + ',' + '0' + ')')
       .call(d3.axisLeft(y).tickFormat(formatPercent))
 
-    console.log('data', this.shootingData.slice(1))
+    var stackedData = d3.stack()
+      .keys(subGroups)(this.shootingData)
 
     this.svg.append('g')
       .selectAll('g')
-      .data(this.shootingData.slice(1))
+      .data(stackedData)
       .enter()
       .append('g')
       .attr('fill', function (d) { return color(d.key) })
@@ -71,10 +74,10 @@ export class StackedBarChartManager extends AbstractChartManager {
       // enter a second time = loop subgroup per subgroup to add all rectangles
       .data(function (d) { console.log('d', d); return d })
       .enter().append('rect')
-      // .attr('x', function (d) { console.log('x', d); return x(d[0]) })
-      // .attr('y', function (d) { console.log('y', y(d)); return y(d[1]) })
-      // .attr('height', function (d) { console.log(y((d[0]) - y(d[1]))); return y((d[0]) - y(d[1])) })
-      // .attr('width', x.bandwidth())
+      .attr('x', function (d) { console.log('x', x(d)); return x(d) })
+      .attr('y', function (d) { console.log('y', y(d)); return y(d) })
+      .attr('height', function (d) { console.log(y((d[0]) - y(d[1]))); return y((d[0]) - y(d[1])) })
+      .attr('width', x.bandwidth())
   }
 
   /**
@@ -85,8 +88,6 @@ export class StackedBarChartManager extends AbstractChartManager {
    **/
 
   preprocessShootingData (shootingData) {
-    console.log('preprocessShootingData')
-
     shootingData.forEach((element, index) => {
       var PK = 0
       // eslint-disable-next-line eqeqeq
@@ -95,16 +96,25 @@ export class StackedBarChartManager extends AbstractChartManager {
       }
       if (element.Player === 'Sadio Mané') {
         // this.maneData = [element.Player, [element.GSh, PK]]
-        this.maneData = [element.GSh, PK]
+        this.maneData = { player: element.Player, gsh: element.GSh, pk: PK }
       } else if (element.Player === 'Karim Benzema') {
         // this.benzemaData = [element.Player, [element.GSh, PK]]
-        this.benzemaData = [element.GSh, PK]
+        this.benzemaData = { player: element.Player, gsh: element.GSh, pk: PK }
       } else if (element.Player === 'Kylian Mbappé') {
         // this.mbappeData = [element.Player, [element.GSh, PK]]
-        this.mbappeData = [element.GSh, PK]
+        this.mbappeData = { player: element.Player, gsh: element.GSh, pk: PK }
       }
     })
-    var groups = ['GSH', 'PK']
-    return [groups, this.maneData, this.benzemaData, this.mbappeData]
+    return [this.maneData, this.benzemaData, this.mbappeData]
   }
+
+  // drawLegend() {
+  //   const legend = this.createPlayersLegend(
+  //     this.svg,
+  //     this.svgWidth - this.chartHelper.buttonWidth,
+  //     this.margin.top,
+  //     this.chartHelper.legendLineSymbol
+  //   )
+  //   legend.attr('id', 'stacked-chart-legend')
+  // }
 }
