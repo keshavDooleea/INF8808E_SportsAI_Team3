@@ -125,10 +125,10 @@ export class StackedBarChartManager extends AbstractChartManager {
       .domain(groups)
       .range([0, width * 0.9])
       .padding([0.2])
+
     this.svg
       .select('#stacked-chart-container')
       .append('g')
-      .style('font-size', '18px')
       .attr(
         'transform',
         `translate(
@@ -144,7 +144,6 @@ export class StackedBarChartManager extends AbstractChartManager {
     this.svg
       .select('#stacked-chart-container')
       .append('g')
-      .style('font-size', '18px')
       .attr(
         'transform',
         `translate(
