@@ -8,6 +8,7 @@ import * as d3 from 'd3'
  *
  */
 export async function csvToObject (csvPath) {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async function (resolve, reject) {
     try {
       const data = await d3.csv(csvPath)
