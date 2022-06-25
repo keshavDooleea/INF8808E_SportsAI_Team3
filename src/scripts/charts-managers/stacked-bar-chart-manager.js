@@ -24,15 +24,12 @@ export class StackedBarChartManager extends AbstractChartManager {
 
   initializeCharts() {
     this.svg = d3.select('#stacked-bar-chart-svg')
-
+    this.svgWidth = parseInt(this.svg.style('width'))
+    this.svgHeight = parseInt(this.svg.style('height'))
     // this.drawLegend()
 
-    this.width = 700 - this.margin.left - this.margin.right
-    this.height = 400 - this.margin.top - this.margin.bottom
-
-    console.log(this.shootingData)
-
-    this.svg.attr('width', 600).attr('height', 600).attr('padding', 10)
+    this.width = this.svgWidth - this.margin.left - this.margin.right
+    this.height = this.svgHeight - this.margin.top - this.margin.bottom
 
     var subGroups = [
       'Mané \n Regular Shots',
@@ -106,23 +103,17 @@ export class StackedBarChartManager extends AbstractChartManager {
       .selectAll('rect')
       // enter a second time = loop subgroup per subgroup to add all rectangles
       .data(function (d) {
-        console.log('d', d)
-        console.log(d[0])
-        console.log(d[0][0].data.player)
         return d
       })
       .enter()
       .append('rect')
       .attr('x', function (d) {
-        console.log('x', x(d[0].data.player))
         return 1
       })
       .attr('y', function (d) {
-        console.log('y', y(d[0].data.player))
         return 2
       })
       .attr('height', function (d) {
-        console.log(y(d[0] - y(d[1])))
         return y(d[0] - y(d[1]))
       })
       .attr('width', x.bandwidth())
