@@ -107,6 +107,42 @@ export class BarChartManager extends AbstractChartManager {
     legend.attr('id', 'bar-chart-legend')
   }
 
+  setLabelY() {
+    // break each word in order to display each one in a line for horizontal text
+    const labelsY = 'Amount of Championship Won'.split(' ')
+    const textHeight = 40
+
+    // display each word in a new line
+    labelsY.forEach((label, index) => {
+      const positionY =
+        (this.margin.top + this.svgHeight + textHeight * index) / 2
+
+      this.svg
+        .append('g')
+        .append('text')
+        .text(label)
+        .attr('class', 'bar-chart-label-y')
+        .attr(
+          'transform',
+          `translate(0, ${positionY - (textHeight * labelsY.length) / 2})`
+        )
+    })
+  }
+
+  setLabelX() {
+    // label of x axis
+    this.svg
+      .append('g')
+      .append('text')
+      .text('Types of championship')
+      .attr(
+        'transform',
+        `translate(${this.margin.left + this.margin.leftPadding}, ${
+          this.svgHeight
+        })`
+      )
+  }
+
   initializeVariables() {}
 
   initializeCharts() {
@@ -122,10 +158,12 @@ export class BarChartManager extends AbstractChartManager {
       return d.playerName
     })
 
-    this.margin = { top: 20, right: 20, bottom: 30, left: 40 }
+    this.margin = { top: 20, right: 20, bottom: 30, left: 40, leftPadding: 70 }
     var width = this.svgWidth - this.margin.left - this.margin.right
     var height = this.svgHeight - this.margin.top - this.margin.bottom
 
+    this.setLabelX()
+    this.setLabelY()
     this.drawLegend()
 
     const x = d3
@@ -142,7 +180,9 @@ export class BarChartManager extends AbstractChartManager {
       .attr('class', 'x axis')
       .attr(
         'transform',
-        `translate(${leftAxisPosition}, ${height + heightOffsetAxis})`
+        `translate(${leftAxisPosition + this.margin.leftPadding}, ${
+          height + heightOffsetAxis
+        })`
       )
       .call(d3.axisBottom(x).tickSize(0))
 
@@ -168,7 +208,12 @@ export class BarChartManager extends AbstractChartManager {
     this.svg
       .append('g')
       .attr('class', 'y axis')
-      .attr('transform', `translate(${leftAxisPosition}, ${heightOffsetAxis})`)
+      .attr(
+        'transform',
+        `translate(${
+          leftAxisPosition + this.margin.leftPadding
+        }, ${heightOffsetAxis})`
+      )
       .call(d3.axisLeft(y))
       .append('text')
       .attr('transform', 'rotate(-90)')
@@ -203,8 +248,10 @@ export class BarChartManager extends AbstractChartManager {
       .enter()
       .append('g')
       .attr('class', 'g')
-      .attr('transform', function (d) {
-        return `translate(${x(d.championshipName)}, ${heightOffsetAxis})`
+      .attr('transform', (d) => {
+        return `translate(${
+          x(d.championshipName) + this.margin.leftPadding
+        }, ${heightOffsetAxis})`
       })
 
     slice
