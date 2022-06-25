@@ -131,7 +131,7 @@ main();
 function main() {
   createDots();
   var dots = document.querySelectorAll('.dots-container .dot');
-  activateDot(3); // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
+  activateDot(0); // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
 
   var sectionsBoundingBoxes = sections.map(function (section, index) {
     return {
