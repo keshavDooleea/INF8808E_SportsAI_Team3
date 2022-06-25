@@ -28,36 +28,36 @@ export class StackedBarChartManager extends AbstractChartManager {
       if (element.Player === 'Sadio Mané') {
         // this.maneData = [element.Player, [element.GSh, PK]]
         this.maneDataG = {
-          player: element.Player + '\n Regular Shots',
+          player: element.Player + '\n - Regular Shots',
           made: Number(element.GSh),
           missed: Number(element.Sh)
         }
         this.maneDataP = {
-          player: element.Player + '\n Penalty Shots',
+          player: element.Player + '\n - Penalty Shots',
           made: PK,
           missed: Number(element.PKatt) - PK
         }
       } else if (element.Player === 'Karim Benzema') {
         // this.benzemaData = [element.Player, [element.GSh, PK]]
         this.benzemaDataG = {
-          player: element.Player + '\n Regular Shots',
+          player: element.Player + '\n - Regular Shots',
           made: Number(element.GSh),
           missed: Number(element.Sh)
         }
         this.benzemaDataP = {
-          player: element.Player + '\n Penalty Shots',
+          player: element.Player + '\n - Penalty Shots',
           made: PK,
           missed: Number(element.PKatt) - PK
         }
       } else if (element.Player === 'Kylian Mbappé') {
         // this.mbappeData = [element.Player, [element.GSh, PK]]
         this.mbappeDataG = {
-          player: element.Player + '\n Regular Shots',
+          player: element.Player + '\n - Regular Shots',
           made: Number(element.GSh),
           missed: Number(element.Sh)
         }
         this.mbappeDataP = {
-          player: element.Player + '\n Penalty Shots',
+          player: element.Player + '\n - Penalty Shots',
           made: PK,
           missed: Number(element.PKatt) - PK
         }
@@ -71,12 +71,14 @@ export class StackedBarChartManager extends AbstractChartManager {
     ]
   }
 
-  drawLegend () {
-    const legend = this.createPlayersLegend(
+  drawLegend (width) {
+    const legend = this.chartHelper.createLegend(
       this.svg,
-      this.svgWidth - this.chartHelper.buttonWidth,
+      width,
       this.margin.top,
-      this.chartHelper.legendLineSymbol
+      this.chartHelper.legendLineSymbol,
+      ['Shots Made', 'Shots Missed'],
+      ['#4daf4a', '#e41a1c']
     )
     legend.attr('id', 'stacked-chart-legend')
   }
@@ -95,8 +97,6 @@ export class StackedBarChartManager extends AbstractChartManager {
     var width = this.svgWidth - this.margin.left - this.margin.right
     var height = this.svgHeight - this.margin.top - this.margin.bottom
 
-    // this.drawLegend()
-
     // this.svg.attr('width', 600).attr('height', 600).attr('padding', 10)
 
     var groups = d3.map(this.shootingData, function (d) {
@@ -110,14 +110,20 @@ export class StackedBarChartManager extends AbstractChartManager {
       .domain(subGroups)
       .range(['#4daf4a', '#e41a1c'])
 
+    this.drawLegend(width * 0.97)
+
+    this.svg.append('g').attr('id', 'stacked-chart-container')
+
     // Add X axis
     var x = d3
       .scaleBand()
       .domain(groups)
-      .range([0, width])
+      .range([0, width * 0.9])
       .padding([0.2])
     this.svg
+      .select('#stacked-chart-container')
       .append('g')
+      .style('font-size', '18px')
       .attr(
         'transform',
         `translate(
@@ -134,7 +140,9 @@ export class StackedBarChartManager extends AbstractChartManager {
       .domain([0, 1])
       .range([height, 0])
     this.svg
+      .select('#stacked-chart-container')
       .append('g')
+      .style('font-size', '18px')
       .attr(
         'transform',
         `translate(
@@ -150,6 +158,7 @@ export class StackedBarChartManager extends AbstractChartManager {
 
     // Place the bars
     this.svg
+      .select('#stacked-chart-container')
       .append('g')
       .attr(
         'transform',
