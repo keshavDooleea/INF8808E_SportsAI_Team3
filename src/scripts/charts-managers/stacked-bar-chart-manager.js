@@ -35,17 +35,26 @@ export class StackedBarChartManager extends AbstractChartManager {
       .attr('height', 600)
       .attr('padding', 10)
 
-    var subGroups = ['Mané GSH', 'Mané PK', 'Benzema GSH', 'Benzema PK', 'Mbappe GSH', 'Mbappe PK']
+    // var subGroups = ['Mané GSH', 'Mané PK', 'Benzema GSH', 'Benzema PK', 'Mbappe GSH', 'Mbappe PK']
 
-    console.log('subgroups', subGroups)
+    // console.log('subgroups', subGroups)
 
     var color = d3.scaleOrdinal()
       .domain(this.shootingData)
       .range(['#e41a1c', '#4daf4a'])
 
+    var stack = d3.stack().keys(['gsh', 'gm', 'pk', 'pkm'])
+    var datasets = [d3.stack().keys(['gsh','gm'])(this.shootingData), d3.stack().keys(['pk', 'pkm'])(this.shootingData)]    
+    console.log('datasets')
+    console.log(datasets)
+
+    var num_groups = datasets.length
+
+    var xlabels = this.shootingData.map(function (d) { return d.Player })
+
     // Add X axis
     var x = d3.scaleBand()
-      .domain(subGroups)
+      .domain(xlabels)
       .range([0, this.width])
       .padding([0.1])
     this.svg.append('g')
@@ -61,12 +70,12 @@ export class StackedBarChartManager extends AbstractChartManager {
       .attr('transform', 'translate(' + 100 + ',' + '0' + ')')
       .call(d3.axisLeft(y).tickFormat(formatPercent))
 
-    var stackedData = d3.stack()
-      .keys(subGroups)(this.shootingData)
+    // var stackedData = d3.stack()
+    //   .keys(subGroups)(this.shootingData)
 
     this.svg.append('g')
       .selectAll('g')
-      .data(stackedData)
+      .data(datasets)
       .enter()
       .append('g')
       .attr('fill', function (d) { return color(d.key) })
@@ -88,7 +97,7 @@ export class StackedBarChartManager extends AbstractChartManager {
    **/
 
   preprocessShootingData (shootingData) {
-    shootingData.forEach((element, index) => {
+    shootingData.forEach((element) => {
       var PK = 0
       // eslint-disable-next-line eqeqeq
       if (element.PKatt != 0) {
@@ -96,13 +105,31 @@ export class StackedBarChartManager extends AbstractChartManager {
       }
       if (element.Player === 'Sadio Mané') {
         // this.maneData = [element.Player, [element.GSh, PK]]
-        this.maneData = { player: element.Player, gsh: element.GSh, pk: PK }
+        this.maneData = {
+          player: element.Player,
+          gsh: element.GSh,
+          gm: 1 - element.GSh,
+          pk: PK,
+          pkm: 1 - PK
+        }
       } else if (element.Player === 'Karim Benzema') {
         // this.benzemaData = [element.Player, [element.GSh, PK]]
-        this.benzemaData = { player: element.Player, gsh: element.GSh, pk: PK }
+        this.benzemaData = {
+          player: element.Player,
+          gsh: element.GSh,
+          gm: 1 - element.GSh,
+          pk: PK,
+          pkm: 1 - PK
+        }
       } else if (element.Player === 'Kylian Mbappé') {
         // this.mbappeData = [element.Player, [element.GSh, PK]]
-        this.mbappeData = { player: element.Player, gsh: element.GSh, pk: PK }
+        this.mbappeData = {
+          player: element.Player,
+          gsh: element.GSh,
+          gm: 1 - element.GSh,
+          pk: PK,
+          pkm: 1 - PK
+        }
       }
     })
     return [this.maneData, this.benzemaData, this.mbappeData]
