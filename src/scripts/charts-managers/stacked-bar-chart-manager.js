@@ -35,18 +35,17 @@ export class StackedBarChartManager extends AbstractChartManager {
       .attr('height', 600)
       .attr('padding', 10)
 
-    // var subGroups = ['Mané GSH', 'Mané PK', 'Benzema GSH', 'Benzema PK', 'Mbappe GSH', 'Mbappe PK']
-
-    // console.log('subgroups', subGroups)
+    var subGroups = ['Mané \n Regular Shots', 'Mané \n Penalty Kicks',
+      'Benzema \n Regular Shots', 'Benzema \n Penalty Kicks',
+      'Mbappe \n Regular Shots', 'Mbappe \n Penalty Kicks']
 
     var color = d3.scaleOrdinal()
       .domain(this.shootingData)
       .range(['#e41a1c', '#4daf4a'])
 
     var stack = d3.stack().keys(['gsh', 'gm', 'pk', 'pkm'])
-    var datasets = [d3.stack().keys(['gsh','gm'])(this.shootingData), d3.stack().keys(['pk', 'pkm'])(this.shootingData)]    
-    console.log('datasets')
-    console.log(datasets)
+    var datasets = [d3.stack().keys(['gsh', 'gm'])(this.shootingData), d3.stack().keys(['pk', 'pkm'])(this.shootingData)]    
+    console.log('datasets', datasets)
 
     var num_groups = datasets.length
 
@@ -54,7 +53,7 @@ export class StackedBarChartManager extends AbstractChartManager {
 
     // Add X axis
     var x = d3.scaleBand()
-      .domain(xlabels)
+      .domain(subGroups)
       .range([0, this.width])
       .padding([0.1])
     this.svg.append('g')
