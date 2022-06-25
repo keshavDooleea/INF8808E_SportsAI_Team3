@@ -30,7 +30,7 @@ export class StackedBarChartManager extends AbstractChartManager {
         this.maneDataG = {
           player: element.Player + '\n Regular Shots',
           made: Number(element.GSh),
-          missed: 1 - Number(element.GSh)
+          missed: Number(element.Sh)
         }
         this.maneDataP = {
           player: element.Player + '\n Penalty Shots',
@@ -42,7 +42,7 @@ export class StackedBarChartManager extends AbstractChartManager {
         this.benzemaDataG = {
           player: element.Player + '\n Regular Shots',
           made: Number(element.GSh),
-          missed: 1 - Number(element.GSh)
+          missed: Number(element.Sh)
         }
         this.benzemaDataP = {
           player: element.Player + '\n Penalty Shots',
@@ -54,7 +54,7 @@ export class StackedBarChartManager extends AbstractChartManager {
         this.mbappeDataG = {
           player: element.Player + '\n Regular Shots',
           made: Number(element.GSh),
-          missed: 1 - Number(element.GSh)
+          missed: Number(element.Sh)
         }
         this.mbappeDataP = {
           player: element.Player + '\n Penalty Shots',
@@ -108,14 +108,14 @@ export class StackedBarChartManager extends AbstractChartManager {
     var color = d3
       .scaleOrdinal()
       .domain(subGroups)
-      .range(['#e41a1c', '#4daf4a'])
+      .range(['#4daf4a', '#e41a1c'])
 
     // Add X axis
     var x = d3
       .scaleBand()
       .domain(groups)
       .range([0, width])
-      .padding([0.1])
+      .padding([0.2])
     this.svg
       .append('g')
       .attr(
@@ -125,7 +125,7 @@ export class StackedBarChartManager extends AbstractChartManager {
           ${height + this.heightOffsetAxis}
         )`
       )
-      .call(d3.axisBottom(x).tickSize(0))
+      .call(d3.axisBottom(x).tickSize(5))
 
     // Add Y axis
     var formatPercent = d3.format('.0%')
