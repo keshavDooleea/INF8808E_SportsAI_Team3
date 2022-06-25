@@ -1,44 +1,95 @@
 import { csvToObject } from '../utils/csv-parser'
 
 class PlayersHelperClass {
-  async getSummaryData () {
+  async getSummaryData() {
     this.maneSummaryData = await csvToObject('sadio_mane/summary.csv')
     this.benzemaSummaryData = await csvToObject('karim_benzema/summary.csv')
     this.mbappeSummaryData = await csvToObject('kylian_mbappe/summary.csv')
   }
 
-  async getGroupedData () {
-    this.groupedDefensiveData = await csvToObject('grouped_data/grouped_defensive_stats.csv')
-    this.groupedPassData = await csvToObject('grouped_data/grouped_pass_stats.csv')
-    this.groupedPossesionData = await csvToObject('grouped_data/grouped_possession_stats.csv')
-    this.groupedShootingData = await csvToObject('grouped_data/grouped_shooting_stats.csv')
+  async getGroupedData() {
+    this.groupedDefensiveData = await csvToObject(
+      'grouped_data/grouped_defensive_stats.csv'
+    )
+    this.groupedPassData = await csvToObject(
+      'grouped_data/grouped_pass_stats.csv'
+    )
+    this.groupedPossesionData = await csvToObject(
+      'grouped_data/grouped_possession_stats.csv'
+    )
+    this.groupedShootingData = await csvToObject(
+      'grouped_data/grouped_shooting_stats.csv'
+    )
   }
 
-  get maneColor () {
+  async getChampionshipData() {
+    this.championshipData = {
+      sadio_mane: {
+        domesticCups: {},
+        domesticLeagues: {},
+        internationalCups: {},
+        nationalTeam: {}
+      },
+      karim_benzema: {
+        domesticCups: {},
+        domesticLeagues: {},
+        internationalCups: {},
+        nationalTeam: {}
+      },
+      kylian_mbappe: {
+        domesticCups: {},
+        domesticLeagues: {},
+        internationalCups: {},
+        nationalTeam: {}
+      }
+    }
+
+    await Promise.all(
+      Object.keys(this.championshipData).map(async (player) => {
+        this.championshipData[player].domesticCups = await csvToObject(
+          `${player}/domestic_cups.csv`
+        )
+
+        this.championshipData[player].domesticLeagues = await csvToObject(
+          `${player}/domestic_leagues.csv`
+        )
+
+        this.championshipData[player].internationalCups = await csvToObject(
+          `${player}/international_cups.csv`
+        )
+
+        this.championshipData[player].nationalTeam = await csvToObject(
+          `${player}/national_team.csv`
+        )
+      })
+    )
+  }
+
+  get maneColor() {
     return '#4682B4'
   }
 
-  get benzemaColor () {
+  get benzemaColor() {
     return '#6F4E7C'
   }
 
-  get mbappeColor () {
+  get mbappeColor() {
     return '#FFA056'
   }
 
-  get maneName () {
+  get maneName() {
     return 'Sadio Mané'
   }
 
-  get benzemaName () {
+  get benzemaName() {
     return 'Karim Benzema'
   }
 
-  get mbappeName () {
+  get mbappeName() {
     return 'Kylian Mbappé'
   }
 
-  get playersAttributes () {
+  get playersAttributes() {
     return [
       {
         name: this.maneName,
@@ -59,7 +110,7 @@ class PlayersHelperClass {
    *
    * @returns {object[]} Array of all 3 players names
    */
-  get playersName () {
+  get playersName() {
     return this.playersAttributes.map((player) => player.name)
   }
 
@@ -67,7 +118,7 @@ class PlayersHelperClass {
    *
    * @returns {object[]} Array of all 3 players colors
    */
-  get playersColor () {
+  get playersColor() {
     return this.playersAttributes.map((player) => player.color)
   }
 }
