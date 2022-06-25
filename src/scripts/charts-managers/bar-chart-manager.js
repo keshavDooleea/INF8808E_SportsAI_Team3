@@ -32,7 +32,6 @@ export class BarChartManager extends AbstractChartManager {
       }
     ]
 
-    console.log('Bar chart preprocess', this.winRegex.test('1st'))
     let totalDomesticCups = 0
     let totalDomesticLeagues = 0
     let totalInternationalCups = 0
@@ -47,12 +46,9 @@ export class BarChartManager extends AbstractChartManager {
       }
     )
 
-    console.log(this.playerHelperSingleton.championshipData)
-
     this.barChartData.forEach((barChart) => {
       Object.entries(this.playerHelperSingleton.championshipData).forEach(
         ([playerName, data]) => {
-          // console.log(barChart, data, playerName);
           const domesticCupsWin = data.domesticCups.filter((c) =>
             this.winRegex.test(c.LgRank)
           ).length
@@ -68,8 +64,6 @@ export class BarChartManager extends AbstractChartManager {
           const nationalTeamWin = data.nationalTeam.filter((c) =>
             this.winRegex.test(c.LgRank)
           ).length
-
-          console.log(barChart.id)
 
           if (barChart.id === 'domestic_cups') {
             barChart.values.push({
@@ -137,17 +131,20 @@ export class BarChartManager extends AbstractChartManager {
       .text('Types of championship')
       .attr(
         'transform',
-        `translate(${this.margin.left + this.margin.leftPadding}, ${
+        `translate(${this.leftAxisPosition + this.margin.leftPadding}, ${
           this.svgHeight
         })`
       )
   }
 
-  initializeVariables() {}
+  initializeVariables() {
+    this.leftAxisPosition = 20
+    this.heightOffsetAxis = 4
+    this.margin = { top: 20, right: 20, bottom: 30, left: 40, leftPadding: 70 }
+  }
 
   initializeCharts() {
     this.svg = d3.select('#bar-chart-svg')
-
     this.svgWidth = parseInt(this.svg.style('width'))
     this.svgHeight = parseInt(this.svg.style('height'))
 
@@ -158,7 +155,6 @@ export class BarChartManager extends AbstractChartManager {
       return d.playerName
     })
 
-    this.margin = { top: 20, right: 20, bottom: 30, left: 40, leftPadding: 70 }
     var width = this.svgWidth - this.margin.left - this.margin.right
     var height = this.svgHeight - this.margin.top - this.margin.bottom
 
@@ -172,16 +168,13 @@ export class BarChartManager extends AbstractChartManager {
       .range([0, width])
       .padding([0.1]) // x0 championship
 
-    const leftAxisPosition = 20
-    const heightOffsetAxis = 4
-
     this.svg
       .append('g')
       .attr('class', 'x axis')
       .attr(
         'transform',
-        `translate(${leftAxisPosition + this.margin.leftPadding}, ${
-          height + heightOffsetAxis
+        `translate(${this.leftAxisPosition + this.margin.leftPadding}, ${
+          height + this.heightOffsetAxis
         })`
       )
       .call(d3.axisBottom(x).tickSize(0))
@@ -210,9 +203,9 @@ export class BarChartManager extends AbstractChartManager {
       .attr('class', 'y axis')
       .attr(
         'transform',
-        `translate(${
-          leftAxisPosition + this.margin.leftPadding
-        }, ${heightOffsetAxis})`
+        `translate(${this.leftAxisPosition + this.margin.leftPadding}, ${
+          this.heightOffsetAxis
+        })`
       )
       .call(d3.axisLeft(y))
       .append('text')
@@ -249,9 +242,9 @@ export class BarChartManager extends AbstractChartManager {
       .append('g')
       .attr('class', 'g')
       .attr('transform', (d) => {
-        return `translate(${
-          x(d.championshipName) + this.margin.leftPadding
-        }, ${heightOffsetAxis})`
+        return `translate(${x(d.championshipName) + this.margin.leftPadding}, ${
+          this.heightOffsetAxis
+        })`
       })
 
     slice

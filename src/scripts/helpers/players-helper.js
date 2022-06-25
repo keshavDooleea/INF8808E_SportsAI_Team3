@@ -1,13 +1,13 @@
 import { csvToObject } from '../utils/csv-parser'
 
 class PlayersHelperClass {
-  async getSummaryData () {
+  async getSummaryData() {
     this.maneSummaryData = await csvToObject('sadio_mane/summary.csv')
     this.benzemaSummaryData = await csvToObject('karim_benzema/summary.csv')
     this.mbappeSummaryData = await csvToObject('kylian_mbappe/summary.csv')
   }
 
-  async getGroupedData () {
+  async getGroupedData() {
     this.groupedDefensiveData = await csvToObject(
       'grouped_data/grouped_defensive_stats.csv'
     )
@@ -22,7 +22,7 @@ class PlayersHelperClass {
     )
   }
 
-  async getChampionshipData () {
+  async getChampionshipData() {
     this.championshipData = {
       sadio_mane: {
         domesticCups: {},
@@ -46,7 +46,6 @@ class PlayersHelperClass {
 
     await Promise.all(
       Object.keys(this.championshipData).map(async (player) => {
-        console.log('keys', player)
         this.championshipData[player].domesticCups = await csvToObject(
           `${player}/domestic_cups.csv`
         )
@@ -64,38 +63,33 @@ class PlayersHelperClass {
         )
       })
     )
-
-    console.log(
-      'champions hsip data',
-      this.championshipData.karim_benzema.domesticCups
-    )
   }
 
-  get maneColor () {
+  get maneColor() {
     return '#4682B4'
   }
 
-  get benzemaColor () {
+  get benzemaColor() {
     return '#6F4E7C'
   }
 
-  get mbappeColor () {
+  get mbappeColor() {
     return '#FFA056'
   }
 
-  get maneName () {
+  get maneName() {
     return 'Sadio Mané'
   }
 
-  get benzemaName () {
+  get benzemaName() {
     return 'Karim Benzema'
   }
 
-  get mbappeName () {
+  get mbappeName() {
     return 'Kylian Mbappé'
   }
 
-  get playersAttributes () {
+  get playersAttributes() {
     return [
       {
         name: this.maneName,
@@ -116,7 +110,7 @@ class PlayersHelperClass {
    *
    * @returns {object[]} Array of all 3 players names
    */
-  get playersName () {
+  get playersName() {
     return this.playersAttributes.map((player) => player.name)
   }
 
@@ -124,7 +118,7 @@ class PlayersHelperClass {
    *
    * @returns {object[]} Array of all 3 players colors
    */
-  get playersColor () {
+  get playersColor() {
     return this.playersAttributes.map((player) => player.color)
   }
 }
