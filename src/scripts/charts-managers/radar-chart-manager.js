@@ -119,7 +119,8 @@ export class RadarChartManager extends AbstractChartManager {
       TranslateX: this.getWidth(),
       TranslateY: 30,
       ExtraWidthX: 100,
-      ExtraWidthY: 100
+      ExtraWidthY: 100,
+      nodeRadius: 7
     }
     this.setAdjustedPlayerValues(
       this.maneData,
@@ -337,7 +338,6 @@ export class RadarChartManager extends AbstractChartManager {
 
   drawAreas(maneData, benzemaData, mbappeData) {
     const dataSets = [maneData, benzemaData, mbappeData]
-    // let series = 0
     const w = this.config.w
     const h = this.config.h
     const factor = this.config.factor
@@ -388,7 +388,6 @@ export class RadarChartManager extends AbstractChartManager {
         .attr('stroke', colors[datai])
         .attr('stroke-width', '2px')
         .attr('transform', 'translate(' + w / 2 + ')')
-      // series = 0
     })
   }
 
@@ -436,12 +435,12 @@ export class RadarChartManager extends AbstractChartManager {
         .enter()
         .append('svg:circle')
         .attr('class', function () {
-          return 'radar-chart-serie_' + datai
+          return 'radar-chart-node-serie_' + datai
         })
         .attr('id', function () {
-          return 'radar-chart-node_' + series++
+          return 'radar-chart-node_' + datai + '_' + series++
         })
-        .attr('r', 7)
+        .attr('r', this.config.nodeRadius)
         .attr('cx', function (j) {
           return j[0]
         })
@@ -449,16 +448,46 @@ export class RadarChartManager extends AbstractChartManager {
           return j[1]
         })
         .style('fill', colors[datai])
-        // .style('stroke', 'white')
-        .style('stroke-width', '0.25px')
+        // .style('stroke', 'white') // Uncomment to add
         .attr('transform', 'translate(' + w / 2 + ')')
         .on('mouseover', (data, index, element) => {
-          this.svg.select(`.radar-chart-node_${series}`)
+          this.svg
+            .selectAll('polygon')
+            .transition(200)
+            .style('fill-opacity', 0.1)
+            .style('stroke-opacity', 0.1)
+          this.svg
+            .selectAll('circle')
+            .transition(200)
+            .style('fill-opacity', 0.01)
+            .attr('r', this.config.nodeRadius)
+          this.svg
+            .select(`.radar-chart-serie_${datai}`)
+            .transition(200)
+            .style('fill-opacity', 0.8)
+          this.svg
+            .selectAll(`.radar-chart-node-serie_${datai}`)
+            .transition(200)
+            .style('fill-opacity', 0.8)
+          this.svg
+            .select(`#radar-chart-node_${datai}_${index}`)
+            .transition(200)
+            .attr('r', this.config.nodeRadius * 1.3)
           this.tooltip.show(data, element[index])
         })
-        .on('mouseout', () => {
+        .on('mouseout', (data, index, element) => {
           this.svg.select(`.radar-chart-node_${series}`)
           this.tooltip.hide()
+          this.svg
+            .selectAll('polygon') ////////////////////////////////////////////////////
+            .transition(200)
+            .style('fill-opacity', this.config.opacityArea)
+            .style('stroke-opacity', 1)
+          this.svg.selectAll('circle').transition(200).style('fill-opacity', 1)
+          this.svg
+            .select(`#radar-chart-node_${datai}_${index}`)
+            .transition(200)
+            .attr('r', this.config.nodeRadius)
         })
       series = 0
     })
