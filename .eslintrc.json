@@ -11,5 +11,6 @@
   "globals": {
     "d3": true
   },
-  "plugins": ["jsdoc"]
+  "plugins": ["jsdoc"],
+  "space-before-function-paren": ["error"]
 }
