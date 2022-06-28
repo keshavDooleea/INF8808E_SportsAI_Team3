@@ -6,7 +6,7 @@ import { AbstractChartManager } from './abstract-chart-manager'
  * @class StackedBarChartManager
  */
 export class StackedBarChartManager extends AbstractChartManager {
-  preprocess() {
+  preprocess () {
     this.shootingData = this.preprocessShootingData(
       this.playerHelperSingleton.groupedShootingData
     )
@@ -18,7 +18,7 @@ export class StackedBarChartManager extends AbstractChartManager {
    * @param {object[]} shootingData the grouped shooting data
    * @returns {object[]} the preprocessed data
    **/
-  preprocessShootingData(shootingData) {
+  preprocessShootingData (shootingData) {
     shootingData.forEach((element) => {
       var PK = 0
       // eslint-disable-next-line eqeqeq
@@ -74,7 +74,7 @@ export class StackedBarChartManager extends AbstractChartManager {
     ]
   }
 
-  drawLegend(width) {
+  drawLegend (width) {
     const legend = this.chartHelper.createLegend(
       this.svg,
       width,
@@ -86,13 +86,13 @@ export class StackedBarChartManager extends AbstractChartManager {
     legend.attr('id', 'stacked-chart-legend')
   }
 
-  initializeVariables() {
+  initializeVariables () {
     this.leftAxisPosition = 20
     this.heightOffsetAxis = 4
     this.margin = { top: 20, right: 20, bottom: 30, left: 40, leftPadding: 70 }
   }
 
-  initializeCharts() {
+  initializeCharts () {
     this.svg = d3.select('#stacked-bar-chart-svg')
     this.svgWidth = parseInt(this.svg.style('width'))
     this.svgHeight = parseInt(this.svg.style('height'))
@@ -113,7 +113,7 @@ export class StackedBarChartManager extends AbstractChartManager {
     var color = d3
       .scaleOrdinal()
       .domain(subGroups)
-      .range(['#4daf4a', '#e41a1c'])
+      .range([d3.rgb('#e41a1c'), d3.rgb('#4daf4a')])
 
     this.drawLegend(width * 0.97)
 
@@ -156,6 +156,10 @@ export class StackedBarChartManager extends AbstractChartManager {
     // Stack the data
     var stackedData = d3.stack().keys(subGroups)(this.shootingData)
 
+    const tip = this.chartHelper.createTip(this.svg, [-4, 0], (d) => {
+      return `<span>Percentage: ${Math.round(d)}%</span>`
+    })
+
     // Place the bars
     this.svg
       .select('#stacked-chart-container')
@@ -172,7 +176,7 @@ export class StackedBarChartManager extends AbstractChartManager {
       .enter()
       .append('g')
       .attr('fill', function (d) {
-        return color(d.key)
+        return color(d)
       })
       .selectAll('rect')
       .data(function (d) {
@@ -189,8 +193,16 @@ export class StackedBarChartManager extends AbstractChartManager {
       .attr('height', function (d) {
         return y(d[0]) - y(d[1])
       })
-      .attr('width', function (d) {
+      .attr('width', function () {
         return x.bandwidth()
+      })
+      .on('mouseover', function (d) {
+        d3.select(this).attr('fill', d3.rgb(color(d)).darker(2))
+        tip.show((d[0] - d[1]) * -100, this)
+      })
+      .on('mouseout', function (d) {
+        d3.select(this).attr('fill', d3.rgb(color(d)))
+        tip.hide()
       })
   }
 }
