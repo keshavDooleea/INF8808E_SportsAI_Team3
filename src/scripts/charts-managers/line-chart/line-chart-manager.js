@@ -178,30 +178,11 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   setGraphLabels() {
-    this.setLabelY()
     this.setLabelX()
-  }
-
-  setLabelY() {
-    // break each word in order to display each one in a line for horizontal text
-    const labelsY = this.lineChartState.currentState.labelY.split(' ')
-    const textHeight = 40
-
-    // display each word in a new line
-    labelsY.forEach((label, index) => {
-      const positionY =
-        (this.margin.top + this.svgHeight + textHeight * index) / 2
-
-      this.svg
-        .append('g')
-        .append('text')
-        .text(label)
-        .attr('class', 'line-chart-label-y')
-        .attr(
-          'transform',
-          `translate(0, ${positionY - (textHeight * labelsY.length) / 2})`
-        )
-    })
+    this.setLabelY(
+      this.lineChartState.currentState.labelY,
+      'line-chart-label-y'
+    )
   }
 
   setLabelX() {
@@ -356,7 +337,10 @@ export class LineChartManager extends AbstractChartManager {
     this.svg.selectAll('.line-chart-dots').remove()
     this.svg.selectAll('.line-chart-label-y').remove()
 
-    this.setLabelY()
+    this.setLabelY(
+      this.lineChartState.currentState.labelY,
+      'line-chart-label-y'
+    )
     this.updateTitleDetailsPosition()
     this.drawLines()
   }

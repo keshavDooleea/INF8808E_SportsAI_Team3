@@ -136,28 +136,6 @@ export class BarChartManager extends AbstractChartManager {
       )
   }
 
-  setLabelY() {
-    // break each word in order to display each one in a line for horizontal text
-    const labelsY = 'Types of championship'.split(' ')
-    const textHeight = 40
-
-    // display each word in a new line
-    labelsY.forEach((label, index) => {
-      const positionY =
-        (this.margin.top + this.svgHeight + textHeight * index) / 2
-
-      this.svg
-        .append('g')
-        .append('text')
-        .text(label)
-        .attr('class', 'bar-chart-label-y')
-        .attr(
-          'transform',
-          `translate(0, ${positionY - (textHeight * labelsY.length) / 2})`
-        )
-    })
-  }
-
   createTip() {
     return this.chartHelper.createTip(this.svg, [-4, 0], (playerData) => {
       return `
@@ -194,7 +172,7 @@ export class BarChartManager extends AbstractChartManager {
       .range(['#6f4e7c', '#ffa056', '#4682b4'])
 
     this.setLabelX()
-    this.setLabelY()
+    this.setLabelY('Types of championship', 'bar-chart-label-y')
     this.drawLegend()
     const tip = this.createTip()
 
@@ -229,15 +207,6 @@ export class BarChartManager extends AbstractChartManager {
         .call(d3.axisBottom(x).tickSizeOuter(0))
         .call((g) => g.select('.domain').remove())
         .call(d3.axisBottom(x).ticks(10, 's'))
-    // .call((g) =>
-    //   g
-    //     .select('.tick:last-of-type text')
-    //     .clone()
-    //     .attr('x', 15)
-    //     .attr('text-anchor', 'start')
-    //     .attr('font-weight', 'bold')
-    //     .text(data.y)
-    // )
 
     const yAxis = (g) =>
       g
@@ -275,6 +244,7 @@ export class BarChartManager extends AbstractChartManager {
       })
       .duration(1000)
       .attr('width', function (d) {
+        console.log(x(d.value) - x(0))
         return x(d.value) - x(0)
       })
 
