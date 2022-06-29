@@ -109,7 +109,7 @@ class ChartHelperClass {
    */
   createTip(svg, offset, contentCallbackFunction) {
     const tip = d3Tip()
-      .attr('class', 'tip-panel')
+      .attr('class', 'tip-panel d3-tip')
       .offset(offset)
       .html((data) => contentCallbackFunction(data))
 
