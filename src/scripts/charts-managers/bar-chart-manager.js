@@ -36,22 +36,24 @@ export class BarChartManager extends AbstractChartManager {
       }
     ]
 
-    let totalDomesticCups = 0
-    let totalDomesticLeagues = 0
-    let totalInternationalCups = 0
-    let totalNationalTeam = 0
-
-    Object.entries(this.playerHelperSingleton.championshipData).forEach(
-      ([playerName, data]) => {
-        totalDomesticCups += data.domesticCups.length
-        totalDomesticLeagues += data.domesticLeagues.length
-        totalInternationalCups += data.internationalCups.length
-        totalNationalTeam += data.nationalTeam.length
-      }
-    )
-
     const getPercentage = (value, total) => {
       return parseFloat(((value / total) * 100).toFixed(2))
+    }
+
+    const getPlayerFullName = (playerName) => {
+      const csvPlayerName = playerName.split('_')[0].toLocaleLowerCase()
+
+      if (csvPlayerName.includes('sadio')) {
+        return this.playerHelperSingleton.maneName
+      }
+
+      if (csvPlayerName.includes('kylian')) {
+        return this.playerHelperSingleton.mbappeName
+      }
+
+      if (csvPlayerName.includes('karim')) {
+        return this.playerHelperSingleton.benzemaName
+      }
     }
 
     this.barChartData.forEach((barChart) => {
@@ -73,12 +75,15 @@ export class BarChartManager extends AbstractChartManager {
             this.winRegex.test(c.LgRank)
           ).length
 
+          let playerCompleteName = getPlayerFullName(playerName)
+
           if (barChart.id === 'domestic_cups') {
             barChart.values.push({
               raw: domesticCupsWin,
               value: getPercentage(domesticCupsWin, data.domesticCups.length),
               playerName: playerName,
-              outOf: data.domesticCups.length
+              outOf: data.domesticCups.length,
+              name: playerCompleteName
             })
           } else if (barChart.id === 'domestic_leagues') {
             barChart.values.push({
@@ -88,7 +93,8 @@ export class BarChartManager extends AbstractChartManager {
                 data.domesticLeagues.length
               ),
               playerName: playerName,
-              outOf: data.domesticLeagues.length
+              outOf: data.domesticLeagues.length,
+              name: playerCompleteName
             })
           } else if (barChart.id === 'international_cups') {
             barChart.values.push({
@@ -98,14 +104,16 @@ export class BarChartManager extends AbstractChartManager {
                 data.internationalCups.length
               ),
               playerName: playerName,
-              outOf: data.internationalCups.length
+              outOf: data.internationalCups.length,
+              name: playerCompleteName
             })
           } else {
             barChart.values.push({
               raw: nationalTeamWin,
               value: getPercentage(nationalTeamWin, data.nationalTeam.length),
               playerName: playerName,
-              outOf: data.nationalTeam.length
+              outOf: data.nationalTeam.length,
+              name: playerCompleteName
             })
           }
         }
@@ -140,7 +148,7 @@ export class BarChartManager extends AbstractChartManager {
     return this.chartHelper.createTip(this.svg, [-4, 0], (playerData) => {
       return `
       <div>
-      <p class="tip-title">${playerData.playerName}</p>
+      <p class="tip-title">${playerData.name}</p>
       <p class="tip-subtitle">${playerData.value} %</p>
       <div>
       <span>Won: ${playerData.raw}</span>
@@ -169,7 +177,7 @@ export class BarChartManager extends AbstractChartManager {
     const color = d3
       .scaleOrdinal()
       .domain(playersNames)
-      .range(['#6f4e7c', '#ffa056', '#4682b4'])
+      .range(this.playerHelperSingleton.playersColor)
 
     this.setLabelX()
     this.setLabelY('Types of championship', 'bar-chart-label-y')
@@ -212,7 +220,6 @@ export class BarChartManager extends AbstractChartManager {
       g
         .attr('transform', `translate(${this.margin.left},0)`)
         .call(d3.axisLeft(y0).ticks(null, 's'))
-        .call((g) => g.select('.domain').remove())
 
     this.svg
       .append('g')
