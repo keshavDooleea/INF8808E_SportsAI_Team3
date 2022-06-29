@@ -159,6 +159,18 @@ export class RadarChartManager extends AbstractChartManager {
       .append('g')
       .attr('transform', 'translate(' + 0 + ',' + this.config.TranslateY + ')')
       .attr('id', 'mainGraphBody')
+      .on('mouseleave', () => {
+        for (let index = 0; index < 3; index++) {
+          this.svg.select(`.radar-chart-node_${index}`)
+          this.tooltip.hide()
+          this.svg
+            .selectAll('polygon')
+            .transition(200)
+            .style('fill-opacity', this.config.opacityArea)
+            .style('stroke-opacity', 1)
+          this.svg.selectAll('circle').transition(200).style('fill-opacity', 1)
+        }
+      })
 
     this.drawAreas(
       this.adjustedManeData,
@@ -471,31 +483,29 @@ export class RadarChartManager extends AbstractChartManager {
         .style('fill', colors[datai])
         .attr('transform', 'translate(' + w / 2 + ')')
         .on('mouseover', (data, index, element) => {
-          setTimeout(() => {
-            this.svg
-              .selectAll('polygon')
-              .transition(200)
-              .style('fill-opacity', 0.1)
-              .style('stroke-opacity', 0.1)
-            this.svg
-              .selectAll('circle')
-              .transition(200)
-              .style('fill-opacity', 0.01)
-            this.svg
-              .selectAll('.common-transition-3')
-              .transition(200)
-              .style('fill-opacity', 1)
-              .attr('r', 10)
-            this.svg
-              .select(`.radar-chart-serie_${datai}`)
-              .transition(200)
-              .style('fill-opacity', 0.8)
-            this.svg
-              .selectAll(`.radar-chart-node-serie_${datai}`)
-              .transition(200)
-              .style('fill-opacity', 1)
-            this.tooltip.show(data, element[index])
-          }, 200)
+          this.svg
+            .selectAll('polygon')
+            .transition(200)
+            .style('fill-opacity', 0.1)
+            .style('stroke-opacity', 0.1)
+          this.svg
+            .selectAll('circle')
+            .transition(200)
+            .style('fill-opacity', 0.01)
+          this.svg
+            .selectAll('.common-transition-3')
+            .transition(200)
+            .style('fill-opacity', 1)
+            .attr('r', 10)
+          this.svg
+            .select(`.radar-chart-serie_${datai}`)
+            .transition(200)
+            .style('fill-opacity', 0.8)
+          this.svg
+            .selectAll(`.radar-chart-node-serie_${datai}`)
+            .transition(200)
+            .style('fill-opacity', 1)
+          this.tooltip.show(data, element[index])
         })
         .on('mouseout', (data, index, element) => {
           this.svg.select(`.radar-chart-node_${series}`)
@@ -506,10 +516,6 @@ export class RadarChartManager extends AbstractChartManager {
             .style('fill-opacity', this.config.opacityArea)
             .style('stroke-opacity', 1)
           this.svg.selectAll('circle').transition(200).style('fill-opacity', 1)
-          // this.svg
-          //   .select(`#radar-chart-node_${datai}_${index}`)
-          //   .transition(200)
-          //   .attr('r', this.config.nodeRadius)
         })
       series = 0
     })
@@ -618,7 +624,18 @@ export class RadarChartManager extends AbstractChartManager {
       () => this.onCheckboxUnchecked()
     )
 
-    checkbox.attr('id', 'radar-chart-checkbox')
+    checkbox.attr('id', 'radar-chart-checkbox').on('mouseenter', () => {
+      for (let index = 0; index < 3; index++) {
+        this.svg.select(`.radar-chart-node_${index}`)
+        this.tooltip.hide()
+        this.svg
+          .selectAll('polygon')
+          .transition(200)
+          .style('fill-opacity', this.config.opacityArea)
+          .style('stroke-opacity', 1)
+        this.svg.selectAll('circle').transition(200).style('fill-opacity', 1)
+      }
+    })
   }
 
   onCheckboxChecked() {
