@@ -84,17 +84,6 @@ export class StackedBarChartManager extends AbstractChartManager {
     ]
   }
 
-  drawLegend(width) {
-    const legend = this.chartHelper.createLegend(
-      this.svg,
-      width - 13,
-      this.margin.top,
-      ['Shots Made', 'Shots Missed'],
-      ['#4daf4a', '#e41a1c']
-    )
-    legend.attr('id', 'stacked-chart-legend')
-  }
-
   initializeVariables() {
     this.leftAxisPosition = 20
     this.heightOffsetAxis = 4
@@ -109,6 +98,7 @@ export class StackedBarChartManager extends AbstractChartManager {
 
     this.labelY = 'Attempted shots per player (%)'
     this.subGroups = ['made', 'missed']
+    this.colors = ['steelblue', '#91c9c4']
   }
 
   getGroupLabelX(data) {
@@ -223,16 +213,24 @@ export class StackedBarChartManager extends AbstractChartManager {
     })
   }
 
+  drawLegend(width) {
+    const legend = this.chartHelper.createLegend(
+      this.svg,
+      width - 13,
+      this.margin.top,
+      ['Shots Made', 'Shots Missed'],
+      this.colors
+    )
+    legend.attr('id', 'stacked-chart-legend')
+  }
+
   drawChart() {
     this.svg.append('g').attr('id', 'stacked-chart-container')
 
     // Stack the data
     var stackedData = d3.stack().keys(this.subGroups)(this.shootingData)
 
-    var color = d3
-      .scaleOrdinal()
-      .domain(this.subGroups)
-      .range(['#4daf4a', '#e41a1c'])
+    var color = d3.scaleOrdinal().domain(this.subGroups).range(this.colors)
 
     // Place the bars
     this.svg
