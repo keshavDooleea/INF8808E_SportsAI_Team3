@@ -254,10 +254,14 @@ export class StackedBarChartManager extends AbstractChartManager {
     // Stack the data
     var stackedData = d3.stack().keys(this.subGroups)(normalizedData)
 
-    const tip = this.chartHelper.createTip(this.svg, [-4, 0], (d) => {
-      return `<span>Percentage: ${Math.round(d)}%</span>`
+    this.tip = this.chartHelper.createTip(this.svg, [-4, 0], (d) => {
+      return `<div>
+      <p class="tip-title">${d.player}</p>
+      <div class="tip-content">Percentage: ${Math.round(d.value)}%</div>
+    </div>`
     })
 
+    const tipReference = this.tip
     var colors = ['steelblue', '#91c9c4']
 
     var color = d3.scaleOrdinal().domain(this.subGroups).range(this.colors)
@@ -298,13 +302,13 @@ export class StackedBarChartManager extends AbstractChartManager {
           value = d.data.missed
         }
         var percent = (value / total) * 100
-        tip.show(value, percent, this)
+        tipReference.show({ value, player: d.data.player }, percent, this)
         d3.select(this).attr('fill', d3.rgb(ogColor).darker(2))
       })
       .on('mouseout', function () {
         var ogColor = d3.select(this.parentNode).attr('fill')
         d3.select(this).attr('fill', d3.rgb(ogColor))
-        tip.hide()
+        tipReference.hide()
       })
 
     this.svgWidth = this.svg
@@ -331,6 +335,7 @@ export class StackedBarChartManager extends AbstractChartManager {
 
   refreshViews() {
     this.svg.selectAll('.stacked-rect').remove()
+    this.tip.hide()
     this.drawChart()
   }
 }

@@ -4,6 +4,7 @@ import { AbstractChartManager } from '../abstract-chart-manager'
 import { LineChartState } from './line-chart-state'
 import { distinctUntilChanged } from 'rxjs'
 import { scrollSubject } from '../../../scroll'
+
 /**
  * Manager for line chart visualization
  *
