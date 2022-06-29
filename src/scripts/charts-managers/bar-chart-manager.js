@@ -1,5 +1,7 @@
 import { TEXT_COLORS } from '../utils/utils'
 import { AbstractChartManager } from './abstract-chart-manager'
+import { scrollSubject } from '../../scroll'
+import { distinctUntilChanged } from 'rxjs'
 
 /**
  * Manager for bar chart visualization
@@ -9,6 +11,10 @@ import { AbstractChartManager } from './abstract-chart-manager'
 export class BarChartManager extends AbstractChartManager {
   constructor(svgId) {
     super(svgId)
+
+    scrollSubject.pipe(distinctUntilChanged()).subscribe((val) => {
+      if (val === 5) this.refreshViews()
+    })
   }
 
   preprocess() {
@@ -174,7 +180,7 @@ export class BarChartManager extends AbstractChartManager {
       return d.playerName
     })
 
-    const color = d3
+    this.color = d3
       .scaleOrdinal()
       .domain(playersNames)
       .range(this.playerHelperSingleton.playersColor)
@@ -182,18 +188,18 @@ export class BarChartManager extends AbstractChartManager {
     this.setLabelX()
     this.setLabelY('Types of championship', 'bar-chart-label-y')
     this.drawLegend()
-    const tip = this.createTip()
+    this.tip = this.createTip()
 
-    const y0 = d3
+    this.y0 = d3
       .scaleBand()
       .domain(championshipNames)
       .rangeRound([this.margin.top, this.height - this.margin.bottom])
       .paddingInner(0.1)
 
-    const y1 = d3
+    this.y1 = d3
       .scaleBand()
       .domain(playersNames)
-      .rangeRound([y0.bandwidth(), 0])
+      .rangeRound([this.y0.bandwidth(), 0])
       .padding(0.05)
 
     this.x = d3
@@ -219,41 +225,10 @@ export class BarChartManager extends AbstractChartManager {
     const yAxis = (g) =>
       g
         .attr('transform', `translate(${this.margin.left},0)`)
-        .call(d3.axisLeft(y0).ticks(null, 's'))
+        .call(d3.axisLeft(this.y0).ticks(null, 's'))
 
     this.drawVerticalLines()
-
-    this.svg
-      .append('g')
-      .selectAll('g')
-      .data(this.barChartData)
-      .join('g')
-      .attr('transform', (d) => {
-        return `translate(0, ${y0(d.championshipName)})`
-      })
-      .selectAll('rect')
-      .data((d) => d.values)
-      .join('rect')
-      .attr('x', (d) => this.x(0))
-      .attr('y', (d) => y1(d.playerName))
-      .attr('height', y1.bandwidth())
-      .attr('width', 0) // Width initially at 0 for animation
-      .attr('fill', (d) => color(d.playerName))
-      .on('mouseover', function (data) {
-        d3.select(this).style('fill', d3.rgb(color(data.playerName)).darker(2))
-        tip.show(data, this)
-      })
-      .on('mouseout', function (data) {
-        d3.select(this).style('fill', color(data.playerName))
-        tip.hide()
-      })
-      .transition()
-      .delay(function () {
-        return Math.random() * 1000
-      })
-      .duration(1000)
-      .attr('width', (d) => this.x(d.value) - this.x(0))
-
+    this.drawBars()
     this.svg.append('g').call(xAxis)
     this.svg.append('g').call(yAxis)
   }
@@ -282,5 +257,46 @@ export class BarChartManager extends AbstractChartManager {
           })`
         )
     }
+  }
+
+  drawBars() {
+    const color = this.color
+    const tip = this.tip
+    this.svg
+      .append('g')
+      .attr('class', 'bars')
+      .selectAll('g')
+      .data(this.barChartData)
+      .join('g')
+      .attr('transform', (d) => {
+        return `translate(0, ${this.y0(d.championshipName)})`
+      })
+      .selectAll('rect')
+      .data((d) => d.values)
+      .join('rect')
+      .attr('x', (d) => this.x(0))
+      .attr('y', (d) => this.y1(d.playerName))
+      .attr('height', this.y1.bandwidth())
+      .attr('width', 0) // Width initially at 0 for animation
+      .attr('fill', (d) => color(d.playerName))
+      .on('mouseover', function (data) {
+        d3.select(this).style('fill', d3.rgb(color(data.playerName)).darker(2))
+        tip.show(data, this)
+      })
+      .on('mouseout', function (data) {
+        d3.select(this).style('fill', color(data.playerName))
+        tip.hide()
+      })
+      .transition()
+      .delay(function () {
+        return Math.random() * 1000
+      })
+      .duration(1000)
+      .attr('width', (d) => this.x(d.value) - this.x(0))
+  }
+
+  refreshViews() {
+    this.svg.selectAll('.bars').remove()
+    this.drawBars()
   }
 }

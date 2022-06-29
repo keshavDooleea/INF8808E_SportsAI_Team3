@@ -2,7 +2,8 @@ import { getMonthInNumeric, getMonthYear } from '../../utils/date'
 import { TEXT_COLORS } from '../../utils/utils'
 import { AbstractChartManager } from '../abstract-chart-manager'
 import { LineChartState } from './line-chart-state'
-
+import { distinctUntilChanged } from 'rxjs'
+import { scrollSubject } from '../../../scroll'
 /**
  * Manager for line chart visualization
  *
@@ -11,6 +12,10 @@ import { LineChartState } from './line-chart-state'
 export class LineChartManager extends AbstractChartManager {
   constructor(svgId) {
     super(svgId)
+
+    scrollSubject.pipe(distinctUntilChanged()).subscribe((val) => {
+      if (val === 6) this.refreshViews()
+    })
   }
 
   preprocess() {
@@ -86,6 +91,7 @@ export class LineChartManager extends AbstractChartManager {
   }
 
   initializeCharts() {
+    this.svg = this.svg.append('g').attr('class', 'line-chart-main')
     this.margin = {
       top: 50,
       right: 150,

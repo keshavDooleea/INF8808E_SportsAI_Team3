@@ -23,7 +23,8 @@
     "d3-svg-legend": "^2.25.6",
     "d3-tip": "^0.9.1",
     "parcel-bundler": "^1.12.4",
-    "parcel-plugin-static-files-copy": "^2.4.3"
+    "parcel-plugin-static-files-copy": "^2.4.3",
+    "rxjs": "^7.5.5"
   },
   "devDependencies": {
     "eslint": "^7.4.0",

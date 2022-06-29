@@ -1,3 +1,5 @@
+import { Subject } from 'rxjs'
+// import { scrollSubject } from './scripts/utils/scroll-subject'
 /**
  * @file This file handles the logic when scrolling to handle the dots and page number on the right sidebar
  * @author Team 3
@@ -14,15 +16,17 @@ const sections = Array.from(document.querySelectorAll('main > section'))
 const dotActiveClass = 'active'
 const scrollOffset = 1
 
+let scrollSubject = new Subject()
+
 main()
 
 function main() {
   // create the dots based on the number of sections
-  createDots()
+  // createDots()
   const dots = document.querySelectorAll('.dots-container .dot')
 
   // set first page as default
-  activateDot(0)
+  activateDot(3)
 
   // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
   const sectionsBoundingBoxes = sections.map((section, index) => {
@@ -55,11 +59,14 @@ function main() {
   })
 
   // handle click event when clicking on a dot to navigate to a specific sectiono
-  dots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-      activateDot(index)
-    })
-  })
+  dots.forEach(
+    (dot, index) => {
+      dot.addEventListener('click', () => {
+        activateDot(index)
+      })
+    },
+    { once: true }
+  )
 
   // dynamically create small dots based on the number/length of sections
   function createDots() {
@@ -85,6 +92,11 @@ function main() {
 
   // update page number on the bottom of right sidebar
   function setChartNb(number) {
+    scrollSubject.next(number)
     chartNb.textContent = number
   }
+}
+
+module.exports = {
+  scrollSubject
 }

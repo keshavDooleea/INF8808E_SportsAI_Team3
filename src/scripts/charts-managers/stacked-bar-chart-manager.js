@@ -1,4 +1,6 @@
 import { AbstractChartManager } from './abstract-chart-manager'
+import { scrollSubject } from '../../scroll'
+import { distinctUntilChanged } from 'rxjs'
 
 /**
  * Manager for stacked chart visualization
@@ -8,6 +10,10 @@ import { AbstractChartManager } from './abstract-chart-manager'
 export class StackedBarChartManager extends AbstractChartManager {
   constructor(svgId) {
     super(svgId)
+
+    scrollSubject.pipe(distinctUntilChanged()).subscribe((val) => {
+      if (val === 4) this.refreshViews()
+    })
   }
 
   preprocess() {
@@ -159,12 +165,8 @@ export class StackedBarChartManager extends AbstractChartManager {
 
   drawLabelX() {
     const labelHeightOffset = 40
-    const xAxisWidth = this.svg
-      .select('#stacked-chart-container')
-      .node()
-      .getBoundingClientRect().width
 
-    const rectSize = xAxisWidth / this.shootingData.length
+    const rectSize = this.svgWidth / this.shootingData.length
 
     // remove odd positions since each 2 position is associated to a player
     const playerData = this.shootingData.filter((_, index) => index % 2 !== 0)
@@ -205,7 +207,6 @@ export class StackedBarChartManager extends AbstractChartManager {
 
   drawChart() {
     this.svg.append('g').attr('id', 'stacked-chart-container')
-
     // Stack the data
     var stackedData = d3.stack().keys(this.subGroups)(this.shootingData)
 
@@ -231,9 +232,36 @@ export class StackedBarChartManager extends AbstractChartManager {
       .data((d) => d)
       .enter()
       .append('rect')
+      .attr('class', 'stacked-rect')
       .attr('x', (d) => this.scaleX(this.getGroupLabelX(d.data)))
       .attr('y', (d) => this.scaleY(d[1]))
       .attr('height', (d) => this.scaleY(d[0]) - this.scaleY(d[1]))
-      .attr('width', this.barSize)
+      .attr('width', (d) => this.barSize)
+
+    this.svgWidth = this.svg
+      .select('#stacked-chart-container')
+      .node()
+      .getBoundingClientRect().width
+
+    this.svg.selectAll('.stacked-rect').attr('height', 0)
+
+    this.svg
+      .selectAll('.stacked-rect')
+      .transition()
+      .delay(function () {
+        return Math.random() * 1000
+      })
+      .duration(1000)
+      .attr('y', (d) => {
+        return this.scaleY(d[1])
+      })
+      .attr('height', (d) => {
+        return this.scaleY(d[0]) - this.scaleY(d[1])
+      })
+  }
+
+  refreshViews() {
+    this.svg.selectAll('.stacked-rect').remove()
+    this.drawChart()
   }
 }
