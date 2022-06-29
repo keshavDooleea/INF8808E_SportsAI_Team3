@@ -50,6 +50,10 @@ export class BarChartManager extends AbstractChartManager {
       }
     )
 
+    const getPercentage = (value, total) => {
+      return parseFloat(((value / total) * 100).toFixed(2))
+    }
+
     this.barChartData.forEach((barChart) => {
       Object.entries(this.playerHelperSingleton.championshipData).forEach(
         ([playerName, data]) => {
@@ -71,23 +75,37 @@ export class BarChartManager extends AbstractChartManager {
 
           if (barChart.id === 'domestic_cups') {
             barChart.values.push({
-              value: domesticCupsWin,
-              playerName: playerName
+              raw: domesticCupsWin,
+              value: getPercentage(domesticCupsWin, data.domesticCups.length),
+              playerName: playerName,
+              outOf: data.domesticCups.length
             })
           } else if (barChart.id === 'domestic_leagues') {
             barChart.values.push({
-              value: domesticLeaguesWin,
-              playerName: playerName
+              raw: domesticLeaguesWin,
+              value: getPercentage(
+                domesticLeaguesWin,
+                data.domesticLeagues.length
+              ),
+              playerName: playerName,
+              outOf: data.domesticLeagues.length
             })
           } else if (barChart.id === 'international_cups') {
             barChart.values.push({
-              value: internationalCupsWin,
-              playerName: playerName
+              raw: internationalCupsWin,
+              value: getPercentage(
+                internationalCupsWin,
+                data.internationalCups.length
+              ),
+              playerName: playerName,
+              outOf: data.internationalCups.length
             })
           } else {
             barChart.values.push({
-              value: nationalTeamWin,
-              playerName: playerName
+              raw: nationalTeamWin,
+              value: getPercentage(nationalTeamWin, data.nationalTeam.length),
+              playerName: playerName,
+              outOf: data.nationalTeam.length
             })
           }
         }
@@ -105,9 +123,22 @@ export class BarChartManager extends AbstractChartManager {
     legend.attr('id', 'bar-chart-legend')
   }
 
+  setLabelX() {
+    this.svg
+      .append('g')
+      .append('text')
+      .text('Amount of Championship Won %')
+      .attr(
+        'transform',
+        `translate(${this.leftAxisPosition + this.margin.leftPadding}, ${
+          this.svgHeight - this.margin.bottom
+        })`
+      )
+  }
+
   setLabelY() {
     // break each word in order to display each one in a line for horizontal text
-    const labelsY = 'Amount of Championship Won'.split(' ')
+    const labelsY = 'Types of championship'.split(' ')
     const textHeight = 40
 
     // display each word in a new line
@@ -127,24 +158,23 @@ export class BarChartManager extends AbstractChartManager {
     })
   }
 
-  setLabelX() {
-    // label of x axis
-    this.svg
-      .append('g')
-      .append('text')
-      .text('Types of championship')
-      .attr(
-        'transform',
-        `translate(${this.leftAxisPosition + this.margin.leftPadding}, ${
-          this.svgHeight
-        })`
-      )
+  createTip() {
+    return this.chartHelper.createTip(this.svg, [-4, 0], (playerData) => {
+      return `
+      <div>
+      <p class="tip-title">${playerData.playerName}</p>
+      <p class="tip-subtitle">${playerData.value} %</p>
+      <div>
+      <span>Won: ${playerData.raw}</span>
+      <br>
+      <span>Total Championships: ${playerData.outOf}</span>`
+    })
   }
 
   initializeVariables() {
-    this.leftAxisPosition = 20
+    this.leftAxisPosition = 40
     this.heightOffsetAxis = 4
-    this.margin = { top: 20, right: 20, bottom: 30, left: 40, leftPadding: 70 }
+    this.margin = { top: 20, right: 20, bottom: 30, left: 110, leftPadding: 70 }
   }
 
   initializeCharts() {
@@ -155,118 +185,82 @@ export class BarChartManager extends AbstractChartManager {
       return d.playerName
     })
 
-    var width = this.svgWidth - this.margin.left - this.margin.right
-    var height = this.svgHeight - this.margin.top - this.margin.bottom
+    const width = this.svgWidth - this.margin.left - this.margin.right
+    const height = this.svgHeight - this.margin.top - this.margin.bottom
+
+    const color = d3
+      .scaleOrdinal()
+      .domain(playersNames)
+      .range(['#6f4e7c', '#ffa056', '#4682b4'])
 
     this.setLabelX()
     this.setLabelY()
     this.drawLegend()
+    const tip = this.createTip()
 
-    const x = d3
+    const y0 = d3
       .scaleBand()
       .domain(championshipNames)
-      .range([0, width])
-      .padding([0.1]) // x0 championship
+      .rangeRound([this.margin.top, height - this.margin.bottom])
+      .paddingInner(0.1)
 
-    this.svg
-      .append('g')
-      .attr('class', 'x axis')
-      .attr(
-        'transform',
-        `translate(${this.leftAxisPosition + this.margin.leftPadding}, ${
-          height + this.heightOffsetAxis
-        })`
-      )
-      .call(d3.axisBottom(x).tickSize(0))
-
-    const xPlayerName = d3
+    const y1 = d3
       .scaleBand()
       .domain(playersNames)
-      .range([0, x.bandwidth()])
-      .padding([0.05]) // x1 playersnames
+      .rangeRound([y0.bandwidth(), 0])
+      .padding(0.05)
 
-    const y = d3
+    const x = d3
       .scaleLinear()
       .domain([
         0,
-
         d3.max(this.barChartData, function (playerName) {
           return d3.max(playerName.values, function (d) {
             return d.value
           })
         })
       ])
-      .range([height, 0])
+      .nice()
+      .rangeRound([this.margin.left, width - this.margin.right])
+
+    const xAxis = (g) =>
+      g
+        .attr('transform', `translate(0,${height - this.margin.bottom})`)
+        .call(d3.axisBottom(x).tickSizeOuter(0))
+        .call((g) => g.select('.domain').remove())
+        .call(d3.axisBottom(x).ticks(10, 's'))
+    // .call((g) =>
+    //   g
+    //     .select('.tick:last-of-type text')
+    //     .clone()
+    //     .attr('x', 15)
+    //     .attr('text-anchor', 'start')
+    //     .attr('font-weight', 'bold')
+    //     .text(data.y)
+    // )
+
+    const yAxis = (g) =>
+      g
+        .attr('transform', `translate(${this.margin.left},0)`)
+        .call(d3.axisLeft(y0).ticks(null, 's'))
+        .call((g) => g.select('.domain').remove())
 
     this.svg
       .append('g')
-      .attr('class', 'y axis')
-      .attr(
-        'transform',
-        `translate(${this.leftAxisPosition + this.margin.leftPadding}, ${
-          this.heightOffsetAxis
-        })`
-      )
-      .call(d3.axisLeft(y))
-      .append('text')
-      .attr('transform', 'rotate(-90)')
-      .attr('y', -40)
-      .attr('dy', '.7em')
-      .attr('dx', '-20em')
-      .style('text-anchor', 'end')
-      .style('font-family', 'Inter')
-      .style('font-size', '12px')
-      .style('font-style', 'normal')
-      .style('font-weight', '400')
-      .text('Amount of Win (%)')
-    var color = d3
-      .scaleOrdinal()
-      .domain(playersNames)
-      .range(['#6f4e7c', '#ffa056', '#4682b4'])
-
-    const tip = this.chartHelper.createTip(this.svg, [-4, 0], (playerData) => {
-      return `<span>Won: ${playerData.value}</span>`
-    })
-
-    this.svg
-      .select('.y')
-      .transition()
-      .duration(500)
-      .delay(1300)
-      .style('opacity', '1')
-
-    var slice = this.svg
-      .selectAll('.slice')
+      .selectAll('g')
       .data(this.barChartData)
-      .enter()
-      .append('g')
-      .attr('class', 'g')
+      .join('g')
       .attr('transform', (d) => {
-        return `translate(${x(d.championshipName) + this.margin.leftPadding}, ${
-          this.heightOffsetAxis
-        })`
+        return `translate(0, ${y0(d.championshipName)})`
       })
-
-    slice
       .selectAll('rect')
-      .data(function (d) {
-        return d.values
-      })
-      .enter()
-      .append('rect')
-      .attr('width', xPlayerName.bandwidth())
-      .attr('x', function (d) {
-        return xPlayerName(d.playerName)
-      })
-      .style('fill', function (d) {
-        return color(d.playerName)
-      })
-      .attr('y', function () {
-        return y(0)
-      })
-      .attr('height', function () {
-        return height - y(0)
-      })
+      .data((d) => d.values)
+      .join('rect')
+      .attr('x', (d) => x(0))
+      .attr('y', (d) => y1(d.playerName))
+      .attr('height', y1.bandwidth())
+      .attr('width', 0) // Width initially at 0 for animation
+      .attr('fill', (d) => color(d.playerName))
       .on('mouseover', function (data) {
         d3.select(this).style('fill', d3.rgb(color(data.playerName)).darker(2))
         tip.show(data, this)
@@ -275,19 +269,17 @@ export class BarChartManager extends AbstractChartManager {
         d3.select(this).style('fill', color(data.playerName))
         tip.hide()
       })
-
-    slice
-      .selectAll('rect')
       .transition()
       .delay(function () {
         return Math.random() * 1000
       })
       .duration(1000)
-      .attr('y', function (d) {
-        return y(d.value)
+      .attr('width', function (d) {
+        return x(d.value) - x(0)
       })
-      .attr('height', function (d) {
-        return height - y(d.value)
-      })
+
+    this.svg.append('g').call(xAxis)
+
+    this.svg.append('g').call(yAxis)
   }
 }
