@@ -11198,7 +11198,7 @@ function main() {
   // createDots()
   var dots = document.querySelectorAll('.dots-container .dot'); // set first page as default
 
-  activateDot(0); // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
+  activateDot(3); // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
 
   var sectionsBoundingBoxes = sections.map(function (section, index) {
     return {
@@ -11290,7 +11290,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64408" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50938" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
