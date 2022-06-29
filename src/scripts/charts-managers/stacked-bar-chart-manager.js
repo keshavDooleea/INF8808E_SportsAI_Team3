@@ -32,36 +32,42 @@ export class StackedBarChartManager extends AbstractChartManager {
       if (element.Player === 'Sadio Mané') {
         // this.maneData = [element.Player, [element.GSh, PK]]
         this.maneDataG = {
-          player: element.Player + '\n - Regular Shots',
+          player: element.Player,
+          shotType: 'Regular Shots',
           made: Number(element.GSh),
           missed: Number(element.Sh)
         }
         this.maneDataP = {
-          player: element.Player + '\n - Penalty Shots',
+          player: element.Player,
+          shotType: 'Penalty Shots',
           made: PK,
           missed: Number(element.PKatt) - PK
         }
       } else if (element.Player === 'Karim Benzema') {
         // this.benzemaData = [element.Player, [element.GSh, PK]]
         this.benzemaDataG = {
-          player: element.Player + '\n - Regular Shots',
+          player: element.Player,
+          shotType: 'Regular Shots',
           made: Number(element.GSh),
           missed: Number(element.Sh)
         }
         this.benzemaDataP = {
-          player: element.Player + '\n - Penalty Shots',
+          player: element.Player,
+          shotType: 'Penalty Shots',
           made: PK,
           missed: Number(element.PKatt) - PK
         }
       } else if (element.Player === 'Kylian Mbappé') {
         // this.mbappeData = [element.Player, [element.GSh, PK]]
         this.mbappeDataG = {
-          player: element.Player + '\n - Regular Shots',
+          player: element.Player,
+          shotType: 'Regular Shots',
           made: Number(element.GSh),
           missed: Number(element.Sh)
         }
         this.mbappeDataP = {
-          player: element.Player + '\n - Penalty Shots',
+          player: element.Player,
+          shotType: 'Penalty Shots',
           made: PK,
           missed: Number(element.PKatt) - PK
         }
@@ -81,7 +87,7 @@ export class StackedBarChartManager extends AbstractChartManager {
   drawLegend(width) {
     const legend = this.chartHelper.createLegend(
       this.svg,
-      width,
+      width - 13,
       this.margin.top,
       ['Shots Made', 'Shots Missed'],
       ['#4daf4a', '#e41a1c']
@@ -93,67 +99,140 @@ export class StackedBarChartManager extends AbstractChartManager {
     this.leftAxisPosition = 20
     this.heightOffsetAxis = 4
     this.margin = { top: 20, right: 20, bottom: 30, left: 40, leftPadding: 70 }
+
+    this.width = this.svgWidth - this.margin.left - this.margin.right
+    this.height = this.svgHeight - this.margin.top - this.margin.bottom
+
+    this.groups = d3
+      .map(this.shootingData, (data) => this.getGroupLabelX(data))
+      .keys()
+
+    this.labelY = 'Attempted shots per player (%)'
+    this.subGroups = ['made', 'missed']
+  }
+
+  getGroupLabelX(data) {
+    return `${data.player} - ${data.shotType}`
   }
 
   initializeCharts() {
-    var width = this.svgWidth - this.margin.left - this.margin.right
-    var height = this.svgHeight - this.margin.top - this.margin.bottom
+    this.drawLegend(this.width * 0.97)
+    this.drawLabels()
+    this.drawChart()
+    this.drawLabelX()
+    this.drawLabelY()
+  }
 
-    // this.svg.attr('width', 600).attr('height', 600).attr('padding', 10)
+  drawLabels() {
+    this.setAxisX()
+    this.setAxisY()
+  }
 
-    var groups = d3
-      .map(this.shootingData, function (d) {
-        return d.player
+  // Add X axis
+  setAxisX() {
+    this.scaleX = d3
+      .scaleBand()
+      .domain(this.groups)
+      .range([0, this.width * 0.85])
+      .padding([0.2])
+
+    this.barSize = this.scaleX.bandwidth()
+
+    this.svg
+      .append('g')
+      .attr(
+        'transform',
+        `translate(
+         ${this.leftAxisPosition + this.margin.leftPadding},
+         ${this.height + this.heightOffsetAxis}
+       )`
+      )
+      .call(d3.axisBottom(this.scaleX).tickSize(5))
+  }
+
+  setAxisY() {
+    // Add Y axis
+    var formatPercent = d3.format('.0%')
+    this.scaleY = d3.scaleLinear().domain([0, 1]).range([this.height, 0])
+
+    this.svg
+      .append('g')
+      .attr(
+        'transform',
+        `translate(
+           ${this.leftAxisPosition + this.margin.leftPadding},
+           ${this.heightOffsetAxis}
+         )`
+      )
+      .call(d3.axisLeft(this.scaleY).tickFormat(formatPercent))
+  }
+
+  drawLabelX() {
+    const labelHeightOffset = 40
+    const xAxisWidth = this.svg
+      .select('#stacked-chart-container')
+      .node()
+      .getBoundingClientRect().width
+
+    const rectSize = xAxisWidth / this.shootingData.length
+
+    // remove odd positions since each 2 position is associated to a player
+    const playerData = this.shootingData.filter((_, index) => index % 2 !== 0)
+
+    this.svg
+      .select('#stacked-chart-container')
+      .append('g')
+      .attr(
+        'transform',
+        `translate(
+        ${this.leftAxisPosition + this.margin.leftPadding},
+        ${this.heightOffsetAxis}
+      )`
+      )
+      .selectAll('g')
+      .data(playerData)
+      .enter()
+      .append('text')
+      .text((data) => data.player)
+      .attr('transform', (_, index) => {
+        return `translate(
+          ${rectSize * (index * 2) + this.barSize},
+          ${this.height + this.heightOffsetAxis + labelHeightOffset}
+        )`
       })
-      .keys()
+  }
 
-    var subGroups = ['made', 'missed']
+  drawLabelY() {
+    // break each word in order to display each one in a line for horizontal text
+    const labelsY = this.labelY.split(' ')
+    const textHeight = 40
+
+    // display each word in a new line
+    labelsY.forEach((label, index) => {
+      const positionY =
+        (this.margin.top + this.svgHeight + textHeight * index) / 2
+
+      this.svg
+        .append('g')
+        .append('text')
+        .text(label)
+        .attr(
+          'transform',
+          `translate(0, ${positionY - (textHeight * labelsY.length) / 2})`
+        )
+    })
+  }
+
+  drawChart() {
+    this.svg.append('g').attr('id', 'stacked-chart-container')
+
+    // Stack the data
+    var stackedData = d3.stack().keys(this.subGroups)(this.shootingData)
 
     var color = d3
       .scaleOrdinal()
-      .domain(subGroups)
+      .domain(this.subGroups)
       .range(['#4daf4a', '#e41a1c'])
-
-    this.drawLegend(width * 0.97)
-
-    this.svg.append('g').attr('id', 'stacked-chart-container')
-
-    // Add X axis
-    var x = d3
-      .scaleBand()
-      .domain(groups)
-      .range([0, width * 0.9])
-      .padding([0.2])
-
-    this.svg
-      .select('#stacked-chart-container')
-      .append('g')
-      .attr(
-        'transform',
-        `translate(
-          ${this.leftAxisPosition + this.margin.leftPadding},
-          ${height + this.heightOffsetAxis}
-        )`
-      )
-      .call(d3.axisBottom(x).tickSize(5))
-
-    // Add Y axis
-    var formatPercent = d3.format('.0%')
-    var y = d3.scaleLinear().domain([0, 1]).range([height, 0])
-    this.svg
-      .select('#stacked-chart-container')
-      .append('g')
-      .attr(
-        'transform',
-        `translate(
-          ${this.leftAxisPosition + this.margin.leftPadding},
-          ${this.heightOffsetAxis}
-        )`
-      )
-      .call(d3.axisLeft(y).tickFormat(formatPercent))
-
-    // Stack the data
-    var stackedData = d3.stack().keys(subGroups)(this.shootingData)
 
     // Place the bars
     this.svg
@@ -170,26 +249,14 @@ export class StackedBarChartManager extends AbstractChartManager {
       .data(stackedData)
       .enter()
       .append('g')
-      .attr('fill', function (d) {
-        return color(d.key)
-      })
+      .attr('fill', (d) => color(d.key))
       .selectAll('rect')
-      .data(function (d) {
-        return d
-      })
+      .data((d) => d)
       .enter()
       .append('rect')
-      .attr('x', function (d) {
-        return x(d.data.player)
-      })
-      .attr('y', function (d) {
-        return y(d[1])
-      })
-      .attr('height', function (d) {
-        return y(d[0]) - y(d[1])
-      })
-      .attr('width', function (d) {
-        return x.bandwidth()
-      })
+      .attr('x', (d) => this.scaleX(this.getGroupLabelX(d.data)))
+      .attr('y', (d) => this.scaleY(d[1]))
+      .attr('height', (d) => this.scaleY(d[0]) - this.scaleY(d[1]))
+      .attr('width', this.barSize)
   }
 }
