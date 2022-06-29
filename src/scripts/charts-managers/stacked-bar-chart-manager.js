@@ -79,7 +79,6 @@ export class StackedBarChartManager extends AbstractChartManager {
       this.svg,
       width,
       this.margin.top,
-      this.chartHelper.legendLineSymbol,
       ['Shots Made', 'Shots Missed'],
       ['#4daf4a', '#e41a1c']
     )

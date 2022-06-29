@@ -1,23 +1,23 @@
-const { playerHelperSingleton } = require("../helpers/players-helper");
-const { chartHelper } = require("../helpers/chart-helper");
+const { playerHelperSingleton } = require('../helpers/players-helper')
+const { chartHelper } = require('../helpers/chart-helper')
 
 /**
- * Declaring an abstract manager Class for charts manager.
+ * Declaring an abstract manager Class for charts manager to handle common behaviors/logics.
  *
  * @class AbstractChartManager
  */
 export class AbstractChartManager {
-  playerHelperSingleton = playerHelperSingleton;
-  chartHelper = chartHelper;
+  playerHelperSingleton = playerHelperSingleton
+  chartHelper = chartHelper
 
   constructor() {
     if (this.constructor == AbstractChartManager) {
-      throw new Error("Abstract classes can't be instantiated.");
+      throw new Error("Abstract classes can't be instantiated.")
     }
 
-    this.preprocess();
-    this.initializeVariables();
-    this.initializeCharts();
+    this.preprocess()
+    this.initializeVariables()
+    this.initializeCharts()
   }
 
   /**
@@ -25,7 +25,7 @@ export class AbstractChartManager {
    *
    */
   preprocess() {
-    throw new Error("Method 'preprocess()' must be implemented.");
+    throw new Error("Method 'preprocess()' must be implemented.")
   }
 
   /**
@@ -33,7 +33,7 @@ export class AbstractChartManager {
    *
    */
   initializeVariables() {
-    throw new Error("Method 'initializeVariables()' must be implemented.");
+    throw new Error("Method 'initializeVariables()' must be implemented.")
   }
 
   /**
@@ -41,10 +41,24 @@ export class AbstractChartManager {
    *
    */
   initializeCharts() {
-    throw new Error("Method 'initializeCharts()' must be implemented.");
+    throw new Error("Method 'initializeCharts()' must be implemented.")
   }
 
-  createPlayersLegend(svg, translateX, translateY, symbol) {
-    return this.chartHelper.createLegend(svg, translateX, translateY, symbol, this.playerHelperSingleton.playersName, this.playerHelperSingleton.playersColor);
+  /**
+   * Create a reusable legend based on players name and colors
+   *
+   * @param {object} svg the d3 svg element
+   * @param {number} translateX number of pixels for horizontal translation
+   * @param {number} translateY number of pixels for vertical translation
+   * @returns {object} The created legend element
+   */
+  createPlayersLegend(svg, translateX, translateY) {
+    return this.chartHelper.createLegend(
+      svg,
+      translateX,
+      translateY,
+      this.playerHelperSingleton.playersName,
+      this.playerHelperSingleton.playersColor
+    )
   }
 }
