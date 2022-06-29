@@ -56,8 +56,6 @@ export class RadarChartManager extends AbstractChartManager {
     )
   }
 
-  initializeVariables() {}
-
   /**
    * Get the Touches, Assists, Attempted Passes, Completed Passes, Pressures, % Completed Dribbles, Tackles, Goals, Shots and Carries of a player
    *
@@ -117,7 +115,7 @@ export class RadarChartManager extends AbstractChartManager {
     return result
   }
 
-  initializeCharts() {
+  initializeVariables() {
     this.margin = {
       top: 50,
       right: 150,
@@ -155,6 +153,9 @@ export class RadarChartManager extends AbstractChartManager {
     this.Format = d3.format('%')
     this.tooltip = this.createTooltip()
     this.isUEFAChecked = false
+  }
+
+  initializeCharts() {
     this.svg
       .append('g')
       .attr('transform', 'translate(' + 0 + ',' + this.config.TranslateY + ')')
@@ -598,7 +599,7 @@ export class RadarChartManager extends AbstractChartManager {
   drawLegend() {
     const legend = this.createPlayersLegend(
       this.svg,
-      this.svgWidth / 1.2 - this.chartHelper.buttonWidth,
+      this.getWidth(),
       this.margin.top,
       this.chartHelper.legendLineSymbol
     )
@@ -614,7 +615,7 @@ export class RadarChartManager extends AbstractChartManager {
 
     const checkbox = this.chartHelper.createCheckbox(
       this.svg,
-      this.svgWidth / 1.2 - this.chartHelper.buttonWidth,
+      this.getWidth(),
       heightOffset,
       'Toggle Radar Chart',
       'All Leagues',
