@@ -14,7 +14,7 @@ export class LineChartManager extends AbstractChartManager {
     super(svgId)
 
     scrollSubject.pipe(distinctUntilChanged()).subscribe((val) => {
-      if (val === 6) this.refreshViews()
+      if (val === 5) this.refreshViews()
     })
   }
 
