@@ -1,0 +1,4 @@
+Player,Span,Nation,Pos,Squad,90s,TotalCmp,TotalAtt,TotalCmpPerc,TotDist,PrgDist,ShortCmp,ShortAtt,ShortCmpPerc,MediumCmp,MediumAtt,MediumCmpPerc,LongCmp,LongAtt,LongCmpPerc,Ast,xA,A_xA,KP,third,PPA,CrsPA,Prog
+Sadio Mané,2021-22,SEN,FW,Liverpool,9.1,219,278,78.8,3472,704,117,137,85.4,78,93,83.9,20,28,71.4,1,1.9,-0.9,18,16,15,0,30,c691bfe2
+Karim Benzema,2021-22,FRA,FW,Real Madrid,12.2,435,530,82.1,6515,1393,249,292,85.3,127,154,82.5,36,45,80.0,1,2.7,-1.7,19,41,28,1,56,70d74ece
+Kylian Mbappé,2021-22,FRA,FW,Paris S-G,7.5,224,272,82.4,3123,566,143,164,87.2,58,70,82.9,14,16,87.5,4,2.4,+1.6,13,12,6,1,14,42fd9c7f

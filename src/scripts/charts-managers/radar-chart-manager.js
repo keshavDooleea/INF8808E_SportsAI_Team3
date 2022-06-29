@@ -7,6 +7,10 @@ import { TEXT_COLORS } from '../utils/utils'
  * @class RadarChartManager
  */
 export class RadarChartManager extends AbstractChartManager {
+  constructor(svgId) {
+    super(svgId)
+  }
+
   preprocess() {
     this.maneData = this.preprocessPlayer(
       this.playerHelperSingleton.groupedDefensiveData,
@@ -29,9 +33,28 @@ export class RadarChartManager extends AbstractChartManager {
       this.playerHelperSingleton.groupedShootingData,
       this.playerHelperSingleton.mbappeName
     )
+    this.maneDataUEFA = this.preprocessPlayer(
+      this.playerHelperSingleton.groupedDefensiveDataUEFA,
+      this.playerHelperSingleton.groupedPassDataUEFA,
+      this.playerHelperSingleton.groupedPossesionDataUEFA,
+      this.playerHelperSingleton.groupedShootingDataUEFA,
+      this.playerHelperSingleton.maneName
+    )
+    this.benzemaDataUEFA = this.preprocessPlayer(
+      this.playerHelperSingleton.groupedDefensiveDataUEFA,
+      this.playerHelperSingleton.groupedPassDataUEFA,
+      this.playerHelperSingleton.groupedPossesionDataUEFA,
+      this.playerHelperSingleton.groupedShootingDataUEFA,
+      this.playerHelperSingleton.benzemaName
+    )
+    this.mbappeDataUEFA = this.preprocessPlayer(
+      this.playerHelperSingleton.groupedDefensiveDataUEFA,
+      this.playerHelperSingleton.groupedPassDataUEFA,
+      this.playerHelperSingleton.groupedPossesionDataUEFA,
+      this.playerHelperSingleton.groupedShootingDataUEFA,
+      this.playerHelperSingleton.mbappeName
+    )
   }
-
-  initializeVariables() {}
 
   /**
    * Get the Touches, Assists, Attempted Passes, Completed Passes, Pressures, % Completed Dribbles, Tackles, Goals, Shots and Carries of a player
@@ -92,11 +115,7 @@ export class RadarChartManager extends AbstractChartManager {
     return result
   }
 
-  initializeCharts() {
-    this.svg = d3.select('#radar-chart-svg')
-    this.svgWidth = parseInt(this.svg.style('width'))
-    this.svgHeight = parseInt(this.svg.style('height'))
-
+  initializeVariables() {
     this.margin = {
       top: 50,
       right: 150,
@@ -114,7 +133,7 @@ export class RadarChartManager extends AbstractChartManager {
       levels: 6,
       maxValue: 50,
       radians: 2 * Math.PI,
-      opacityArea: 0.5,
+      opacityArea: 0.25,
       ToRight: 500,
       TranslateX: this.getWidth(),
       TranslateY: 30,
@@ -133,9 +152,26 @@ export class RadarChartManager extends AbstractChartManager {
       this.config.factor * Math.min(this.config.w / 2, this.config.h / 2)
     this.Format = d3.format('%')
     this.tooltip = this.createTooltip()
+    this.isUEFAChecked = false
+  }
+
+  initializeCharts() {
     this.svg
       .append('g')
       .attr('transform', 'translate(' + 0 + ',' + this.config.TranslateY + ')')
+      .attr('id', 'mainGraphBody')
+      .on('mouseleave', () => {
+        for (let index = 0; index < 3; index++) {
+          this.svg.select(`.radar-chart-node_${index}`)
+          this.tooltip.hide()
+          this.svg
+            .selectAll('polygon')
+            .transition(200)
+            .style('fill-opacity', this.config.opacityArea)
+            .style('stroke-opacity', 1)
+          this.svg.selectAll('circle').transition(200).style('fill-opacity', 1)
+        }
+      })
 
     this.drawAreas(
       this.adjustedManeData,
@@ -150,9 +186,7 @@ export class RadarChartManager extends AbstractChartManager {
       this.adjustedMbappeData
     )
     this.drawLegend()
-    // grid
-    // axes
-    // plotting
+    this.drawCheckbox()
   }
 
   getHeight() {
@@ -198,7 +232,7 @@ export class RadarChartManager extends AbstractChartManager {
       const levelFactor =
         this.config.factor * this.radius * ((j + 1) / this.config.levels)
       this.svg
-        .selectAll('g')
+        .select('#mainGraphBody')
         .selectAll('.levels')
         .data(this.fields)
         .enter()
@@ -242,12 +276,12 @@ export class RadarChartManager extends AbstractChartManager {
 
   drawAxes(factor, radians, totalFields) {
     const axis = this.svg
-      .selectAll('g')
+      .select('#mainGraphBody')
       .selectAll('.axis')
       .data(this.fields)
       .enter()
-      .append('g')
-      .attr('class', 'axis')
+    // .append('g')
+    // .attr('class', 'axis')
 
     const w = this.config.w
     const h = this.config.h
@@ -365,10 +399,10 @@ export class RadarChartManager extends AbstractChartManager {
                 Math.cos((i * radians) / totalFields))
         ])
       })
-      this.svg.selectAll('g').selectAll('.nodes').data(data)
-      dataValues.push(dataValues[0])
+      // this.svg.selectAll('g').selectAll('.nodes').data(data)
+      // dataValues.push(dataValues[0])
       this.svg
-        .selectAll('g')
+        .select('#mainGraphBody')
         .selectAll('.area')
         .data([dataValues])
         .enter()
@@ -429,7 +463,7 @@ export class RadarChartManager extends AbstractChartManager {
         ])
       })
       this.svg
-        .selectAll('g')
+        .select('#mainGraphBody')
         .selectAll('.nodes')
         .data(dataValues)
         .enter()
@@ -448,7 +482,6 @@ export class RadarChartManager extends AbstractChartManager {
           return j[1]
         })
         .style('fill', colors[datai])
-        // .style('stroke', 'white') // Uncomment to add
         .attr('transform', 'translate(' + w / 2 + ')')
         .on('mouseover', (data, index, element) => {
           this.svg
@@ -460,7 +493,11 @@ export class RadarChartManager extends AbstractChartManager {
             .selectAll('circle')
             .transition(200)
             .style('fill-opacity', 0.01)
-            .attr('r', this.config.nodeRadius)
+          this.svg
+            .selectAll('.common-transition-3')
+            .transition(200)
+            .style('fill-opacity', 1)
+            .attr('r', 10)
           this.svg
             .select(`.radar-chart-serie_${datai}`)
             .transition(200)
@@ -468,26 +505,18 @@ export class RadarChartManager extends AbstractChartManager {
           this.svg
             .selectAll(`.radar-chart-node-serie_${datai}`)
             .transition(200)
-            .style('fill-opacity', 0.8)
-          this.svg
-            .select(`#radar-chart-node_${datai}_${index}`)
-            .transition(200)
-            .attr('r', this.config.nodeRadius * 1.3)
+            .style('fill-opacity', 1)
           this.tooltip.show(data, element[index])
         })
         .on('mouseout', (data, index, element) => {
           this.svg.select(`.radar-chart-node_${series}`)
           this.tooltip.hide()
           this.svg
-            .selectAll('polygon') ////////////////////////////////////////////////////
+            .selectAll('polygon')
             .transition(200)
             .style('fill-opacity', this.config.opacityArea)
             .style('stroke-opacity', 1)
           this.svg.selectAll('circle').transition(200).style('fill-opacity', 1)
-          this.svg
-            .select(`#radar-chart-node_${datai}_${index}`)
-            .transition(200)
-            .attr('r', this.config.nodeRadius)
         })
       series = 0
     })
@@ -570,10 +599,127 @@ export class RadarChartManager extends AbstractChartManager {
   drawLegend() {
     const legend = this.createPlayersLegend(
       this.svg,
-      this.svgWidth / 1.2 - this.chartHelper.buttonWidth,
+      this.getWidth(),
       this.margin.top,
       this.chartHelper.legendLineSymbol
     )
     legend.attr('id', 'radar-chart-legend')
+  }
+
+  drawCheckbox() {
+    var legendHeight = this.svg
+      .select('#radar-chart-legend')
+      .node()
+      .getBoundingClientRect().height
+    const heightOffset = legendHeight + this.margin.top + 55
+
+    const checkbox = this.chartHelper.createCheckbox(
+      this.svg,
+      this.getWidth(),
+      heightOffset,
+      'Toggle Radar Chart',
+      'All Leagues',
+      'UEFA League',
+      this.isUEFAChecked,
+      () => this.onCheckboxChecked(),
+      () => this.onCheckboxUnchecked()
+    )
+
+    checkbox.attr('id', 'radar-chart-checkbox').on('mouseenter', () => {
+      for (let index = 0; index < 3; index++) {
+        this.svg.select(`.radar-chart-node_${index}`)
+        this.tooltip.hide()
+        this.svg
+          .selectAll('polygon')
+          .transition(200)
+          .style('fill-opacity', this.config.opacityArea)
+          .style('stroke-opacity', 1)
+        this.svg.selectAll('circle').transition(200).style('fill-opacity', 1)
+      }
+    })
+  }
+
+  onCheckboxChecked() {
+    this.isUEFAChecked = true
+    this.refreshViews()
+  }
+
+  onCheckboxUnchecked() {
+    this.isUEFAChecked = false
+    this.refreshViews()
+  }
+
+  refreshViews() {
+    for (let index = 0; index < 3; index++) {
+      this.svg
+        .selectAll(`.radar-chart-serie_${index}`)
+        .transition()
+        .duration(750)
+        .style('opacity', 0)
+      this.svg
+        .selectAll(`.radar-chart-node-serie_${index}`)
+        .transition()
+        .duration(750)
+        .style('opacity', 0)
+    }
+    setTimeout(() => {
+      for (let index = 0; index < 3; index++) {
+        this.svg.selectAll(`.radar-chart-serie_${index}`).remove()
+        this.svg.selectAll(`.radar-chart-node-serie_${index}`).remove()
+      }
+      this.svg.selectAll(`.line`).remove()
+      this.svg.selectAll(`.axeButton`).remove()
+      this.svg.selectAll(`.axeTitle`).remove()
+      if (this.isUEFAChecked) {
+        this.savedData = [this.maneData, this.benzemaData, this.mbappeData]
+        this.maneData = this.maneDataUEFA
+        this.benzemaData = this.benzemaDataUEFA
+        this.mbappeData = this.mbappeDataUEFA
+      } else {
+        this.maneData = this.savedData[0]
+        this.benzemaData = this.savedData[1]
+        this.mbappeData = this.savedData[2]
+      }
+      this.drawRadar()
+    }, 750)
+  }
+
+  drawRadar() {
+    this.setAdjustedPlayerValues(
+      this.maneData,
+      this.benzemaData,
+      this.mbappeData
+    )
+    this.drawAreas(
+      this.adjustedManeData,
+      this.adjustedBenzemaData,
+      this.adjustedMbappeData
+    )
+    for (let index = 0; index < 3; index++) {
+      this.svg.selectAll(`.radar-chart-serie_${index}`).style('opacity', 0)
+    }
+    this.drawSegments(this.config.factor, this.config.radians, this.totalFields)
+    this.drawAxes(this.config.factor, this.config.radians, this.totalFields)
+    this.drawNodes(
+      this.adjustedManeData,
+      this.adjustedBenzemaData,
+      this.adjustedMbappeData
+    )
+    for (let index = 0; index < 3; index++) {
+      this.svg.selectAll(`.radar-chart-serie_${index}`).style('opacity', 0)
+      this.svg.selectAll(`.radar-chart-node-serie_${index}`).style('opacity', 0)
+    }
+    for (let index = 0; index < 3; index++) {
+      this.svg
+        .selectAll(`.radar-chart-serie_${index}`)
+        .transition()
+        .duration(750)
+        .style('opacity', 1)
+      this.svg
+        .selectAll(`.radar-chart-node-serie_${index}`)
+        .transition()
+        .duration(750)
+        .style('opacity', 1)
+    }
   }
 }

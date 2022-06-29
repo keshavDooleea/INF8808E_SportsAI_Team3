@@ -1,0 +1,4 @@
+Player,Span,Nation,Pos,Squad,90s,Tkl,TklW,Def3rd,Mid3rd,Att3rd,DribbleTkl,DribbleAtt,DribbleTklPerc,DribblePast,Press,PressSucc,PressPerc,PressDef3rd,PressMid3rd,PressAtt3rd,Blocks,Sh,ShSv,Pass,Int,Tkl_Int,Clr,Err
+Sadio Mané,2021-22,SEN,FW,Liverpool,9.1,14,11,1,5,8,3,7,42.9,4,141,46,32.6,10,45,86,12,3,0,9,6,20,1,0,c691bfe2
+Karim Benzema,2021-22,FRA,FW,Real Madrid,12.2,4,4,0,2,2,0,3,0.0,3,187,36,19.3,21,91,75,12,0,0,12,5,9,10,0,70d74ece
+Kylian Mbappé,2021-22,FRA,FW,Paris S-G,7.5,1,1,0,0,1,0,3,0.0,3,51,8,15.7,5,22,24,3,0,0,3,5,6,2,0,42fd9c7f

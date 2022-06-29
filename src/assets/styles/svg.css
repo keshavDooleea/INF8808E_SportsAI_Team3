@@ -57,6 +57,10 @@
   pointer-events: none;
 }
 
+.tip-panel.d3-tip {
+  max-width: 200px;
+}
+
 .tip-title {
   text-align: center;
   color: var(--yellowishColor);

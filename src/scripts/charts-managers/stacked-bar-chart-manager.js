@@ -6,7 +6,11 @@ import { AbstractChartManager } from './abstract-chart-manager'
  * @class StackedBarChartManager
  */
 export class StackedBarChartManager extends AbstractChartManager {
-  preprocess () {
+  constructor(svgId) {
+    super(svgId)
+  }
+
+  preprocess() {
     this.shootingData = this.preprocessShootingData(
       this.playerHelperSingleton.groupedShootingData
     )
@@ -28,36 +32,42 @@ export class StackedBarChartManager extends AbstractChartManager {
       if (element.Player === 'Sadio Mané') {
         // this.maneData = [element.Player, [element.GSh, PK]]
         this.maneDataG = {
-          player: element.Player + '\n - Regular Shots',
+          player: element.Player,
+          shotType: 'Regular Shots',
           made: Number(element.Gls),
           missed: Number(element.Sh) - Number(element.Gls)
         }
         this.maneDataP = {
-          player: element.Player + '\n - Penalty Shots',
+          player: element.Player,
+          shotType: 'Penalty Shots',
           made: PK,
           missed: Number(element.PKatt) - PK
         }
       } else if (element.Player === 'Karim Benzema') {
         // this.benzemaData = [element.Player, [element.GSh, PK]]
         this.benzemaDataG = {
-          player: element.Player + '\n - Regular Shots',
+          player: element.Player,
+          shotType: 'Regular Shots',
           made: Number(element.Gls),
           missed: Number(element.Sh) - Number(element.Gls)
         }
         this.benzemaDataP = {
-          player: element.Player + '\n - Penalty Shots',
+          player: element.Player,
+          shotType: 'Penalty Shots',
           made: PK,
           missed: Number(element.PKatt) - PK
         }
       } else if (element.Player === 'Kylian Mbappé') {
         // this.mbappeData = [element.Player, [element.GSh, PK]]
         this.mbappeDataG = {
-          player: element.Player + '\n - Regular Shots',
+          player: element.Player,
+          shotType: 'Regular Shots',
           made: Number(element.Gls),
           missed: Number(element.Sh) - Number(element.Gls)
         }
         this.mbappeDataP = {
-          player: element.Player + '\n - Penalty Shots',
+          player: element.Player,
+          shotType: 'Penalty Shots',
           made: PK,
           missed: Number(element.PKatt) - PK
         }
@@ -74,89 +84,128 @@ export class StackedBarChartManager extends AbstractChartManager {
     ]
   }
 
-  drawLegend (width) {
+  initializeVariables() {
+    this.leftAxisPosition = 20
+    this.heightOffsetAxis = 4
+    this.margin = { top: 20, right: 20, bottom: 30, left: 40, leftPadding: 70 }
+
+    this.width = this.svgWidth - this.margin.left - this.margin.right
+    this.height = this.svgHeight - this.margin.top - this.margin.bottom
+
+    this.groups = d3
+      .map(this.shootingData, (data) => this.getGroupLabelX(data))
+      .keys()
+
+    this.labelY = 'Attempted shots per player (%)'
+    this.subGroups = ['made', 'missed']
+    this.colors = ['steelblue', '#91c9c4']
+  }
+
+  getGroupLabelX(data) {
+    return `${data.player} - ${data.shotType}`
+  }
+
+  initializeCharts() {
+    this.drawLegend(this.width * 0.97)
+    this.drawLabels()
+    this.drawChart()
+    this.drawLabelX()
+    this.setLabelY(this.labelY, 'stacked-bar-chart-label-y')
+  }
+
+  drawLabels() {
+    this.setAxisX()
+    this.setAxisY()
+  }
+
+  // Add X axis
+  setAxisX() {
+    this.scaleX = d3
+      .scaleBand()
+      .domain(this.groups)
+      .range([0, this.width * 0.85])
+      .padding([0.2])
+
+    this.barSize = this.scaleX.bandwidth()
+
+    this.svg
+      .append('g')
+      .attr(
+        'transform',
+        `translate(
+         ${this.leftAxisPosition + this.margin.leftPadding},
+         ${this.height + this.heightOffsetAxis}
+       )`
+      )
+      .call(d3.axisBottom(this.scaleX).tickSize(5))
+  }
+
+  setAxisY() {
+    // Add Y axis
+    this.scaleY = d3.scaleLinear().domain([0, 100]).range([this.height, 0])
+
+    this.svg
+      .append('g')
+      .attr(
+        'transform',
+        `translate(
+           ${this.leftAxisPosition + this.margin.leftPadding},
+           ${this.heightOffsetAxis}
+         )`
+      )
+      .call(d3.axisLeft(this.scaleY).tickFormat( function (d) { return d + '%' }))
+  }
+
+  drawLabelX() {
+    const labelHeightOffset = 40
+    const xAxisWidth = this.svg
+      .select('#stacked-chart-container')
+      .node()
+      .getBoundingClientRect().width
+
+    const rectSize = xAxisWidth / this.shootingData.length
+
+    // remove odd positions since each 2 position is associated to a player
+    const playerData = this.shootingData.filter((_, index) => index % 2 !== 0)
+
+    this.svg
+      .select('#stacked-chart-container')
+      .append('g')
+      .attr(
+        'transform',
+        `translate(
+        ${this.leftAxisPosition + this.margin.leftPadding},
+        ${this.heightOffsetAxis}
+      )`
+      )
+      .selectAll('g')
+      .data(playerData)
+      .enter()
+      .append('text')
+      .text((data) => data.player)
+      .attr('transform', (_, index) => {
+        return `translate(
+          ${rectSize * (index * 2) + this.barSize},
+          ${this.height + this.heightOffsetAxis + labelHeightOffset}
+        )`
+      })
+  }
+
+  drawLegend(width) {
     const legend = this.chartHelper.createLegend(
       this.svg,
-      width,
+      width - 13,
       this.margin.top,
-      this.chartHelper.legendLineSymbol,
       ['Shots Made', 'Shots Missed'],
-      [this.colorGreen, this.colorRed]
+      this.colors
     )
     legend.attr('id', 'stacked-chart-legend')
   }
 
-  initializeVariables () {
-    this.leftAxisPosition = 20
-    this.heightOffsetAxis = 4
-    this.margin = { top: 20, right: 20, bottom: 30, left: 40, leftPadding: 70 }
-    this.colorGreen = '#4daf4a'
-    this.colorRed = '#e41a1c'
-  }
-
-  initializeCharts () {
-    this.svg = d3.select('#stacked-bar-chart-svg')
-    this.svgWidth = parseInt(this.svg.style('width'))
-    this.svgHeight = parseInt(this.svg.style('height'))
-
-    var width = this.svgWidth - this.margin.left - this.margin.right
-    var height = this.svgHeight - this.margin.top - this.margin.bottom
-
-    var colorGreen = this.colorGreen
-    var colorRed = this.colorRed
-
-    // this.svg.attr('width', 600).attr('height', 600).attr('padding', 10)
-
-    var groups = d3
-      .map(this.shootingData, function (d) {
-        return d.player
-      })
-      .keys()
-
-    var subGroups = ['made', 'missed']
-
-    var color = d3
-      .scaleOrdinal()
-      .domain(subGroups)
-      .range([d3.rgb(colorGreen), d3.rgb(colorRed)])
-
-    this.drawLegend(width * 0.97)
-
+  drawChart() {
     this.svg.append('g').attr('id', 'stacked-chart-container')
 
-    // Add X axis
-    console.log(groups)
-    var x = d3
-      .scaleBand()
-      .domain(groups)
-      .range([0, width * 0.9])
-      .padding([0.2])
-
-    this.svg
-      .select('#stacked-chart-container')
-      .append('g')
-      .attr(
-        'transform',
-        `translate(
-          ${this.leftAxisPosition + this.margin.leftPadding},
-          ${height + this.heightOffsetAxis}
-        )`
-      )
-      .call(d3.axisBottom(x).tickSize(5))
-
-    // Add Y axis
-    var y = d3.scaleLinear().domain([0, 100]).rangeRound([height, 0])
-    this.svg
-      .select('#stacked-chart-container')
-      .append('g')
-      .attr(
-        'transform',
-        `translate(
-          ${this.leftAxisPosition + this.margin.leftPadding},
-          ${this.heightOffsetAxis}
-        )`
-      )
-      .call(d3.axisLeft(y).tickFormat( function (d) { return d + '%' }))
+    var subGroups = ['made', 'missed']
 
     // Normalize shooting data
     var normalizedData = this.shootingData
@@ -176,12 +225,15 @@ export class StackedBarChartManager extends AbstractChartManager {
     })
 
     // Stack the data
-    var stackedData = d3.stack().keys(subGroups)(normalizedData)
-    console.log(stackedData)
+    var stackedData = d3.stack().keys(this.subGroups)(normalizedData)
 
     const tip = this.chartHelper.createTip(this.svg, [-4, 0], (d) => {
       return `<span>Percentage: ${Math.round(d)}%</span>`
     })
+
+     var colors = ['steelblue', '#91c9c4']
+
+    var color = d3.scaleOrdinal().domain(this.subGroups).range(this.colors)
 
     // Place the bars
     this.svg
@@ -198,46 +250,34 @@ export class StackedBarChartManager extends AbstractChartManager {
       .data(stackedData)
       .enter()
       .append('g')
-      .attr('fill', function (d) {
-        return color(d)
-      })
+      .attr('fill', (d) => color(d.key))
       .selectAll('rect')
-      .data(function (d) {
-        return d
-      })
+      .data((d) => d)
       .enter()
       .append('rect')
-      .attr('x', function (d) {
-        return x(d.data.player)
-      })
-      .attr('y', function (d) {
-        return y(d[1])
-      })
-      .attr('height', function (d) {
-        return y(d[0]) - y(d[1])
-      })
-      .attr('width', function () {
-        return x.bandwidth()
-      })
-      // Show tooltip
-      .on('mouseover', function (d) {
-        var ogColor = d3.select(this.parentNode).attr('fill')
-        var total = d.data.made + d.data.missed
-        var value = 0
-        if (d3.rgb(ogColor).toString() == d3.rgb(colorGreen)) {
-          value = d.data.made
-        }
-        else {
-          value = d.data.missed
-        }
-        var percent = (value / total) * 100
-        tip.show(value, percent, this)
-        d3.select(this).attr('fill', d3.rgb(ogColor).darker(2))
-      })
-      .on('mouseout', function () {
-        var ogColor = d3.select(this.parentNode).attr('fill')
-        d3.select(this).attr('fill', d3.rgb(ogColor))
-        tip.hide()
-      })
+      .attr('x', (d) => this.scaleX(this.getGroupLabelX(d.data)))
+      .attr('y', (d) => this.scaleY(d[1]))
+      .attr('height', (d) => this.scaleY(d[0]) - this.scaleY(d[1]))
+      .attr('width', this.barSize)
+        // Show tooltip
+        .on('mouseover', function (d) {
+          var ogColor = d3.select(this.parentNode).attr('fill')
+          var total = d.data.made + d.data.missed
+          var value = 0
+          if (d3.rgb(ogColor).toString() == d3.rgb(colors[0])) {
+            value = d.data.made
+          }
+          else {
+            value = d.data.missed
+          }
+          var percent = (value / total) * 100
+          tip.show(value, percent, this)
+          d3.select(this).attr('fill', d3.rgb(ogColor).darker(2))
+        })
+        .on('mouseout', function () {
+          var ogColor = d3.select(this.parentNode).attr('fill')
+          d3.select(this).attr('fill', d3.rgb(ogColor))
+          tip.hide()
+        })
   }
 }

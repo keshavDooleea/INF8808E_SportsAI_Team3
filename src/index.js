@@ -15,14 +15,14 @@ import { playerHelperSingleton } from './scripts/helpers/players-helper'
 main()
 
 async function main() {
+  // retrieve and parse all CSV datas and store them in a singleton class named 'PlayersHelperClass'
   await playerHelperSingleton.getSummaryData()
-
   await playerHelperSingleton.getGroupedData()
-
   await playerHelperSingleton.getChampionshipData()
 
-  const radarChartManager = new RadarChartManager()
-  const stackedBarChartManager = new StackedBarChartManager()
-  const barChartManager = new BarChartManager()
-  const lineChartManager = new LineChartManager()
+  // instantiate various charts managers to build charts
+  new RadarChartManager('#radar-chart-svg')
+  new StackedBarChartManager('#stacked-bar-chart-svg')
+  new BarChartManager('#bar-chart-svg')
+  new LineChartManager('#line-chart-svg')
 }
