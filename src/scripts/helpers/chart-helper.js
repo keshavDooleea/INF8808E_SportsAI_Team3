@@ -1,11 +1,26 @@
 import d3Legend from 'd3-svg-legend'
 import d3Tip from 'd3-tip'
 
+/**
+ * This helper class handles reusable UI components
+ *
+ * @class ChartHelperClass
+ */
 class ChartHelperClass {
+  /**
+   * Set a fixed width of a button
+   *
+   * @returns {number} The width of button
+   */
   get buttonWidth() {
     return 120
   }
 
+  /**
+   * Set a fixed height of a button
+   *
+   * @returns {number} The height of button
+   */
   get buttonHeight() {
     return 30
   }
@@ -13,11 +28,11 @@ class ChartHelperClass {
   /**
    * Create a common reusable button and return it
    *
-   * @param {*} svg
-   * @param {*} translateX
-   * @param {*} translateY
-   * @param {*} text
-   * @returns {*} The created button
+   * @param {object} svg the d3 svg element
+   * @param {number} translateX number of pixels for horizontal translation
+   * @param {number} translateY number of pixels for vertical translation
+   * @param {string} text the label of the button
+   * @returns {object} The created button element
    */
   createButton(svg, translateX, translateY, text) {
     const button = svg
@@ -49,30 +64,24 @@ class ChartHelperClass {
     return button
   }
 
-  get legendSquareSymbol() {
-    return 'square'
-  }
-
-  get legendLineSymbol() {
-    return 'line'
-  }
-
   /**
+   * Create a common reusable legend and return it
    *
-   * @param {*} svg
-   * @param {*} translateX
-   * @param {*} translateY
-   * @param {*} symbol the symbol of the legend's scale ('square', 'line')
-   * @param {*} domainNames names of each legend item
-   * @param {*} domainColors colors of each legend symbol
-   * @param {*} playersAttributes
-   * @returns {*} The created legend
+   * @param {object} svg the d3 svg element
+   * @param {number} translateX number of pixels for horizontal translation
+   * @param {number} translateY number of pixels for vertical translation
+   * @param {string[]} domainNames names of each legend item
+   * @param {string[]} domainColors colors of each legend symbol
+   * @returns {object} The created legend element
    */
-  createLegend(svg, translateX, translateY, symbol, domainNames, domainColors) {
+  createLegend(svg, translateX, translateY, domainNames, domainColors) {
+    const symbolSize = 150
     const colorScale = d3.scaleOrdinal(domainColors).domain(domainNames)
 
-    // customize a d3 symbol
-    const legendSymbol = this.getLegendSymbolFactory(symbol)
+    // customize a d3 square symbol
+    const legendSymbol = d3.symbol().type(d3.symbolSquare).size(symbolSize)
+
+    // customize legend
     const designLegend = d3Legend
       .legendColor()
       .title('Legend')
@@ -90,34 +99,17 @@ class ChartHelperClass {
   }
 
   /**
-   * Create a custom shape/symbol for legend's scale
-   *
-   * @param {*} symbol
-   * @returns {*} The created symbol
-   */
-  getLegendSymbolFactory(symbol) {
-    const symbolSize = 150
-
-    switch (symbol) {
-      case this.legendSquareSymbol:
-        return d3.symbol().type(d3.symbolSquare).size(symbolSize)
-      case this.legendLineSymbol:
-        return d3.symbol().type(d3.symbolSquare).size(symbolSize)
-    }
-  }
-
-  /**
    * Common logic to create a tip panel
    * Note: The position is automatically handled by D3
    *
-   * @param {*} svg the svg element of the visualization
-   * @param {number[]} offset array with 2 elements [y, x] for the tip offset
-   * @param {Function} contentCallbackFunction the function which is called on hovered to display data passed
-   * @returns {d3Tip} The created tip
+   * @param {object} svg the d3 svg element
+   * @param {number[]} offset array with 2 elements [y, x] for the tip 2D offset
+   * @param {function} contentCallbackFunction the function which is called on hovered to display data passed
+   * @returns {d3Tip} The created tip element
    */
   createTip(svg, offset, contentCallbackFunction) {
     const tip = d3Tip()
-      .attr('class', 'tip-panel')
+      .attr('class', 'tip-panel d3-tip')
       .offset(offset)
       .html((data) => contentCallbackFunction(data))
 
@@ -129,16 +121,16 @@ class ChartHelperClass {
   /**
    * Create a checkbox with 2 ends
    *
-   * @param {*} svg the element to insert the checkbox
-   * @param {*} translateX the position x of the checkbox
-   * @param {*} translateY the position y of the checkbox
-   * @param {*} title the title of the checkbox
-   * @param {*} leftText the text to the left side of the checkbox
-   * @param {*} rightText the text to the right side of the checkbox
-   * @param {*} isChecked the default state of the checkbox
-   * @param {*} checkedCallback the callback function which is called when the checkbox is checked
-   * @param {*} unCheckedCallback the callback function which is called when the checkbox is unchecked
-   * @returns {*} The created checkbox
+   * @param {object} svg the element to insert the checkbox
+   * @param {number} translateX the position x of the checkbox
+   * @param {number} translateY the position y of the checkbox
+   * @param {string} title the title of the checkbox
+   * @param {string} leftText the text to the left side of the checkbox
+   * @param {string} rightText the text to the right side of the checkbox
+   * @param {boolean} isChecked the default state of the checkbox
+   * @param {function} checkedCallback the callback function which is called when the checkbox is checked
+   * @param {function} unCheckedCallback the callback function which is called when the checkbox is unchecked
+   * @returns {object} The created checkbox element
    */
   createCheckbox(
     svg,
@@ -204,7 +196,7 @@ class ChartHelperClass {
       isChecked ? checkedCallback() : unCheckedCallback()
     })
 
-    // place checkbox extremities texts
+    // place checkbox texts in extremities
     this.breakAndPlaceTexts(checkbox, leftText, 0, textPositionY, 'start')
     this.breakAndPlaceTexts(
       checkbox,
@@ -217,6 +209,13 @@ class ChartHelperClass {
     return checkbox
   }
 
+  /**
+   * Handles position of the circle element in the checkbox/rectangle element
+   *
+   * @param {object} circle d3 circle element inside checkbox
+   * @param {boolean} isChecked state of the checkbox
+   * @param {number} checkboxRadius the size of the circle
+   */
   updateCheckboxCirclePosition(circle, isChecked, checkboxRadius) {
     const circlePosition = isChecked
       ? this.buttonWidth - checkboxRadius
@@ -227,11 +226,11 @@ class ChartHelperClass {
   /**
    * split word and place them vertically
    *
-   * @param {*} element the dom element to put the text in
-   * @param {*} textToSplit the text to break into individual word
-   * @param {*} textPositionX the x position to place the text
-   * @param {*} textPositionY the y position to place the text
-   * @param {*} textAnchor the alignment of the text
+   * @param {object} element the dom element to put the text in
+   * @param {string} textToSplit the text to break into individual word
+   * @param {number} textPositionX the x position to place the text
+   * @param {number} textPositionY the y position to place the text
+   * @param {string} textAnchor the alignment of the text
    */
   breakAndPlaceTexts(
     element,

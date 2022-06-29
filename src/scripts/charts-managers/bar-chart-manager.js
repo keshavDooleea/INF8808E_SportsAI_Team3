@@ -6,6 +6,10 @@ import { AbstractChartManager } from './abstract-chart-manager'
  * @class BarChartManager
  */
 export class BarChartManager extends AbstractChartManager {
+  constructor(svgId) {
+    super(svgId)
+  }
+
   preprocess() {
     this.winRegex = /W|1st|^F$/
 
@@ -144,10 +148,6 @@ export class BarChartManager extends AbstractChartManager {
   }
 
   initializeCharts() {
-    this.svg = d3.select('#bar-chart-svg')
-    this.svgWidth = parseInt(this.svg.style('width'))
-    this.svgHeight = parseInt(this.svg.style('height'))
-
     const championshipNames = this.barChartData.map(function (d) {
       return d.championshipName
     })

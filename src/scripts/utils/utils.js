@@ -5,22 +5,23 @@
  * @param {number} stop The end number
  * @param {number} interval The interval used in the range
  * @returns {number[]} The array with a sequence of numbers within the given range
- *
  */
-
 export function rangeInterval(start, stop, interval) {
-  const res = [];
+  const res = []
 
   for (let i = start; i <= stop; i += interval) {
-    res.push(i);
+    res.push(i)
   }
 
-  return res;
+  return res
 }
 
+/**
+ * Object that holds reusable colors across the project
+ */
 export const TEXT_COLORS = {
-  secondaryColor: "#5f697d",
-  lightGray: "#ddd",
-  radarAxes: "#aaa",
-  radarSegments: "#ddd",
-};
+  secondaryColor: '#5f697d',
+  lightGray: '#ddd',
+  radarAxes: '#aaa',
+  radarSegments: '#ddd'
+}
