@@ -23,7 +23,7 @@ export class StackedBarChartManager extends AbstractChartManager {
       var PK = 0
       // eslint-disable-next-line eqeqeq
       if (element.PKatt != '0') {
-        PK = Number(element.PK) / Number(element.PKatt)
+        PK = Number(element.PK)
       }
       if (element.Player === 'Sadio Mané') {
         // this.maneData = [element.Player, [element.GSh, PK]]
@@ -159,7 +159,8 @@ export class StackedBarChartManager extends AbstractChartManager {
       .call(d3.axisLeft(y).tickFormat( function (d) { return d + '%' }))
 
     // Normalize shooting data
-    this.shootingData.forEach( function (d) {
+    var normalizedData = this.shootingData
+    normalizedData.forEach( function (d) {
       var i = 0
       var tot = 0
       var name
@@ -175,7 +176,7 @@ export class StackedBarChartManager extends AbstractChartManager {
     })
 
     // Stack the data
-    var stackedData = d3.stack().keys(subGroups)(this.shootingData)
+    var stackedData = d3.stack().keys(subGroups)(normalizedData)
     console.log(stackedData)
 
     const tip = this.chartHelper.createTip(this.svg, [-4, 0], (d) => {
@@ -221,17 +222,19 @@ export class StackedBarChartManager extends AbstractChartManager {
       // Show tooltip
       .on('mouseover', function (d) {
         var ogColor = d3.select(this.parentNode).attr('fill')
+        var total = d.data.made + d.data.missed
+        var value = 0
         if (d3.rgb(ogColor).toString() == d3.rgb(colorGreen)) {
-          var value = (d.data.made / ( d.data.made + d.data.missed )) * 100
-          tip.show(value, this)
+          value = d.data.made
         }
         else {
-          console.log('missed', d.data.missed)
-          tip.show(d.data.missed, this)
+          value = d.data.missed
         }
+        var percent = (value / total) * 100
+        tip.show(value, percent, this)
         d3.select(this).attr('fill', d3.rgb(ogColor).darker(2))
       })
-      .on('mouseout', function (d) {
+      .on('mouseout', function () {
         var ogColor = d3.select(this.parentNode).attr('fill')
         d3.select(this).attr('fill', d3.rgb(ogColor))
         tip.hide()
