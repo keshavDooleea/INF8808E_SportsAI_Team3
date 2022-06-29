@@ -215,27 +215,35 @@ export class BarChartManager extends AbstractChartManager {
       .nice()
       .rangeRound([this.margin.left, this.width - this.margin.right])
 
-    const xAxis = (g) =>
+    this.xAxis = (g) =>
       g
         .attr('transform', `translate(0,${this.height - this.margin.bottom})`)
         .call(d3.axisBottom(this.x).tickSizeOuter(0))
         .call((g) => g.select('.domain').remove())
         .call(d3.axisBottom(this.x).ticks(10, 's'))
 
-    const yAxis = (g) =>
+    this.yAxis = (g) =>
       g
         .attr('transform', `translate(${this.margin.left},0)`)
         .call(d3.axisLeft(this.y0).ticks(null, 's'))
 
+    this.svg.append('g').call(this.xAxis)
+    this.svg.append('g').attr('class', 'bar-yaxis').call(this.yAxis)
+
     this.drawVerticalLines()
     this.drawBars()
-    this.svg.append('g').call(xAxis)
-    this.svg.append('g').call(yAxis)
+    this.svg.select('.bar-yaxis').remove()
+    this.svg.append('g').attr('class', 'bar-yaxis').call(this.yAxis)
   }
 
   drawVerticalLines() {
     const dashArray = 4
     const horizontalState = 14
+
+    const yAxisHeight = this.svg
+      .select('.bar-yaxis')
+      .node()
+      .getBoundingClientRect().height
 
     for (let i = 1; i < horizontalState; i++) {
       const positionX = this.x(i * 5)
@@ -247,14 +255,12 @@ export class BarChartManager extends AbstractChartManager {
         .style('stroke-width', 2)
         .attr('stroke-dasharray', dashArray)
         .attr('x1', positionX)
-        .attr('y1', 370)
+        .attr('y1', yAxisHeight)
         .attr('x2', positionX)
         .attr('y2', 0)
         .attr(
           'transform',
-          `translate(0,${
-            (this.height % (this.height - this.margin.bottom)) - 5
-          })`
+          `translate(0,${this.height % (this.height - this.margin.bottom)})`
         )
     }
   }
@@ -297,6 +303,8 @@ export class BarChartManager extends AbstractChartManager {
 
   refreshViews() {
     this.svg.selectAll('.bars').remove()
+    this.svg.select('.bar-yaxis').remove()
     this.drawBars()
+    this.svg.append('g').attr('class', 'bar-yaxis').call(this.yAxis)
   }
 }

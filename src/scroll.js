@@ -26,7 +26,7 @@ function main() {
   const dots = document.querySelectorAll('.dots-container .dot')
 
   // set first page as default
-  activateDot(3)
+  activateDot(0)
 
   // get the rectangle attributes (x, y, width, height, top, bottom) of each sections
   const sectionsBoundingBoxes = sections.map((section, index) => {
