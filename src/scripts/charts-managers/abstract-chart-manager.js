@@ -10,12 +10,18 @@ export class AbstractChartManager {
   playerHelperSingleton = playerHelperSingleton
   chartHelper = chartHelper
 
-  constructor() {
+  /**
+   * Define common flow of functions for inherited child classes
+   *
+   * @param {string} svgId the HTML identifier of the HTML svg element
+   */
+  constructor(svgId) {
     if (this.constructor == AbstractChartManager) {
       throw new Error("Abstract classes can't be instantiated.")
     }
 
     this.preprocess()
+    this.initializeSvg(svgId)
     this.initializeVariables()
     this.initializeCharts()
   }
@@ -26,6 +32,17 @@ export class AbstractChartManager {
    */
   preprocess() {
     throw new Error("Method 'preprocess()' must be implemented.")
+  }
+
+  /**
+   * Initialize svg for child classes as well as its width and height
+   *
+   * @param {string} svgId the HTML identifier of the HTML svg element
+   */
+  initializeSvg(svgId) {
+    this.svg = d3.select(svgId)
+    this.svgWidth = parseInt(this.svg.style('width'))
+    this.svgHeight = parseInt(this.svg.style('height'))
   }
 
   /**

@@ -21,8 +21,8 @@ async function main() {
   await playerHelperSingleton.getChampionshipData()
 
   // instantiate various charts managers to build charts
-  const radarChartManager = new RadarChartManager()
-  const stackedBarChartManager = new StackedBarChartManager()
-  const barChartManager = new BarChartManager()
-  const lineChartManager = new LineChartManager()
+  new RadarChartManager('#radar-chart-svg')
+  new StackedBarChartManager('#stacked-bar-chart-svg')
+  new BarChartManager('#bar-chart-svg')
+  new LineChartManager('#line-chart-svg')
 }

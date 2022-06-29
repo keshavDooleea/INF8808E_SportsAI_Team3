@@ -6,6 +6,10 @@ import { AbstractChartManager } from './abstract-chart-manager'
  * @class StackedBarChartManager
  */
 export class StackedBarChartManager extends AbstractChartManager {
+  constructor(svgId) {
+    super(svgId)
+  }
+
   preprocess() {
     this.shootingData = this.preprocessShootingData(
       this.playerHelperSingleton.groupedShootingData
@@ -92,10 +96,6 @@ export class StackedBarChartManager extends AbstractChartManager {
   }
 
   initializeCharts() {
-    this.svg = d3.select('#stacked-bar-chart-svg')
-    this.svgWidth = parseInt(this.svg.style('width'))
-    this.svgHeight = parseInt(this.svg.style('height'))
-
     var width = this.svgWidth - this.margin.left - this.margin.right
     var height = this.svgHeight - this.margin.top - this.margin.bottom
 

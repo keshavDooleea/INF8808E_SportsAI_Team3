@@ -7,6 +7,10 @@ import { TEXT_COLORS } from '../utils/utils'
  * @class RadarChartManager
  */
 export class RadarChartManager extends AbstractChartManager {
+  constructor(svgId) {
+    super(svgId)
+  }
+
   preprocess() {
     this.maneData = this.preprocessPlayer(
       this.playerHelperSingleton.groupedDefensiveData,
@@ -114,9 +118,6 @@ export class RadarChartManager extends AbstractChartManager {
   }
 
   initializeCharts() {
-    this.svg = d3.select('#radar-chart-svg')
-    this.svgWidth = parseInt(this.svg.style('width'))
-    this.svgHeight = parseInt(this.svg.style('height'))
     this.margin = {
       top: 50,
       right: 150,
