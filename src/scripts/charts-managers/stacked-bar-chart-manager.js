@@ -27,15 +27,15 @@ export class StackedBarChartManager extends AbstractChartManager {
       var PK = 0
       // eslint-disable-next-line eqeqeq
       if (element.PKatt != '0') {
-        PK = Number(element.PK) / Number(element.PKatt)
+        PK = Number(element.PK)
       }
       if (element.Player === 'Sadio Mané') {
         // this.maneData = [element.Player, [element.GSh, PK]]
         this.maneDataG = {
           player: element.Player,
           shotType: 'Regular Shots',
-          made: Number(element.GSh),
-          missed: Number(element.Sh)
+          made: Number(element.Gls),
+          missed: Number(element.Sh) - Number(element.Gls)
         }
         this.maneDataP = {
           player: element.Player,
@@ -48,8 +48,8 @@ export class StackedBarChartManager extends AbstractChartManager {
         this.benzemaDataG = {
           player: element.Player,
           shotType: 'Regular Shots',
-          made: Number(element.GSh),
-          missed: Number(element.Sh)
+          made: Number(element.Gls),
+          missed: Number(element.Sh) - Number(element.Gls)
         }
         this.benzemaDataP = {
           player: element.Player,
@@ -62,8 +62,8 @@ export class StackedBarChartManager extends AbstractChartManager {
         this.mbappeDataG = {
           player: element.Player,
           shotType: 'Regular Shots',
-          made: Number(element.GSh),
-          missed: Number(element.Sh)
+          made: Number(element.Gls),
+          missed: Number(element.Sh) - Number(element.Gls)
         }
         this.mbappeDataP = {
           player: element.Player,
@@ -142,8 +142,7 @@ export class StackedBarChartManager extends AbstractChartManager {
 
   setAxisY() {
     // Add Y axis
-    var formatPercent = d3.format('.0%')
-    this.scaleY = d3.scaleLinear().domain([0, 1]).range([this.height, 0])
+    this.scaleY = d3.scaleLinear().domain([0, 100]).range([this.height, 0])
 
     this.svg
       .append('g')
@@ -154,7 +153,7 @@ export class StackedBarChartManager extends AbstractChartManager {
            ${this.heightOffsetAxis}
          )`
       )
-      .call(d3.axisLeft(this.scaleY).tickFormat(formatPercent))
+      .call(d3.axisLeft(this.scaleY).tickFormat( function (d) { return d + '%' }))
   }
 
   drawLabelX() {
@@ -206,8 +205,33 @@ export class StackedBarChartManager extends AbstractChartManager {
   drawChart() {
     this.svg.append('g').attr('id', 'stacked-chart-container')
 
+    var subGroups = ['made', 'missed']
+
+    // Normalize shooting data
+    var normalizedData = this.shootingData
+    normalizedData.forEach( function (d) {
+      var i = 0
+      var tot = 0
+      var name
+      for ( i in subGroups ) { 
+        name = subGroups[i]
+        tot += +d[name]
+      }
+      for (i in subGroups) { 
+        name = subGroups[i]
+        if ( tot == 0) { tot = 100 }
+        d[name] = (d[name] / tot) * 100
+      }
+    })
+
     // Stack the data
-    var stackedData = d3.stack().keys(this.subGroups)(this.shootingData)
+    var stackedData = d3.stack().keys(this.subGroups)(normalizedData)
+
+    const tip = this.chartHelper.createTip(this.svg, [-4, 0], (d) => {
+      return `<span>Percentage: ${Math.round(d)}%</span>`
+    })
+
+     var colors = ['steelblue', '#91c9c4']
 
     var color = d3.scaleOrdinal().domain(this.subGroups).range(this.colors)
 
@@ -235,5 +259,25 @@ export class StackedBarChartManager extends AbstractChartManager {
       .attr('y', (d) => this.scaleY(d[1]))
       .attr('height', (d) => this.scaleY(d[0]) - this.scaleY(d[1]))
       .attr('width', this.barSize)
+        // Show tooltip
+        .on('mouseover', function (d) {
+          var ogColor = d3.select(this.parentNode).attr('fill')
+          var total = d.data.made + d.data.missed
+          var value = 0
+          if (d3.rgb(ogColor).toString() == d3.rgb(colors[0])) {
+            value = d.data.made
+          }
+          else {
+            value = d.data.missed
+          }
+          var percent = (value / total) * 100
+          tip.show(value, percent, this)
+          d3.select(this).attr('fill', d3.rgb(ogColor).darker(2))
+        })
+        .on('mouseout', function () {
+          var ogColor = d3.select(this.parentNode).attr('fill')
+          d3.select(this).attr('fill', d3.rgb(ogColor))
+          tip.hide()
+        })
   }
 }
