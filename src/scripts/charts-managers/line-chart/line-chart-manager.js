@@ -493,14 +493,4 @@ export class LineChartManager extends AbstractChartManager {
         }
       })
   }
-
-  animateDashOffset(path, duration) {
-    path
-      .transition()
-      .duration(duration)
-      .styleTween('stroke-dashoffset', function () {
-        const pathLength = path.node().getTotalLength()
-        return d3.interpolate(0, pathLength)
-      })
-  }
 }

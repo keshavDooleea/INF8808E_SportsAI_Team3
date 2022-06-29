@@ -107,4 +107,20 @@ export class AbstractChartManager {
         )
     })
   }
+
+  /**
+   * Create animation by interpolating svg path
+   *
+   * @param {object} path the svg path element
+   * @param {number} duration time of the animation duration
+   */
+  animateDashOffset(path, duration) {
+    path
+      .transition()
+      .duration(duration)
+      .styleTween('stroke-dashoffset', function () {
+        const pathLength = path.node().getTotalLength()
+        return d3.interpolate(0, pathLength)
+      })
+  }
 }

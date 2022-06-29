@@ -260,8 +260,11 @@ export class BarChartManager extends AbstractChartManager {
         .attr('y2', 0)
         .attr(
           'transform',
-          `translate(0,${this.height % (this.height - this.margin.bottom)})`
+          `translate(0,${
+            (this.height % (this.height - this.margin.bottom)) - 7
+          })`
         )
+        .call((path) => this.animateDashOffset(path, 150 * (i + 1)))
     }
   }
 
@@ -303,8 +306,12 @@ export class BarChartManager extends AbstractChartManager {
 
   refreshViews() {
     this.svg.selectAll('.bars').remove()
-    this.svg.select('.bar-yaxis').remove()
+    this.svg.selectAll('.bar-chart-horizontal-lines').remove()
+
+    this.drawVerticalLines()
     this.drawBars()
+
+    this.svg.select('.bar-yaxis').remove()
     this.svg.append('g').attr('class', 'bar-yaxis').call(this.yAxis)
   }
 }
