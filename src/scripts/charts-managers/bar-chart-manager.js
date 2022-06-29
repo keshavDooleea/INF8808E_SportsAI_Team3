@@ -105,28 +105,6 @@ export class BarChartManager extends AbstractChartManager {
     legend.attr('id', 'bar-chart-legend')
   }
 
-  setLabelY() {
-    // break each word in order to display each one in a line for horizontal text
-    const labelsY = 'Amount of Championship Won'.split(' ')
-    const textHeight = 40
-
-    // display each word in a new line
-    labelsY.forEach((label, index) => {
-      const positionY =
-        (this.margin.top + this.svgHeight + textHeight * index) / 2
-
-      this.svg
-        .append('g')
-        .append('text')
-        .text(label)
-        .attr('class', 'bar-chart-label-y')
-        .attr(
-          'transform',
-          `translate(0, ${positionY - (textHeight * labelsY.length) / 2})`
-        )
-    })
-  }
-
   setLabelX() {
     // label of x axis
     this.svg
@@ -159,7 +137,7 @@ export class BarChartManager extends AbstractChartManager {
     var height = this.svgHeight - this.margin.top - this.margin.bottom
 
     this.setLabelX()
-    this.setLabelY()
+    this.setLabelY('Amount of Championship Won', 'bar-chart-label-y')
     this.drawLegend()
 
     const x = d3

@@ -110,7 +110,7 @@ export class StackedBarChartManager extends AbstractChartManager {
     this.drawLabels()
     this.drawChart()
     this.drawLabelX()
-    this.drawLabelY()
+    this.setLabelY(this.labelY, 'stacked-bar-chart-label-y')
   }
 
   drawLabels() {
@@ -190,27 +190,6 @@ export class StackedBarChartManager extends AbstractChartManager {
           ${this.height + this.heightOffsetAxis + labelHeightOffset}
         )`
       })
-  }
-
-  drawLabelY() {
-    // break each word in order to display each one in a line for horizontal text
-    const labelsY = this.labelY.split(' ')
-    const textHeight = 40
-
-    // display each word in a new line
-    labelsY.forEach((label, index) => {
-      const positionY =
-        (this.margin.top + this.svgHeight + textHeight * index) / 2
-
-      this.svg
-        .append('g')
-        .append('text')
-        .text(label)
-        .attr(
-          'transform',
-          `translate(0, ${positionY - (textHeight * labelsY.length) / 2})`
-        )
-    })
   }
 
   drawLegend(width) {

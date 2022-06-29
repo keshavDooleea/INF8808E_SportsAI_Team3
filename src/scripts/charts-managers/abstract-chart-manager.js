@@ -78,4 +78,33 @@ export class AbstractChartManager {
       this.playerHelperSingleton.playersColor
     )
   }
+
+  /**
+   * Sets the label of Y axis
+   * Breaks the label into individual word to display each word in a new line
+   *
+   * @param {string} text label of the y axis
+   * @param {string} elementClass class attribute to set for the element
+   */
+  setLabelY(text, elementClass) {
+    // break each word in order to display each one in a line for horizontal text
+    const labelsY = text.split(' ')
+    const textHeight = 40
+
+    // display each word in a new line
+    labelsY.forEach((label, index) => {
+      const positionY =
+        (this.margin.top + this.svgHeight + textHeight * index) / 2
+
+      this.svg
+        .append('g')
+        .append('text')
+        .text(label)
+        .attr('class', elementClass)
+        .attr(
+          'transform',
+          `translate(0, ${positionY - (textHeight * labelsY.length) / 2})`
+        )
+    })
+  }
 }
