@@ -1,3 +1,4 @@
+import { TEXT_COLORS } from '../utils/utils'
 import { AbstractChartManager } from './abstract-chart-manager'
 
 /**
@@ -161,6 +162,8 @@ export class BarChartManager extends AbstractChartManager {
     this.leftAxisPosition = 40
     this.heightOffsetAxis = 4
     this.margin = { top: 20, right: 20, bottom: 30, left: 110, leftPadding: 70 }
+    this.width = this.svgWidth - this.margin.left - this.margin.right
+    this.height = this.svgHeight - this.margin.top - this.margin.bottom
   }
 
   initializeCharts() {
@@ -170,9 +173,6 @@ export class BarChartManager extends AbstractChartManager {
     const playersNames = this.barChartData[0].values.map(function (d) {
       return d.playerName
     })
-
-    const width = this.svgWidth - this.margin.left - this.margin.right
-    const height = this.svgHeight - this.margin.top - this.margin.bottom
 
     const color = d3
       .scaleOrdinal()
@@ -187,7 +187,7 @@ export class BarChartManager extends AbstractChartManager {
     const y0 = d3
       .scaleBand()
       .domain(championshipNames)
-      .rangeRound([this.margin.top, height - this.margin.bottom])
+      .rangeRound([this.margin.top, this.height - this.margin.bottom])
       .paddingInner(0.1)
 
     const y1 = d3
@@ -196,7 +196,7 @@ export class BarChartManager extends AbstractChartManager {
       .rangeRound([y0.bandwidth(), 0])
       .padding(0.05)
 
-    const x = d3
+    this.x = d3
       .scaleLinear()
       .domain([
         0,
@@ -207,19 +207,21 @@ export class BarChartManager extends AbstractChartManager {
         })
       ])
       .nice()
-      .rangeRound([this.margin.left, width - this.margin.right])
+      .rangeRound([this.margin.left, this.width - this.margin.right])
 
     const xAxis = (g) =>
       g
-        .attr('transform', `translate(0,${height - this.margin.bottom})`)
-        .call(d3.axisBottom(x).tickSizeOuter(0))
+        .attr('transform', `translate(0,${this.height - this.margin.bottom})`)
+        .call(d3.axisBottom(this.x).tickSizeOuter(0))
         .call((g) => g.select('.domain').remove())
-        .call(d3.axisBottom(x).ticks(10, 's'))
+        .call(d3.axisBottom(this.x).ticks(10, 's'))
 
     const yAxis = (g) =>
       g
         .attr('transform', `translate(${this.margin.left},0)`)
         .call(d3.axisLeft(y0).ticks(null, 's'))
+
+    this.drawVerticalLines()
 
     this.svg
       .append('g')
@@ -232,7 +234,7 @@ export class BarChartManager extends AbstractChartManager {
       .selectAll('rect')
       .data((d) => d.values)
       .join('rect')
-      .attr('x', (d) => x(0))
+      .attr('x', (d) => this.x(0))
       .attr('y', (d) => y1(d.playerName))
       .attr('height', y1.bandwidth())
       .attr('width', 0) // Width initially at 0 for animation
@@ -250,12 +252,35 @@ export class BarChartManager extends AbstractChartManager {
         return Math.random() * 1000
       })
       .duration(1000)
-      .attr('width', function (d) {
-        return x(d.value) - x(0)
-      })
+      .attr('width', (d) => this.x(d.value) - this.x(0))
 
     this.svg.append('g').call(xAxis)
-
     this.svg.append('g').call(yAxis)
+  }
+
+  drawVerticalLines() {
+    const dashArray = 4
+    const horizontalState = 14
+
+    for (let i = 1; i < horizontalState; i++) {
+      const positionX = this.x(i * 5)
+
+      this.svg
+        .append('line')
+        .attr('class', 'bar-chart-horizontal-lines')
+        .style('stroke', TEXT_COLORS.lightGray)
+        .style('stroke-width', 2)
+        .attr('stroke-dasharray', dashArray)
+        .attr('x1', positionX)
+        .attr('y1', 370)
+        .attr('x2', positionX)
+        .attr('y2', 0)
+        .attr(
+          'transform',
+          `translate(0,${
+            (this.height % (this.height - this.margin.bottom)) - 5
+          })`
+        )
+    }
   }
 }
