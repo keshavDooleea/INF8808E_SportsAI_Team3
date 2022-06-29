@@ -120,9 +120,16 @@ export class StackedBarChartManager extends AbstractChartManager {
 
   // Add X axis
   setAxisX() {
+    var groups = this.groups
+    var ticks = [
+      'Regular Shots', 'Penalty Shots',
+      'Regular Shots', 'Penalty Shots',
+      'Regular Shots', 'Penalty Shots'
+    ]
+
     this.scaleX = d3
       .scaleBand()
-      .domain(this.groups)
+      .domain(groups)
       .range([0, this.width * 0.85])
       .padding([0.2])
 
@@ -137,11 +144,22 @@ export class StackedBarChartManager extends AbstractChartManager {
          ${this.height + this.heightOffsetAxis}
        )`
       )
-      .call(d3.axisBottom(this.scaleX).tickSize(5))
+      .call(
+        d3
+        .axisBottom()
+        .scale(this.scaleX)
+        .ticks(ticks)
+        .tickValues(groups)
+        .tickFormat( 
+          function (x) {
+            return ticks[(groups).indexOf(x)]
+          }
+        )
+      )
   }
 
+  // Add Y axis
   setAxisY() {
-    // Add Y axis
     this.scaleY = d3.scaleLinear().domain([0, 100]).range([this.height, 0])
 
     this.svg
@@ -185,7 +203,7 @@ export class StackedBarChartManager extends AbstractChartManager {
       .text((data) => data.player)
       .attr('transform', (_, index) => {
         return `translate(
-          ${rectSize * (index * 2) + this.barSize},
+          ${rectSize * (index * 2) + this.barSize + this.margin.leftPadding},
           ${this.height + this.heightOffsetAxis + labelHeightOffset}
         )`
       })
@@ -231,7 +249,7 @@ export class StackedBarChartManager extends AbstractChartManager {
       return `<span>Percentage: ${Math.round(d)}%</span>`
     })
 
-     var colors = ['steelblue', '#91c9c4']
+    var colors = ['steelblue', '#91c9c4']
 
     var color = d3.scaleOrdinal().domain(this.subGroups).range(this.colors)
 
@@ -259,25 +277,25 @@ export class StackedBarChartManager extends AbstractChartManager {
       .attr('y', (d) => this.scaleY(d[1]))
       .attr('height', (d) => this.scaleY(d[0]) - this.scaleY(d[1]))
       .attr('width', this.barSize)
-        // Show tooltip
-        .on('mouseover', function (d) {
-          var ogColor = d3.select(this.parentNode).attr('fill')
-          var total = d.data.made + d.data.missed
-          var value = 0
-          if (d3.rgb(ogColor).toString() == d3.rgb(colors[0])) {
-            value = d.data.made
-          }
-          else {
-            value = d.data.missed
-          }
-          var percent = (value / total) * 100
-          tip.show(value, percent, this)
-          d3.select(this).attr('fill', d3.rgb(ogColor).darker(2))
-        })
-        .on('mouseout', function () {
-          var ogColor = d3.select(this.parentNode).attr('fill')
-          d3.select(this).attr('fill', d3.rgb(ogColor))
-          tip.hide()
-        })
+      // Show tooltip
+      .on('mouseover', function (d) {
+        var ogColor = d3.select(this.parentNode).attr('fill')
+        var total = d.data.made + d.data.missed
+        var value = 0
+        if (d3.rgb(ogColor).toString() == d3.rgb(colors[0])) {
+          value = d.data.made
+        }
+        else {
+          value = d.data.missed
+        }
+        var percent = (value / total) * 100
+        tip.show(value, percent, this)
+        d3.select(this).attr('fill', d3.rgb(ogColor).darker(2))
+      })
+      .on('mouseout', function () {
+        var ogColor = d3.select(this.parentNode).attr('fill')
+        d3.select(this).attr('fill', d3.rgb(ogColor))
+        tip.hide()
+      })
   }
 }
