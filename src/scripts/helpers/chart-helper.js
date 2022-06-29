@@ -2,11 +2,11 @@ import d3Legend from 'd3-svg-legend'
 import d3Tip from 'd3-tip'
 
 class ChartHelperClass {
-  get buttonWidth () {
+  get buttonWidth() {
     return 120
   }
 
-  get buttonHeight () {
+  get buttonHeight() {
     return 30
   }
 
@@ -19,7 +19,7 @@ class ChartHelperClass {
    * @param {*} text
    * @returns {*} The created button
    */
-  createButton (svg, translateX, translateY, text) {
+  createButton(svg, translateX, translateY, text) {
     const button = svg
       .append('g')
       .attr('transform', `translate(${translateX - 1}, ${translateY})`)
@@ -49,11 +49,11 @@ class ChartHelperClass {
     return button
   }
 
-  get legendSquareSymbol () {
+  get legendSquareSymbol() {
     return 'square'
   }
 
-  get legendLineSymbol () {
+  get legendLineSymbol() {
     return 'line'
   }
 
@@ -68,15 +68,23 @@ class ChartHelperClass {
    * @param {*} playersAttributes
    * @returns {*} The created legend
    */
-  createLegend (svg, translateX, translateY, symbol, domainNames, domainColors) {
+  createLegend(svg, translateX, translateY, symbol, domainNames, domainColors) {
     const colorScale = d3.scaleOrdinal(domainColors).domain(domainNames)
 
     // customize a d3 symbol
     const legendSymbol = this.getLegendSymbolFactory(symbol)
-    const designLegend = d3Legend.legendColor().title('Legend').scale(colorScale).shape('path', legendSymbol())
+    const designLegend = d3Legend
+      .legendColor()
+      .title('Legend')
+      .scale(colorScale)
+      .shape('path', legendSymbol())
 
     // draw legend on screen
-    const legend = svg.append('g').attr('class', 'legend').attr('transform', `translate(${translateX}, ${translateY})`).call(designLegend)
+    const legend = svg
+      .append('g')
+      .attr('class', 'legend')
+      .attr('transform', `translate(${translateX}, ${translateY})`)
+      .call(designLegend)
 
     return legend
   }
@@ -87,7 +95,7 @@ class ChartHelperClass {
    * @param {*} symbol
    * @returns {*} The created symbol
    */
-  getLegendSymbolFactory (symbol) {
+  getLegendSymbolFactory(symbol) {
     const symbolSize = 150
 
     switch (symbol) {
@@ -107,7 +115,7 @@ class ChartHelperClass {
    * @param {Function} contentCallbackFunction the function which is called on hovered to display data passed
    * @returns {d3Tip} The created tip
    */
-  createTip (svg, offset, contentCallbackFunction) {
+  createTip(svg, offset, contentCallbackFunction) {
     const tip = d3Tip()
       .attr('class', 'tip-panel')
       .offset(offset)
@@ -132,17 +140,34 @@ class ChartHelperClass {
    * @param {*} unCheckedCallback the callback function which is called when the checkbox is unchecked
    * @returns {*} The created checkbox
    */
-  createCheckbox (svg, translateX, translateY, title, leftText, rightText, isChecked, checkedCallback, unCheckedCallback) {
+  createCheckbox(
+    svg,
+    translateX,
+    translateY,
+    title,
+    leftText,
+    rightText,
+    isChecked,
+    checkedCallback,
+    unCheckedCallback
+  ) {
     const checkboxRadius = 15
     const circleRadius = 10
     const circleColor = 'gray'
     const textPositionY = this.buttonHeight + checkboxRadius + 3
 
     // draw main checkbox
-    const checkbox = svg.append('g').attr('transform', `translate(${translateX - 1}, ${translateY})`)
+    const checkbox = svg
+      .append('g')
+      .attr('transform', `translate(${translateX - 1}, ${translateY})`)
 
     // insert checkbox title
-    checkbox.append('g').append('text').text(title).attr('transform', 'translate(0, -7)').attr('class', 'secondary-color')
+    checkbox
+      .append('g')
+      .append('text')
+      .text(title)
+      .attr('transform', 'translate(0, -7)')
+      .attr('class', 'secondary-color')
 
     checkbox
       .append('rect')
@@ -159,7 +184,15 @@ class ChartHelperClass {
       })
 
     // draw small circle in checkbox
-    const circle = checkbox.append('circle').attr('cx', checkboxRadius).attr('cy', checkboxRadius).attr('r', circleRadius).attr('fill', circleColor).attr('stroke', '#5f697d').attr('class', 'common-transition-3').attr('is-checked', isChecked)
+    const circle = checkbox
+      .append('circle')
+      .attr('cx', checkboxRadius)
+      .attr('cy', checkboxRadius)
+      .attr('r', circleRadius)
+      .attr('fill', circleColor)
+      .attr('stroke', '#5f697d')
+      .attr('class', 'common-transition-3')
+      .attr('is-checked', isChecked)
     this.updateCheckboxCirclePosition(circle, isChecked, checkboxRadius)
 
     // add listener when clicked on checkbox
@@ -173,13 +206,21 @@ class ChartHelperClass {
 
     // place checkbox extremities texts
     this.breakAndPlaceTexts(checkbox, leftText, 0, textPositionY, 'start')
-    this.breakAndPlaceTexts(checkbox, rightText, this.buttonWidth, textPositionY, 'end')
+    this.breakAndPlaceTexts(
+      checkbox,
+      rightText,
+      this.buttonWidth,
+      textPositionY,
+      'end'
+    )
 
     return checkbox
   }
 
-  updateCheckboxCirclePosition (circle, isChecked, checkboxRadius) {
-    const circlePosition = isChecked ? this.buttonWidth - checkboxRadius : checkboxRadius
+  updateCheckboxCirclePosition(circle, isChecked, checkboxRadius) {
+    const circlePosition = isChecked
+      ? this.buttonWidth - checkboxRadius
+      : checkboxRadius
     circle.attr('cx', circlePosition)
   }
 
@@ -192,7 +233,13 @@ class ChartHelperClass {
    * @param {*} textPositionY the y position to place the text
    * @param {*} textAnchor the alignment of the text
    */
-  breakAndPlaceTexts (element, textToSplit, textPositionX, textPositionY, textAnchor) {
+  breakAndPlaceTexts(
+    element,
+    textToSplit,
+    textPositionX,
+    textPositionY,
+    textAnchor
+  ) {
     const texts = textToSplit.split(' ')
     const textHeightOffset = 15
 
@@ -202,7 +249,12 @@ class ChartHelperClass {
         .append('text')
         .text(text)
         .attr('text-anchor', textAnchor)
-        .attr('transform', `translate(${textPositionX}, ${textPositionY + textHeightOffset * index})`)
+        .attr(
+          'transform',
+          `translate(${textPositionX}, ${
+            textPositionY + textHeightOffset * index
+          })`
+        )
     })
   }
 }
