@@ -20,6 +20,18 @@ class PlayersHelperClass {
     this.groupedShootingData = await csvToObject(
       'grouped_data/grouped_shooting_stats.csv'
     )
+    this.groupedDefensiveDataUEFA = await csvToObject(
+      'grouped_data/grouped_defensive_stats_uefa.csv'
+    )
+    this.groupedPassDataUEFA = await csvToObject(
+      'grouped_data/grouped_pass_stats_uefa.csv'
+    )
+    this.groupedPossesionDataUEFA = await csvToObject(
+      'grouped_data/grouped_possession_stats_uefa.csv'
+    )
+    this.groupedShootingDataUEFA = await csvToObject(
+      'grouped_data/grouped_shooting_stats_uefa.csv'
+    )
   }
 
   async getChampionshipData() {

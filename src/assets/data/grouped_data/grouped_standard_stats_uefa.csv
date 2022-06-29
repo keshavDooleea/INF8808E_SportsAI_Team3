@@ -1,0 +1,4 @@
+Player,Span,Nation,Pos,Squad,MP,Starts,Min,90s,Gls,Ast,GPK,PK,PKatt,CrdY,CrdR,Gls,Ast,GA,GPK,GAPK,xG,npxG,xA,npxG+xA,xG,xA,xGxA,npxG,npxGxA
+Sadio Mané,2021-22,SEN,FW,Liverpool,13,11,818,9.1,5,1,5,0,0,2,0,0.55,0.11,0.66,0.55,0.66,4.7,4.7,1.9,6.6,0.51,0.21,0.72,0.51,0.72,c691bfe2
+Karim Benzema,2021-22,FRA,FW,Real Madrid,12,12,1102,12.2,15,1,12,3,3,1,0,1.23,0.08,1.31,0.98,1.06,8.6,6.3,2.7,9.0,0.70,0.22,0.92,0.52,0.74,70d74ece
+Kylian Mbappé,2021-22,FRA,FW,Paris S-G,8,8,671,7.5,6,4,6,0,1,1,0,0.80,0.54,1.34,0.80,1.34,5.0,4.2,2.4,6.6,0.66,0.32,0.98,0.56,0.88,42fd9c7f
