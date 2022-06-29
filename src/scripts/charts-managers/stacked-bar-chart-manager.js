@@ -210,7 +210,7 @@ export class StackedBarChartManager extends AbstractChartManager {
       .text((data) => data.player)
       .attr('transform', (_, index) => {
         return `translate(
-          ${rectSize * (index * 2) + this.barSize + this.margin.leftPadding},
+          ${rectSize * (index * 2) + this.barSize},
           ${this.height + this.heightOffsetAxis + labelHeightOffset}
         )`
       })
