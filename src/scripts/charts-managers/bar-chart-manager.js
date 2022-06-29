@@ -244,7 +244,6 @@ export class BarChartManager extends AbstractChartManager {
       })
       .duration(1000)
       .attr('width', function (d) {
-        console.log(x(d.value) - x(0))
         return x(d.value) - x(0)
       })
 
