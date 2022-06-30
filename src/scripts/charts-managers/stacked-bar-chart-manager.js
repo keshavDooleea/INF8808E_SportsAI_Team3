@@ -257,6 +257,7 @@ export class StackedBarChartManager extends AbstractChartManager {
     this.tip = this.chartHelper.createTip(this.svg, [-4, 0], (d) => {
       return `<div>
       <p class="tip-title">${d.player}</p>
+      <p class="tip-subtitle">${d.shotType}</p>
       <div class="tip-content">Percentage: ${Math.round(d.value)}%</div>
     </div>`
     })
@@ -296,13 +297,20 @@ export class StackedBarChartManager extends AbstractChartManager {
         var ogColor = d3.select(this.parentNode).attr('fill')
         var total = d.data.made + d.data.missed
         var value = 0
+        var shotType
         if (d3.rgb(ogColor).toString() == d3.rgb(colors[0])) {
           value = d.data.made
+          shotType = 'Shots Made'
         } else {
           value = d.data.missed
+          shotType = 'Shots Missed'
         }
         var percent = (value / total) * 100
-        tipReference.show({ value, player: d.data.player }, percent, this)
+        tipReference.show(
+          { value, player: d.data.player, shotType },
+          percent,
+          this
+        )
         d3.select(this).attr('fill', d3.rgb(ogColor).darker(2))
       })
       .on('mouseout', function () {
