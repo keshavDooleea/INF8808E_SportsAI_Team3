@@ -412,8 +412,8 @@ export class LineChartManager extends AbstractChartManager {
    * @param {*} playerColor the color of the line
    */
   drawPlayerLine(playerData, playerColor) {
-    const baseRadius = 3
-    const hoveredRadius = 5
+    const baseRadius = 4
+    const hoveredRadius = 6
 
     const horizontalState = this.lineChartState.horizontalLinesState
     let heightOffset = this.margin.top
@@ -454,7 +454,6 @@ export class LineChartManager extends AbstractChartManager {
       .append('circle')
       .attr('class', 'line-chart-dots common-transition-3')
       .attr('id', (data) => data.id)
-      .attr('cursor', 'pointer')
       .attr('fill', playerColor)
       .attr('stroke', '#fff')
       .attr('r', baseRadius)
