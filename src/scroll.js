@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs'
-// import { scrollSubject } from './scripts/utils/scroll-subject'
+
 /**
  * @file This file handles the logic when scrolling to handle the dots and page number on the right sidebar
  * @author Team 3
@@ -8,23 +8,18 @@ import { Subject } from 'rxjs'
 
 // retrieve DOM HTML elements
 const mainContainer = document.querySelector('main')
-const dotsContainer = document.querySelector('.dots-container')
 const chartNb = document.querySelector('#chart-nb')
 const sections = Array.from(document.querySelectorAll('main > section'))
+const dots = document.querySelectorAll('.dots-container .dot')
 
 // variables
 const dotActiveClass = 'active'
 const scrollOffset = 1
-
-let scrollSubject = new Subject()
+const scrollSubject = new Subject()
 
 main()
 
 function main() {
-  // create the dots based on the number of sections
-  // createDots()
-  const dots = document.querySelectorAll('.dots-container .dot')
-
   // set first page as default
   activateDot(0)
 
@@ -68,15 +63,6 @@ function main() {
     { once: true }
   )
 
-  // dynamically create small dots based on the number/length of sections
-  function createDots() {
-    sections.forEach(() => {
-      const dot = document.createElement('div')
-      dot.className = 'dot'
-      dotsContainer.appendChild(dot)
-    })
-  }
-
   // add active css class to current dot and navigate to current/specific section based on section index
   function activateDot(index) {
     dots.forEach((dot, dotIndex) => {
@@ -90,7 +76,7 @@ function main() {
     })
   }
 
-  // update page number on the bottom of right sidebar
+  // update page number on the bottom of right sidebar and emit page index to chart subscribers
   function setChartNb(number) {
     scrollSubject.next(number)
     chartNb.textContent = number
